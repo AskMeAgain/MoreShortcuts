@@ -1,10 +1,12 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
-import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
+import ask.me.again.shortcut.additions.introducemock.MultipleResultException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ConstructorImpl extends BaseImpl {
 
@@ -27,19 +29,22 @@ public class ConstructorImpl extends BaseImpl {
   }
 
   @Override
-  public Pair<PsiParameter[], ExecutionType> getPsiParameters(PsiExpressionList expressionList) {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
-    if (newExpression != null) {
+    var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
+    var psiClass = getClassFromType(localVar.getType());
 
-      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-      if (localVar != null) {
-        var psiClass = getClassFromType(localVar.getType());
-        var parameters = getPsiParametersFromConstructor(psiClass, expressionList.getExpressionCount());
-        return Pair.of(parameters, ExecutionType.Constructor);
-      }
+    var result = Arrays.stream(psiClass.getConstructors())
+        .map(PsiMethod::getParameterList)
+        .filter(x -> x.getParametersCount() == expressionList.getExpressionCount())
+        .map(PsiParameterList::getParameters)
+        .collect(Collectors.toList());
+
+    if (result.size() > 1) {
+      throw new MultipleResultException(result);
+    } else {
+      return result.get(0);
     }
-
-    return null;
   }
 
   @Override
@@ -55,18 +60,4 @@ public class ConstructorImpl extends BaseImpl {
     throw new RuntimeException("Could not find parent");
   }
 
-  private PsiParameter[] getPsiParametersFromConstructor(PsiClass classType, int typeLookupList) {
-    PsiMethod resultConstructorMethod = null;
-
-    var constructors = classType.getConstructors();
-    for (var psiMethod : constructors) {
-
-      if (psiMethod.getParameterList().getParametersCount() == typeLookupList) {
-        resultConstructorMethod = psiMethod;
-        break;
-      }
-    }
-
-    return resultConstructorMethod.getParameterList().getParameters();
-  }
 }

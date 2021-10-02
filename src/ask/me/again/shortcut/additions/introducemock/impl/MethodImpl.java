@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
+import ask.me.again.shortcut.additions.introducemock.MultipleResultException;
 import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -7,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class MethodImpl extends BaseImpl {
 
@@ -28,7 +30,7 @@ public class MethodImpl extends BaseImpl {
     return false;
   }
 
-  public Pair<PsiParameter[], ExecutionType> getPsiParameters(PsiExpressionList expressionList) {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException {
     var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
     var methodName = methodReference.getReferenceName();
     var referenceExpression = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceExpression.class);
@@ -36,12 +38,16 @@ public class MethodImpl extends BaseImpl {
     var psiType = referenceExpression.getType();
     var psiClass = getClassFromType(psiType);
 
-    return Arrays.stream(psiClass.getMethods()).filter(x -> x.getName().equals(methodName))
+    var result = Arrays.stream(psiClass.getMethods()).filter(x -> x.getName().equals(methodName))
         .filter(x -> x.getParameterList().getParametersCount() == expressionList.getExpressionCount())
         .map(x -> x.getParameterList().getParameters())
-        .findFirst()
-        .map(x -> Pair.of(x, ExecutionType.Method))
-        .get();
+        .collect(Collectors.toList());
+
+    if (result.size() > 1) {
+      throw new MultipleResultException(result);
+    } else {
+      return result.get(0);
+    }
   }
 
   public PsiElement findAnchor(PsiExpressionList expressionList) {

@@ -17,8 +17,8 @@ It is currently not in the intellij plugin marketplace, but you can install it m
 
 ## Introduce Mock
 
-Introduces mocks for every "null" value of the class. Place cursor inside the brackets and run the "Introduce Mock"
-action
+Introduces Mockito mocks for every "null" value of the class. Place cursor inside the brackets and run the "Introduce Mock"
+action. Its also smart enough, that if a conflict arises it asks for the correct implementation via context menu
 
 Before:
 
@@ -34,5 +34,3 @@ After:
 
     var classToMock = new ClassToMock(class1, anotherClass, "This is ignored as its not null");
 ```
-
-----------------------

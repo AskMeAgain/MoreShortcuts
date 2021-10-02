@@ -14,11 +14,15 @@ public class TestClass {
 
   }
 
+  public TestClass(Integer a, TestClass b, Integer c) {
+
+  }
+
   public static void main(String[] args) {
 
     var mock = Mockito.mock(Class.class);
 
-    var testClass = new TestClass(null, null, null);
+    var testClass = new TestClass(1, null, null);
 
     testClass.asd(null, null, null);
   }

@@ -31,7 +31,7 @@
                           anchor="after"
                           relative-to-action="ask.me.again.shortcut.additions.introducemock"/>
             <action id="ask.me.again.shortcut.additions.introducemock"
-                    class="ask.me.again.shortcut.additions.introducemock.IntroduceMock"
+                    class="ask.me.again.shortcut.additions.introducemock.IntroduceMockAction"
                     text="Introduce Mock"
                     description="Introduce all Mocks">
             </action>

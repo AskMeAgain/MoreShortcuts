@@ -4,17 +4,16 @@ import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
 import ask.me.again.shortcut.additions.introducemock.impl.ConstructorImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.MethodImpl;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorKind;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.introducemock.PsiHelpers.decapitalizeString;
 
-public class IntroduceMock extends AnAction {
+public class IntroduceMock {
 
   private Project project;
   private Editor editor;
@@ -32,7 +31,7 @@ public class IntroduceMock extends AnAction {
   private StringBuilder stringBuilder;
   private final Map<ExecutionType, IntroduceMockImplementation> selection = new HashMap<>();
 
-  private void init(AnActionEvent e) {
+  public IntroduceMock(AnActionEvent e) {
     project = e.getProject();
     editor = e.getData(CommonDataKeys.EDITOR);
     psiFile = e.getData(CommonDataKeys.PSI_FILE);
@@ -45,57 +44,35 @@ public class IntroduceMock extends AnAction {
     selection.put(ExecutionType.Method, new MethodImpl(project, psiFile, stringBuilder));
   }
 
-  @Override
-  public void update(AnActionEvent e) {
-    var presentation = e.getPresentation();
-    presentation.setVisible(true);
-    presentation.setEnabled(e.getData(CommonDataKeys.EDITOR) != null);
+  public void runIntroduceMock(PsiParameter[] override) throws MultipleResultException {
+    var expressionList = findPsiExpressionList();
+
+    var executionType = findExecutionType(expressionList);
+
+    var parameters = override.length == 0 ? getPsiParameters(expressionList, executionType) : override;
+
+    var mockExpressions = createMockExpressions(parameters);
+
+    var changeMap = Arrays.stream(expressionList.getExpressionTypes())
+        .map(x -> x.equalsToText("null"))
+        .collect(Collectors.toList());
+
+    var variableNames = PsiHelpers.extractVariableNames(mockExpressions);
+    replaceNullValues(expressionList, variableNames, changeMap);
+
+    var localVarAnchor = selection.get(executionType).findAnchor(expressionList);
+
+    writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
   }
 
-  @Override
-  public void actionPerformed(AnActionEvent e) {
-
-    init(e);
-
-    try {
-      var expressionList = findPsiExpressionList();
-      var psiTypes = expressionList.getExpressionTypes();
-
-      stringBuilder.append("\nFound psi types: " + psiTypes.length);
-
-      var executionType = findExecutionType(expressionList);
-
-      stringBuilder.append("\nFound execution type: " + executionType);
-
-      var parameters = selection.get(executionType)
-          .getPsiParameters(expressionList);
-
-      var result = createMockExpressions(parameters.getLeft());
-
-      var variableNames = PsiHelpers.extractVariableNames(result);
-
-      var changeMap = Arrays.stream(psiTypes)
-          .map(x -> x.equalsToText("null"))
-          .collect(Collectors.toList());
-
-      replaceNullValues(expressionList, variableNames, changeMap);
-
-      var localVarAnchor = selection.get(parameters.getRight())
-          .findAnchor(expressionList);
-
-      writeExpressionsToCode(localVarAnchor, result, changeMap);
-
-    } catch (Exception eee) {
-      stringBuilder.append("\nGot an expection: " + eee.getMessage());
-    }
-
-    var message = stringBuilder.toString();
-    if (!message.isEmpty()) {
-      //Messages.showMessageDialog(e.getProject(), stringBuilder.toString(), "PSI Info", null);
-    }
+  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExecutionType executionType) throws MultipleResultException {
+    return selection.get(executionType).getPsiParameters(expressionList);
   }
 
-  @NotNull
+  public String getLog() {
+    return stringBuilder.toString();
+  }
+
   private ExecutionType findExecutionType(PsiExpressionList expressionList) {
     return selection.entrySet().stream()
         .filter(x -> x.getValue().isType(expressionList))
@@ -162,4 +139,6 @@ public class IntroduceMock extends AnAction {
 
     return resultList;
   }
+
+
 }

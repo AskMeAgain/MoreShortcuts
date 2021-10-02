@@ -8,7 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public interface IntroduceMockImplementation {
 
-  Pair<PsiParameter[], ExecutionType> getPsiParameters(PsiExpressionList expressionList);
+  PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException;
 
   PsiElement findAnchor(PsiExpressionList expressionList);
 
