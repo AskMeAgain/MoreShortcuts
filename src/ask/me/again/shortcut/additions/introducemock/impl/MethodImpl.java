@@ -17,13 +17,10 @@ public class MethodImpl extends BaseImpl {
   }
 
   public boolean isType(PsiExpressionList expressionList) {
-    stringBuilder.append("\nMethod: Trying isType");
     var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
     if (methodReference != null) {
-      stringBuilder.append("\n Method: Went 1 deep, found first method reference");
       var referenceExpression = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceExpression.class);
       if (referenceExpression != null) {
-        stringBuilder.append("\n Method: Went 1 deep again, found second reference");
         return true;
       }
     }
