@@ -7,9 +7,12 @@ import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorKind;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -44,9 +47,9 @@ public class IntroduceMock extends AnAction {
 
   @Override
   public void update(AnActionEvent e) {
-    Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
-    var caretModel = editor.getCaretModel();
-    e.getPresentation().setEnabled(caretModel.getCurrentCaret().o());
+    var presentation = e.getPresentation();
+    presentation.setVisible(true);
+    presentation.setEnabled(e.getData(CommonDataKeys.EDITOR) != null);
   }
 
   @Override
