@@ -32,7 +32,7 @@ After:
     var class1 = Mockito.mock(Class1.class);
     var anotherClass = Mockito.mock(AnotherClass.class);
 
-    var classToMock = new ClassToMock(class1,anotherClass);
+    var classToMock = new ClassToMock(class1, anotherClass, "This is ignored as its not null");
 ```
 
 ----------------------
