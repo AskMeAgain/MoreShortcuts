@@ -10,12 +10,11 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.introducemock.PsiHelpers.decapitalizeString;
@@ -26,20 +25,28 @@ public class IntroduceMock extends AnAction {
   private Editor editor;
   private PsiElementFactory factory;
   private PsiFile psiFile;
-  private StringBuilder stringBuilder;
 
-  private Map<ExecutionType, Abcdef> selection;
+  private StringBuilder stringBuilder;
+  private final Map<ExecutionType, IntroduceMockImplementation> selection = new HashMap<>();
 
   private void init(AnActionEvent e) {
-    stringBuilder = new StringBuilder();
     project = e.getProject();
     editor = e.getData(CommonDataKeys.EDITOR);
     psiFile = e.getData(CommonDataKeys.PSI_FILE);
 
     factory = JavaPsiFacade.getElementFactory(project);
 
-    selection.put(ExecutionType.Constructor, new ConstructorImpl(project, psiFile));
-    selection.put(ExecutionType.Method, new MethodImpl(project, psiFile));
+    stringBuilder = new StringBuilder();
+
+    selection.put(ExecutionType.Constructor, new ConstructorImpl(project, psiFile, stringBuilder));
+    selection.put(ExecutionType.Method, new MethodImpl(project, psiFile, stringBuilder));
+  }
+
+  @Override
+  public void update(AnActionEvent e) {
+    Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
+    var caretModel = editor.getCaretModel();
+    e.getPresentation().setEnabled(caretModel.getCurrentCaret().o());
   }
 
   @Override
@@ -48,34 +55,50 @@ public class IntroduceMock extends AnAction {
     init(e);
 
     try {
-      findLocalVarExpression(expressionList -> {
-        var psiTypes = expressionList.getExpressionTypes();
-        var executionType = ExecutionType.Method;
+      var expressionList = findPsiExpressionList();
+      var psiTypes = expressionList.getExpressionTypes();
 
-        var parameters = selection.get(executionType)
-            .getPsiParameters(expressionList);
+      stringBuilder.append("\nFound psi types: " + psiTypes.length);
 
-        var result = createMockExpressions(parameters.getLeft());
+      var executionType = findExecutionType(expressionList);
 
-        var variableNames = PsiHelpers.extractVariableNames(result);
+      stringBuilder.append("\nFound execution type: " + executionType);
 
-        var changeMap = Arrays.stream(psiTypes)
-            .map(x -> x.equalsToText("null"))
-            .collect(Collectors.toList());
+      var parameters = selection.get(executionType)
+          .getPsiParameters(expressionList);
 
-        replaceNullValues(expressionList, variableNames, changeMap);
+      var result = createMockExpressions(parameters.getLeft());
 
-        var localVarAnchor = selection.get(parameters.getRight())
-            .findAnchor(expressionList);
+      var variableNames = PsiHelpers.extractVariableNames(result);
 
-        writeExpressionsToCode(localVarAnchor, result, changeMap);
-      });
+      var changeMap = Arrays.stream(psiTypes)
+          .map(x -> x.equalsToText("null"))
+          .collect(Collectors.toList());
+
+      replaceNullValues(expressionList, variableNames, changeMap);
+
+      var localVarAnchor = selection.get(parameters.getRight())
+          .findAnchor(expressionList);
+
+      writeExpressionsToCode(localVarAnchor, result, changeMap);
+
     } catch (Exception eee) {
-      var message = stringBuilder.toString();
-      if (!message.isEmpty()) {
-        Messages.showMessageDialog(e.getProject(), stringBuilder.toString(), "PSI Info", null);
-      }
+      stringBuilder.append("\nGot an expection: " + eee.getMessage());
     }
+
+    var message = stringBuilder.toString();
+    if (!message.isEmpty()) {
+      //Messages.showMessageDialog(e.getProject(), stringBuilder.toString(), "PSI Info", null);
+    }
+  }
+
+  @NotNull
+  private ExecutionType findExecutionType(PsiExpressionList expressionList) {
+    return selection.entrySet().stream()
+        .filter(x -> x.getValue().isType(expressionList))
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .get();
   }
 
   private void replaceNullValues(PsiExpressionList expressionList, List<String> variableNames, List<Boolean> changeMap) {
@@ -84,7 +107,6 @@ public class IntroduceMock extends AnAction {
 
     WriteCommandAction.runWriteCommandAction(project, () -> {
       for (int i = 0; i < expressions.length; i++) {
-
         if (changeMap.get(i)) {
           expressions[i].replace(factory.createReferenceFromText(variableNames.get(i), null));
         }
@@ -92,14 +114,16 @@ public class IntroduceMock extends AnAction {
     });
   }
 
-  private void findLocalVarExpression(Consumer<PsiExpressionList> consumer) {
+  private PsiExpressionList findPsiExpressionList() {
     int offset = editor.getCaretModel().getOffset();
     var element = psiFile.findElementAt(offset);
 
     var expressionList = PsiTreeUtil.getParentOfType(element, PsiExpressionList.class);
     if (expressionList != null) {
-      consumer.accept(expressionList);
+      return expressionList;
     }
+
+    throw new RuntimeException("Could not find psiExpressionList");
   }
 
   private void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> result, List<Boolean> changeMap) {

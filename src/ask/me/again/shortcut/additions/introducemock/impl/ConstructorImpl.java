@@ -8,8 +8,22 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class ConstructorImpl extends BaseImpl {
 
-  public ConstructorImpl(Project project, PsiFile psiFile) {
-    super(project, psiFile);
+  public ConstructorImpl(Project project, PsiFile psiFile, StringBuilder stringBuilder) {
+    super(project, psiFile, stringBuilder);
+  }
+
+  public boolean isType(PsiExpressionList expressionList) {
+    stringBuilder.append("\nConstructor: trying isType");
+    var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
+    if (newExpression != null) {
+      stringBuilder.append("\nConstructor: went 1 deep down");
+      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
+      if (localVar != null) {
+        stringBuilder.append("\nConstructor: went 1 deep down again");
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
