@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock;
 
+import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -11,6 +12,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class IntroduceMock extends AnAction {
@@ -45,29 +49,89 @@ public class IntroduceMock extends AnAction {
 
     int offset = editor.getCaretModel().getOffset();
 
-    findLocalVarExpression(psiFile.findElementAt(offset), (expressionList, localVar) -> {
-      var psiClass = getClassFromType(localVar.getType());
+    try {
+      findLocalVarExpression(psiFile.findElementAt(offset), expressionList -> {
+        var psiTypes = findTypesFromCursor(expressionList);
 
-      var psiTypes = findTypesFromCursor(expressionList);
+        var parameters = getPsiParameters(expressionList, psiTypes);
 
-      var parameters = getPsiParametersFromConstructor(psiClass, psiTypes);
+        var result = createMockExpressions(parameters.getLeft());
 
-      var result = createMockExpressions(parameters);
+        var shortDict = new HashMap<String, Integer>();
+        var variableNames = extractVariableNames(result, shortDict);
 
-      var shortDict = new HashMap<String, Integer>();
-      var variableNames = extractVariableNames(result, shortDict);
+        var changeMap = Arrays.stream(psiTypes).map(x -> x.equalsToText("null"))
+            .collect(Collectors.toList());
 
-      var changeMap = Arrays.stream(psiTypes).map(x -> x.equalsToText("null"))
-          .collect(Collectors.toList());
+        replaceNullValues(expressionList, variableNames, changeMap);
+        var localVarAnchor = findInsertionAnchor(expressionList, parameters.getRight());
+        //TODO find localAnchor for method variant
+        writeExpressionsToCode(localVarAnchor, result, changeMap);
+      });
+    } catch (Exception eee) {
 
-      replaceNullValues(expressionList, variableNames, changeMap);
-      writeExpressionsToCode(localVar, result, changeMap);
-    });
-
+    }
     var message = stringBuilder.toString();
     if (!message.isEmpty()) {
       Messages.showMessageDialog(e.getProject(), stringBuilder.toString(), "PSI Info", null);
     }
+  }
+
+  private PsiElement findInsertionAnchor(PsiExpressionList expressionList, ExecutionType executionType) {
+    PsiElement element = expressionList;
+    if (executionType == ExecutionType.Constructor) {
+      for (int i = 0; i < 5; i++) {
+        var psiLocalVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
+        if (psiLocalVar != null) {
+          return psiLocalVar;
+        }
+        element = element.getParent();
+      }
+      throw new RuntimeException("Could not find parent");
+    } else if (executionType == ExecutionType.Method) {
+      for (int i = 0; i < 5; i++) {
+        PsiElement psiExpressionStatement = PsiTreeUtil.getParentOfType(element, PsiExpressionStatement.class);
+        if (psiExpressionStatement != null) {
+          return psiExpressionStatement;
+        }
+        element = element.getParent();
+      }
+      throw new RuntimeException("Could not find parent");
+    }
+
+    throw new NotImplementedException("This is not implemented");
+  }
+
+  @NotNull
+  private Pair<PsiParameter[], ExecutionType> getPsiParameters(PsiExpressionList expressionList, PsiType[] psiTypes) {
+
+    //constructor
+    var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
+    if (newExpression != null) {
+
+      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
+      if (localVar != null) {
+        var psiClass = getClassFromType(localVar.getType());
+        var parameters = getPsiParametersFromConstructor(psiClass, psiTypes);
+        return Pair.of(parameters, ExecutionType.Constructor);
+      }
+    }
+
+    //method
+    var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
+    var methodName = methodReference.getReferenceName();
+    var referenceExpression = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceExpression.class);
+
+    var psiType = referenceExpression.getType();
+
+    var psiClass = getClassFromType(psiType);
+
+    return Arrays.stream(psiClass.getMethods()).filter(x -> x.getName().equals(methodName))
+        .filter(x -> x.getParameterList().getParametersCount() == psiTypes.length)
+        .map(x -> x.getParameterList().getParameters())
+        .findFirst()
+        .map(x -> Pair.of(x, ExecutionType.Method))
+        .get();
   }
 
   @NotNull
@@ -106,25 +170,16 @@ public class IntroduceMock extends AnAction {
     });
   }
 
-  private void findLocalVarExpression(PsiElement element, BiConsumer<PsiExpressionList, PsiLocalVariable> consumer) {
+  private void findLocalVarExpression(PsiElement element, Consumer<PsiExpressionList> consumer) {
     if (element != null) {
-
       var expressionList = PsiTreeUtil.getParentOfType(element, PsiExpressionList.class);
       if (expressionList != null) {
-
-        var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
-        if (newExpression != null) {
-
-          var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-          if (localVar != null) {
-            consumer.accept(expressionList, localVar);
-          }
-        }
+        consumer.accept(expressionList);
       }
     }
   }
 
-  private void writeExpressionsToCode(PsiLocalVariable localVar, List<PsiElement> result, List<Boolean> changeMap) {
+  private void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> result, List<Boolean> changeMap) {
     WriteCommandAction.runWriteCommandAction(project, () -> {
       var whiteSpace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
 
@@ -133,7 +188,7 @@ public class IntroduceMock extends AnAction {
           var element = result.get(i);
           element.addBefore(whiteSpace, null);
           element.addAfter(whiteSpace, null);
-          localVar.addAfter(element, null);
+          targetAnchor.addAfter(element, null);
         }
       }
 

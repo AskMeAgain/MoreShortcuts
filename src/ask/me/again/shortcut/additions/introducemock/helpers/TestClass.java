@@ -18,7 +18,7 @@ public class TestClass {
 
     var mock = Mockito.mock(Class.class);
 
-    TestClass testClass = new TestClass();
+    var testClass = new TestClass(null, null, null);
 
     testClass.asd(null, null, null);
   }
