@@ -23,7 +23,7 @@ action. Its also smart enough, that if a conflict arises it asks for the correct
 Before:
 
 ```java
-    var classToMock = new ClassToMock(null,null);
+    var classToMock = new ClassToMock(null, null, "This is ignored as its not null");
 ```
 
 After:
