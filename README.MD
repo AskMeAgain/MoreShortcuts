@@ -2,6 +2,17 @@
 
 This plugin adds some shortcuts to intellij idea
 
+
+## Installation
+
+It is currently not in the intellij plugin marketplace, but you can install it manually
+
+1. Settings
+2. Plugins
+3. Settings Cog (top right)
+4. Install Plugin from disk
+5. Select jar
+
 ----------------------
 
 ## Introduce Mock
