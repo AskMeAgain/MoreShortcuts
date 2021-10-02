@@ -12,16 +12,16 @@ action
 Before:
 
 ```java
-    var classToMock=new ClassToMock(null,null);
+    var classToMock = new ClassToMock(null,null);
 ```
 
 After:
 
 ```java
-    var class1=Mockito.mock(Class1.class);
-    var anotherClass=Mockito.mock(AnotherClass.class);
+    var class1 = Mockito.mock(Class1.class);
+    var anotherClass = Mockito.mock(AnotherClass.class);
 
-    var classToMock=new ClassToMock(class1,anotherClass);
+    var classToMock = new ClassToMock(class1,anotherClass);
 ```
 
 ----------------------
