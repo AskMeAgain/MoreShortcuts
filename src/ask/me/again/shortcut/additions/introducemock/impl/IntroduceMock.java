@@ -1,34 +1,36 @@
-package ask.me.again.shortcut.additions.introducemock;
+package ask.me.again.shortcut.additions.introducemock.impl;
 
-import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
-import ask.me.again.shortcut.additions.introducemock.impl.ConstructorImpl;
-import ask.me.again.shortcut.additions.introducemock.impl.MethodImpl;
+import ask.me.again.shortcut.additions.introducemock.IntroduceMockImplementation;
+import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.introducemock.exceptions.ExpressionListNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.ExecutionTypeNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.entities.ExecutionType;
+import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.impl.SimpleConstructorImpl;
+import ask.me.again.shortcut.additions.introducemock.impl.SimpleMethodImpl;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ask.me.again.shortcut.additions.introducemock.PsiHelpers.decapitalizeString;
+import static ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers.decapitalizeString;
 
 public class IntroduceMock {
 
-  private Project project;
-  private Editor editor;
-  private PsiElementFactory factory;
-  private PsiFile psiFile;
+  private final Project project;
+  private final Editor editor;
+  private final PsiElementFactory factory;
+  private final PsiFile psiFile;
 
-  private StringBuilder stringBuilder;
+  private final StringBuilder stringBuilder;
   private final Map<ExecutionType, IntroduceMockImplementation> selection = new HashMap<>();
 
   public IntroduceMock(AnActionEvent e) {
@@ -40,11 +42,11 @@ public class IntroduceMock {
 
     stringBuilder = new StringBuilder();
 
-    selection.put(ExecutionType.Constructor, new ConstructorImpl(project, psiFile, stringBuilder));
-    selection.put(ExecutionType.Method, new MethodImpl(project, psiFile, stringBuilder));
+    selection.put(ExecutionType.Constructor, new SimpleConstructorImpl(project, psiFile, stringBuilder));
+    selection.put(ExecutionType.Method, new SimpleMethodImpl(project, psiFile, stringBuilder));
   }
 
-  public void runIntroduceMock(PsiParameter[] override) throws MultipleResultException {
+  public void runIntroduceMock(PsiParameter[] override) throws MultipleResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException, PsiTypeNotFoundException {
     var expressionList = findPsiExpressionList();
 
     var executionType = findExecutionType(expressionList);
@@ -65,20 +67,16 @@ public class IntroduceMock {
     writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
   }
 
-  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExecutionType executionType) throws MultipleResultException {
+  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExecutionType executionType) throws MultipleResultException, PsiTypeNotFoundException {
     return selection.get(executionType).getPsiParameters(expressionList);
   }
 
-  public String getLog() {
-    return stringBuilder.toString();
-  }
-
-  private ExecutionType findExecutionType(PsiExpressionList expressionList) {
+  private ExecutionType findExecutionType(PsiExpressionList expressionList) throws ExecutionTypeNotFoundException {
     return selection.entrySet().stream()
         .filter(x -> x.getValue().isType(expressionList))
         .map(Map.Entry::getKey)
         .findFirst()
-        .get();
+        .orElseThrow(ExecutionTypeNotFoundException::new);
   }
 
   private void replaceNullValues(PsiExpressionList expressionList, List<String> variableNames, List<Boolean> changeMap) {
@@ -94,7 +92,7 @@ public class IntroduceMock {
     });
   }
 
-  private PsiExpressionList findPsiExpressionList() {
+  private PsiExpressionList findPsiExpressionList() throws ExpressionListNotFoundException {
     int offset = editor.getCaretModel().getOffset();
     var element = psiFile.findElementAt(offset);
 
@@ -103,7 +101,7 @@ public class IntroduceMock {
       return expressionList;
     }
 
-    throw new RuntimeException("Could not find psiExpressionList");
+    throw new ExpressionListNotFoundException();
   }
 
   private void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> result, List<Boolean> changeMap) {
@@ -113,25 +111,24 @@ public class IntroduceMock {
       for (int i = result.size() - 1; i >= 0; i--) {
         if (changeMap.get(i)) {
           var element = result.get(i);
-          element.addBefore(whiteSpace, null);
           element.addAfter(whiteSpace, null);
           targetAnchor.addAfter(element, null);
         }
       }
 
-      new ReformatCodeProcessor(project, false).run();
+      new ReformatCodeProcessor(project, true).run();
     });
   }
 
   private List<PsiElement> createMockExpressions(PsiParameter[] parameterList) {
     var resultList = new ArrayList<PsiElement>();
-    for (int i = 0; i < parameterList.length; i++) {
 
-      var type = parameterList[i].getType();
-      var presentableText = type.getPresentableText();
+    for (var psiParameter : parameterList) {
+
+      var presentableText = psiParameter.getType().getPresentableText();
       var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(String.format("Mockito.mock(%s.class)", presentableText), null);
 
-      PsiType varType = factory.createTypeByFQClassName("var");
+      var varType = factory.createTypeByFQClassName("var");
       var variableAssignment = factory.createVariableDeclarationStatement(decapitalizeString(presentableText), varType, equalsCall);
 
       resultList.add(variableAssignment);
@@ -139,6 +136,5 @@ public class IntroduceMock {
 
     return resultList;
   }
-
 
 }

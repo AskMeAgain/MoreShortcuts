@@ -1,10 +1,10 @@
-package ask.me.again.shortcut.additions.introducemock;
+package ask.me.again.shortcut.additions.introducemock.exceptions;
 
 import com.intellij.psi.PsiParameter;
 
 import java.util.List;
 
-public class MultipleResultException extends Exception{
+public class MultipleResultException extends Exception {
 
   private final List<PsiParameter[]> psiParametersList;
 
@@ -12,7 +12,7 @@ public class MultipleResultException extends Exception{
     this.psiParametersList = psiParametersList;
   }
 
-  public List<PsiParameter[]> getPsiParametersList(){
+  public List<PsiParameter[]> getPsiParametersList() {
     return psiParametersList;
   }
 }

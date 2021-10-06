@@ -1,27 +1,16 @@
 package ask.me.again.shortcut.additions.introducemock;
 
-import ask.me.again.shortcut.additions.introducemock.helpers.ExecutionType;
-import ask.me.again.shortcut.additions.introducemock.impl.ConstructorImpl;
-import ask.me.again.shortcut.additions.introducemock.impl.MethodImpl;
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.introducemock.exceptions.ExpressionListNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.ExecutionTypeNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
+import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import jnr.ffi.Struct;
-import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static ask.me.again.shortcut.additions.introducemock.PsiHelpers.decapitalizeString;
-import static com.intellij.build.BuildContentManager.TOOL_WINDOW_ID;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class IntroduceMockAction extends AnAction {
 
@@ -43,12 +32,10 @@ public class IntroduceMockAction extends AnAction {
   }
 
   @Override
-  public void actionPerformed(AnActionEvent e) {
-
-    var introduceMock = new IntroduceMock(e);
+  public void actionPerformed(AnActionEvent actionEvent) {
 
     try {
-      introduceMock.runIntroduceMock(override);
+      new IntroduceMock(actionEvent).runIntroduceMock(override);
     } catch (MultipleResultException multipleResultException) {
 
       var actionGroup = new DefaultActionGroup();
@@ -59,21 +46,32 @@ public class IntroduceMockAction extends AnAction {
 
       var menu = ActionManager.getInstance().createActionPopupMenu("Filter", actionGroup);
 
-      var editor = e.getRequiredData(CommonDataKeys.EDITOR);
+      var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
       var contentComponent = editor.getContentComponent();
 
       var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
 
       menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
+    } catch (ExecutionTypeNotFoundException etnfe) {
+      PsiHelpers.print(actionEvent.getProject(), "Could not get the refactoring type out of the current block :(");
+    } catch (PsiTypeNotFoundException ptnfe) {
+      PsiHelpers.print(actionEvent.getProject(), "Could not find psi type :(");
+    } catch (ExpressionListNotFoundException elnfe) {
+      PsiHelpers.print(actionEvent.getProject(), "Could not find expression list :(");
+    } catch (Exception exception) {
+      var sw = new StringWriter();
+      var pw = new PrintWriter(sw);
+      exception.printStackTrace(pw);
+      PsiHelpers.print(actionEvent.getProject(), sw.toString());
     }
   }
 
-  private String getActionName(PsiParameter[] x) {
+  private String getActionName(PsiParameter[] psiParameters) {
 
     var stringBuilder = new StringBuilder();
 
-    for (int i = 0; i < x.length; i++) {
-      var type = x[i].getType();
+    for (var psiParameter : psiParameters) {
+      var type = psiParameter.getType();
       stringBuilder.append(type.getPresentableText() + " ");
     }
 

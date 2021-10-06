@@ -1,6 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
-import ask.me.again.shortcut.additions.introducemock.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -8,9 +8,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ConstructorImpl extends BaseImpl {
+public class SimpleConstructorImpl extends BaseImpl {
 
-  public ConstructorImpl(Project project, PsiFile psiFile, StringBuilder stringBuilder) {
+  public SimpleConstructorImpl(Project project, PsiFile psiFile, StringBuilder stringBuilder) {
     super(project, psiFile, stringBuilder);
   }
 
