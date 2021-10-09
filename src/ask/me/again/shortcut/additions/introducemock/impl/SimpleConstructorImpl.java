@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
+import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -29,10 +30,10 @@ public class SimpleConstructorImpl extends BaseImpl {
   }
 
   @Override
-  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, ClassFromTypeNotFoundException {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
     var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-    var psiClass = getClassFromType(localVar.getType());
+    var psiClass = getClassFromString(localVar.getType().getCanonicalText());
 
     var result = Arrays.stream(psiClass.getConstructors())
         .map(PsiMethod::getParameterList)

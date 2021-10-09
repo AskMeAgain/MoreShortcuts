@@ -62,7 +62,7 @@ public class IntroduceMockAction extends AnAction {
       var sw = new StringWriter();
       var pw = new PrintWriter(sw);
       exception.printStackTrace(pw);
-      PsiHelpers.print(actionEvent.getProject(), sw.toString());
+      PsiHelpers.print(actionEvent.getProject(), "Message: " + exception.getMessage() + "Stack trace: " + sw.toString());
     }
   }
 

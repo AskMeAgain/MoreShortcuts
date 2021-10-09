@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
+import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
 import com.intellij.openapi.project.Project;
@@ -32,12 +33,12 @@ public class SimpleMethodImpl extends BaseImpl {
     return false;
   }
 
-  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, PsiTypeNotFoundException {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
     var methodName = methodReference.getReferenceName();
 
-    var psiType = getPsiType(methodReference);
-    var psiClass = getClassFromType(psiType);
+    var classNameFromReference = getClassNameFromReference(methodReference);
+    var psiClass = getClassFromString(classNameFromReference);
 
     var result = Arrays.stream(psiClass.getMethods())
         .filter(x -> x.getName().equals(methodName))
@@ -52,15 +53,15 @@ public class SimpleMethodImpl extends BaseImpl {
     }
   }
 
-  private PsiType getPsiType(PsiReferenceExpression methodReference) throws PsiTypeNotFoundException {
+  private String getClassNameFromReference(PsiReferenceExpression methodReference) throws PsiTypeNotFoundException {
     var result1 = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceExpression.class);
     if (result1 != null) {
-      return result1.getType();
+      return result1.getType() == null ? result1.getQualifiedName() : result1.getType().getCanonicalText();
     }
 
     var result2 = PsiTreeUtil.getChildOfType(methodReference, PsiMethodCallExpression.class);
     if (result2 != null) {
-      return result2.getType();
+      return result2.getType().getCanonicalText();
     }
 
     throw new PsiTypeNotFoundException();
@@ -70,11 +71,16 @@ public class SimpleMethodImpl extends BaseImpl {
     PsiElement element = expressionList;
     for (int i = 0; i < 5; i++) {
       PsiElement psiExpressionStatement = PsiTreeUtil.getParentOfType(element, PsiExpressionStatement.class);
+      PsiElement psiExpressionStatement2 = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
       if (psiExpressionStatement != null) {
         return psiExpressionStatement;
       }
+      if (psiExpressionStatement2 != null) {
+        return psiExpressionStatement2;
+      }
       element = element.getParent();
     }
+
     throw new RuntimeException("Could not find parent");
   }
 }

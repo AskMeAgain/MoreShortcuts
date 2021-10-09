@@ -18,6 +18,9 @@ public class PsiHelpers {
     return result.stream()
         .map(x -> PsiTreeUtil.getChildOfType(x, PsiLocalVariable.class))
         .map(x -> {
+          if(x == null){
+            return null;
+          }
           if (!shortDict.containsKey(x.getName())) {
             shortDict.put(x.getName(), 1);
           } else {
@@ -25,9 +28,8 @@ public class PsiHelpers {
             shortDict.put(x.getName(), integer + 1);
             x.setName(x.getName() + integer);
           }
-          return x;
+          return x.getName();
         })
-        .map(PsiLocalVariable::getName)
         .collect(Collectors.toList());
   }
 

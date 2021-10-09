@@ -1,14 +1,9 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
 import ask.me.again.shortcut.additions.introducemock.IntroduceMockImplementation;
-import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
-import ask.me.again.shortcut.additions.introducemock.exceptions.ExpressionListNotFoundException;
-import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
-import ask.me.again.shortcut.additions.introducemock.exceptions.ExecutionTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionType;
-import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
-import ask.me.again.shortcut.additions.introducemock.impl.SimpleConstructorImpl;
-import ask.me.again.shortcut.additions.introducemock.impl.SimpleMethodImpl;
+import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -46,18 +41,18 @@ public class IntroduceMock {
     selection.put(ExecutionType.Method, new SimpleMethodImpl(project, psiFile, stringBuilder));
   }
 
-  public void runIntroduceMock(PsiParameter[] override) throws MultipleResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException, PsiTypeNotFoundException {
+  public void runIntroduceMock(PsiParameter[] override) throws MultipleResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     var expressionList = findPsiExpressionList();
 
     var executionType = findExecutionType(expressionList);
 
     var parameters = override.length == 0 ? getPsiParameters(expressionList, executionType) : override;
 
-    var mockExpressions = createMockExpressions(parameters);
-
     var changeMap = Arrays.stream(expressionList.getExpressionTypes())
         .map(x -> x.equalsToText("null"))
         .collect(Collectors.toList());
+
+    var mockExpressions = createMockExpressions(parameters, changeMap);
 
     var variableNames = PsiHelpers.extractVariableNames(mockExpressions);
     replaceNullValues(expressionList, variableNames, changeMap);
@@ -67,7 +62,7 @@ public class IntroduceMock {
     writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
   }
 
-  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExecutionType executionType) throws MultipleResultException, PsiTypeNotFoundException {
+  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExecutionType executionType) throws MultipleResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     return selection.get(executionType).getPsiParameters(expressionList);
   }
 
@@ -112,26 +107,32 @@ public class IntroduceMock {
         if (changeMap.get(i)) {
           var element = result.get(i);
           element.addAfter(whiteSpace, null);
+          element.addBefore(whiteSpace, null);
           targetAnchor.addAfter(element, null);
         }
       }
 
-      new ReformatCodeProcessor(project, true).run();
+      new ReformatCodeProcessor(project, false).run();
     });
   }
 
-  private List<PsiElement> createMockExpressions(PsiParameter[] parameterList) {
+  private List<PsiElement> createMockExpressions(PsiParameter[] parameterList, List<Boolean> changeMap) {
     var resultList = new ArrayList<PsiElement>();
 
-    for (var psiParameter : parameterList) {
+    for (int i = 0; i < parameterList.length; i++) {
+      if (changeMap.get(i)) {
+        PsiParameter psiParameter = parameterList[i];
 
-      var presentableText = psiParameter.getType().getPresentableText();
-      var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(String.format("Mockito.mock(%s.class)", presentableText), null);
+        var presentableText = psiParameter.getType().getPresentableText();
+        var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(String.format("Mockito.mock(%s.class)", presentableText), null);
 
-      var varType = factory.createTypeByFQClassName("var");
-      var variableAssignment = factory.createVariableDeclarationStatement(decapitalizeString(presentableText), varType, equalsCall);
+        var varType = factory.createTypeByFQClassName("var");
+        var variableAssignment = factory.createVariableDeclarationStatement(decapitalizeString(presentableText), varType, equalsCall);
 
-      resultList.add(variableAssignment);
+        resultList.add(variableAssignment);
+      } else {
+        resultList.add(null);
+      }
     }
 
     return resultList;
