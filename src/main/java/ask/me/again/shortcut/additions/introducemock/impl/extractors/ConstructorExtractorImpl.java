@@ -72,6 +72,11 @@ public class ConstructorExtractorImpl extends ExtractorBase {
       if (psiLocalVar != null) {
         return psiLocalVar;
       }
+
+      var assignmentExpression = PsiTreeUtil.getParentOfType(element, PsiAssignmentExpression.class);
+      if (assignmentExpression != null) {
+        return assignmentExpression;
+      }
       element = element.getParent();
     }
     throw new RuntimeException("Could not find parent");
