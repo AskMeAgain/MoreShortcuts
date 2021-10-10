@@ -1,0 +1,46 @@
+<idea-plugin>
+    <id>ask.me.again.shortcut.additions</id>
+    <name>Shortcut Additions</name>
+    <version>1.4</version>
+    <vendor email="lol@lol.de" url="nowebsite.com">AskMeAgain</vendor>
+
+    <description>
+        <![CDATA[
+            This plugin introduces a new shortcut: Introduce Mocks.
+        ]]>
+    </description>
+    <change-notes>
+        <![CDATA[
+        ]]>
+    </change-notes>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
+    <idea-version since-build="203.0"/>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+
+    <actions>
+        <group id="ShortcutAdditions" text="Additional Refactorings" popup="true">
+            <add-to-group group-id="RefactoringMenu"
+                          anchor="after"
+                          relative-to-action="ask.me.again.shortcut.additions.introducemock.variable"/>
+            <action id="ask.me.again.shortcut.additions.introducemock.variable"
+                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToVariable"
+                    text="Introduce Mock To Variable"
+                    description="Introduce all Mocks">
+            </action>
+            <action id="ask.me.again.shortcut.additions.introducemock.field"
+                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToField"
+                    text="Introduce Mock To Field"
+                    description="Introduce all Mocks">
+            </action>
+        </group>
+    </actions>
+
+</idea-plugin>
