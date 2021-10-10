@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl.extractors;
 
+import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromExpressionNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
 import com.intellij.openapi.project.Project;
@@ -22,15 +23,19 @@ public class ConstructorExtractorImpl extends ExtractorBase {
       if (localVar != null) {
         return true;
       }
+      var assignmentExpression = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
+      if (assignmentExpression != null) {
+        return true;
+      }
     }
     return false;
   }
 
   @Override
-  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, ClassFromTypeNotFoundException {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
-    var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-    var psiClass = getClassFromString(localVar.getType().getCanonicalText());
+    var classString = getClassString(newExpression);
+    var psiClass = getClassFromString(classString);
 
     var result = Arrays.stream(psiClass.getConstructors())
         .map(PsiMethod::getParameterList)
@@ -43,6 +48,20 @@ public class ConstructorExtractorImpl extends ExtractorBase {
     } else {
       return result.get(0);
     }
+  }
+
+  private String getClassString(PsiNewExpression newExpression) throws ClassFromExpressionNotFoundException {
+    var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
+    if (localVar != null) {
+      return localVar.getType().getCanonicalText();
+    }
+
+    var assignment = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
+    if (assignment != null) {
+      return assignment.getType().getCanonicalText();
+    }
+
+    throw new ClassFromExpressionNotFoundException("Could not extract class");
   }
 
   @Override
