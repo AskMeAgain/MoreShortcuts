@@ -30,4 +30,12 @@ class TestCases {
         .nested(null, null);
   }
 
+  void builderClassAssignment() {
+    testClass = testClass.nested(1, "")
+        .nested(1, "")
+        .nested(1, "")
+        .nested(1, "")
+        .nested(null, null);
+  }
+
 }
