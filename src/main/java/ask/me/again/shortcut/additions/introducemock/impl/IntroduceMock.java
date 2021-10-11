@@ -139,7 +139,7 @@ public class IntroduceMock {
         }
       }
 
-      new ReformatCodeProcessor(project, false).run();
+      new ReformatCodeProcessor(psiFile, true).run();
     });
   }
 }

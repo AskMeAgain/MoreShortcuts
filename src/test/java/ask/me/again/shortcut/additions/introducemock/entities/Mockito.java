@@ -8,6 +8,6 @@ public class Mockito<T> {
   public Mockito() {
   }
 
-  public void doStuff(int i) {
-  }
+          public void doStuff(int i) {
+          }
 }
