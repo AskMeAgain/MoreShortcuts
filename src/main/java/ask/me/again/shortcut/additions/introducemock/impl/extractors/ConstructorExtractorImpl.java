@@ -1,8 +1,9 @@
 package ask.me.again.shortcut.additions.introducemock.impl.extractors;
 
+import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromExpressionNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
-import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleIntroduceMockResultException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -32,10 +33,10 @@ public class ConstructorExtractorImpl extends ExtractorBase {
   }
 
   @Override
-  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleIntroduceMockResultException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
     var classString = getClassString(newExpression);
-    var psiClass = getClassFromString(classString);
+    var psiClass = PsiHelpers.getClassFromString(project, classString);
 
     var result = Arrays.stream(psiClass.getConstructors())
         .map(PsiMethod::getParameterList)
@@ -44,7 +45,7 @@ public class ConstructorExtractorImpl extends ExtractorBase {
         .collect(Collectors.toList());
 
     if (result.size() > 1) {
-      throw new MultipleResultException(result);
+      throw new MultipleIntroduceMockResultException(result);
     } else {
       return result.get(0);
     }

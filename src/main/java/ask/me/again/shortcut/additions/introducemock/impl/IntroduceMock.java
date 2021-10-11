@@ -44,7 +44,7 @@ public class IntroduceMock {
   }
 
   public void runIntroduceMock(PsiParameter[] override, ExecutionTarget executionTarget)
-      throws MultipleResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException,
+      throws MultipleIntroduceMockResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException,
       PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
 
     var expressionList = findPsiExpressionList();
@@ -89,7 +89,7 @@ public class IntroduceMock {
 
   }
 
-  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExececutionExtractor executionType) throws MultipleResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
+  private PsiParameter[] getPsiParameters(PsiExpressionList expressionList, ExececutionExtractor executionType) throws MultipleIntroduceMockResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
     return selection.get(executionType).getPsiParameters(expressionList);
   }
 

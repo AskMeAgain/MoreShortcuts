@@ -1,7 +1,8 @@
 package ask.me.again.shortcut.additions.introducemock.impl.extractors;
 
+import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
-import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleIntroduceMockResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -33,12 +34,12 @@ public class MethodExtractorImpl extends ExtractorBase {
     return false;
   }
 
-  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
+  public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleIntroduceMockResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
     var methodName = methodReference.getReferenceName();
 
     var classNameFromReference = getClassNameFromReference(methodReference);
-    var psiClass = getClassFromString(classNameFromReference);
+    var psiClass = PsiHelpers.getClassFromString(project, classNameFromReference);
 
     var result = Arrays.stream(psiClass.getMethods())
         .filter(x -> x.getName().equals(methodName))
@@ -47,7 +48,7 @@ public class MethodExtractorImpl extends ExtractorBase {
         .collect(Collectors.toList());
 
     if (result.size() > 1) {
-      throw new MultipleResultException(result);
+      throw new MultipleIntroduceMockResultException(result);
     } else {
       return result.get(0);
     }

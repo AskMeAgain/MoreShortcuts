@@ -16,6 +16,9 @@ class TestCases {
 
   void contextMenuField() {
     testClass = new TestClass(1, null, null);
+    testClass = new TestClass(1, null, null);
+    testClass = new TestClass(1, null, null);
+    testClass = new TestClass(1, null, null);
   }
 
   void staticClass() {

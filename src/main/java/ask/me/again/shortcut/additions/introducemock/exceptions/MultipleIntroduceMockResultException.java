@@ -4,11 +4,11 @@ import com.intellij.psi.PsiParameter;
 
 import java.util.List;
 
-public class MultipleResultException extends Exception {
+public class MultipleIntroduceMockResultException extends Exception {
 
   private final List<PsiParameter[]> psiParametersList;
 
-  public MultipleResultException(List<PsiParameter[]> psiParametersList) {
+  public MultipleIntroduceMockResultException(List<PsiParameter[]> psiParametersList) {
     this.psiParametersList = psiParametersList;
   }
 

@@ -2,7 +2,7 @@ package ask.me.again.shortcut.additions.introducemock;
 
 import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ExpressionListNotFoundException;
-import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleResultException;
+import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleIntroduceMockResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ExecutionTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
@@ -43,21 +43,9 @@ public class IntroduceMockImpl extends AnAction {
 
     try {
       new IntroduceMock(actionEvent).runIntroduceMock(override, executionTarget);
-    } catch (MultipleResultException multipleResultException) {
+    } catch (MultipleIntroduceMockResultException multipleResultException) {
 
-      var actionGroup = new DefaultActionGroup();
-
-      multipleResultException.getPsiParametersList().forEach(parameterOverride -> {
-        actionGroup.add(new IntroduceMockImpl(getActionName(parameterOverride), parameterOverride, executionTarget));
-      });
-
-      var menu = ActionManager.getInstance().createActionPopupMenu("Filter", actionGroup);
-
-      var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
-      var contentComponent = editor.getContentComponent();
-
-      var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
-      menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
+      createContextMenu(actionEvent, multipleResultException);
     } catch (ExecutionTypeNotFoundException etnfe) {
       PsiHelpers.print(actionEvent.getProject(), "Could not get the refactoring type out of the current block :(");
     } catch (PsiTypeNotFoundException ptnfe) {
@@ -70,6 +58,22 @@ public class IntroduceMockImpl extends AnAction {
       exception.printStackTrace(pw);
       PsiHelpers.print(actionEvent.getProject(), "Message: " + exception.getMessage() + "\nStack trace: " + sw);
     }
+  }
+
+  private void createContextMenu(AnActionEvent actionEvent, MultipleIntroduceMockResultException multipleResultException) {
+    var actionGroup = new DefaultActionGroup();
+
+    multipleResultException.getPsiParametersList().forEach(parameterOverride -> {
+      actionGroup.add(new IntroduceMockImpl(getActionName(parameterOverride), parameterOverride, executionTarget));
+    });
+
+    var menu = ActionManager.getInstance().createActionPopupMenu("Filter", actionGroup);
+
+    var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
+    var contentComponent = editor.getContentComponent();
+
+    var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
+    menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
   }
 
   private String getActionName(PsiParameter[] psiParameters) {

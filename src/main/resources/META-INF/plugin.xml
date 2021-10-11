@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>ask.me.again.shortcut.additions</id>
     <name>Shortcut Additions</name>
-    <version>1.4</version>
+    <version>2.0</version>
     <vendor email="lol@lol.de" url="nowebsite.com">AskMeAgain</vendor>
 
     <description>
@@ -39,6 +39,11 @@
                     class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToField"
                     text="Introduce Mock To Field"
                     description="Introduce all Mocks">
+            </action>
+            <action id="ask.me.again.shortcut.additions.addmockmethod"
+                    class="ask.me.again.shortcut.additions.addmockmethod.AddMockMethodImpl"
+                    text="Add Mock Method"
+                    description="Add Mock Method">
             </action>
         </group>
     </actions>
