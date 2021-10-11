@@ -20,20 +20,7 @@ Introduces Mockito mocks for every "null" value of the class. Place cursor insid
 and run the "Introduce Mock To Variable" action. Its also smart enough, 
 that if a conflict arises it asks for the correct implementation via context menu
 
-Before:
-
-```java
-var classToMock = new ClassToMock(null, null, "This is ignored as its not null");
-```
-
-After:
-
-```java
-var class1 = Mockito.mock(Class1.class);
-var anotherClass = Mockito.mock(AnotherClass.class);
-
-var classToMock = new ClassToMock(class1, anotherClass, "This is ignored as its not null");
-```
+![](gifs/introduce-mock-variable.gif)
 
 ----------------------
 
@@ -43,28 +30,15 @@ Introduces Mockito mock fields for every "null" value of the class. Place cursor
 and run the "Introduce Mock To Field" action. Its also smart enough,
 that if a conflict arises it asks for the correct implementation via context menu
 
-Before:
+![](gifs/introduce-mock-field.gif)
 
-```java
-public class Testclass {
-  public void function() {
-    var classToMock = new ClassToMock(null, null, "This is ignored as its not null");
-  }
-}
-```
+----------------------
 
-After:
+## Add Mock Method
 
-```java
-public class Testclass {
-  
-  @Mock
-  Class1 class1;
-  @Mock
-  AnotherClass anotherClass;
-  
-  public void function() {
-    var classToMock = new ClassToMock(class1, anotherClass, "This is ignored as its not null");
-  }
-}
-```
+put cursor on a variable and a context menu with public non-void methods will appear.
+Select a method and an mock for a method will appear. It is smart enough to 
+find the correct argument matches based on the type.
+
+![](gifs/add-mock-method.gif)
+
