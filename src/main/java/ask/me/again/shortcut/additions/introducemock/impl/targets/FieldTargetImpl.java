@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers.decapitalizeString;
+import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
 
 public class FieldTargetImpl extends TargetBase {
 

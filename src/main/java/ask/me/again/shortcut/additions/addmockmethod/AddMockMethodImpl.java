@@ -3,7 +3,7 @@ package ask.me.again.shortcut.additions.addmockmethod;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindAnchorException;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindMethodException;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.MultipleAddMockMethodResultException;
-import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.*;
@@ -14,7 +14,9 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddMockMethodImpl extends AnAction {
@@ -61,6 +63,7 @@ public class AddMockMethodImpl extends AnAction {
       var anchor = findAnchor(cursorElement);
 
       writeExpression(anchor, expression);
+      writeImportStatements(method);
 
     } catch (CouldNotFindMethodException ex) {
       PsiHelpers.print(project, "Could not find method exception!");
@@ -72,6 +75,30 @@ public class AddMockMethodImpl extends AnAction {
       createContextMenu(e, ex);
     }
   }
+
+  private void writeImportStatements(PsiMethod method) throws ClassFromTypeNotFoundException {
+    var imports = List.of(PsiHelpers.getClassFromString(project, "org.mockito.Mockito"));
+
+    var set = Arrays.stream(method.getParameterList().getParameters())
+        .map(PsiParameter::getType)
+        .map(this::mapToString)
+        .map(x -> x.substring(0, x.length()))
+        .collect(Collectors.toSet());
+
+    var classFromString = PsiHelpers.getClassFromString(project, "org.mockito.ArgumentMatchers");
+
+    WriteCommandAction.runWriteCommandAction(project, () -> {
+      var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
+      if (importList != null) {
+        imports.forEach(x -> importList.add(factory.createImportStatement(x)));
+
+        for (var obj : set) {
+          importList.add(factory.createImportStaticStatement(classFromString, obj.substring(0, obj.length() - 2)));
+        }
+      }
+    });
+  }
+
 
   private String createParameters(PsiMethod method) {
     return Arrays.stream(method.getParameterList().getParameters())

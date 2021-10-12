@@ -1,6 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock;
 
-import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ExpressionListNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleIntroduceMockResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ExecutionTypeNotFoundException;

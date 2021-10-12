@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
+import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.entities.ExececutionExtractor;
 import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.extractors.ConstructorExtractorImpl;
@@ -65,6 +66,24 @@ public class IntroduceMock {
     var localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
 
     writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
+
+    writeImport(executionTarget);
+  }
+
+  private void writeImport(ExecutionTarget executionTarget) throws ClassFromTypeNotFoundException {
+    var mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
+    var mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
+
+    WriteCommandAction.runWriteCommandAction(project, () -> {
+      var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
+      if (importList != null) {
+        if (executionTarget == ExecutionTarget.Variable) {
+          importList.add(factory.createImportStatement(mockito));
+        } else if (executionTarget == ExecutionTarget.Field) {
+          importList.add(factory.createImportStatement(mock));
+        }
+      }
+    });
   }
 
   private PsiElement getAnchor(PsiExpressionList expressionList, ExececutionExtractor executionType, ExecutionTarget executionTarget) {

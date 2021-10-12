@@ -1,6 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl.extractors;
 
-import ask.me.again.shortcut.additions.introducemock.entities.PsiHelpers;
+import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.MultipleIntroduceMockResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundException;
