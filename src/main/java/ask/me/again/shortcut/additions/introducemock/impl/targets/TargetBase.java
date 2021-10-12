@@ -2,10 +2,7 @@ package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceTarget;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiParameter;
+import com.intellij.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +10,13 @@ import java.util.List;
 public abstract class TargetBase implements IntroduceTarget {
 
   protected final PsiElementFactory factory;
+  protected final Project project;
+  protected final PsiFile psiFile;
 
-  public TargetBase(Project project){
-    this.factory = JavaPsiFacade.getElementFactory(project);;
+  public TargetBase(PsiFile psiFile, Project project){
+    this.project = project;
+    this.psiFile = psiFile;
+    this.factory = JavaPsiFacade.getElementFactory(project);
   }
 
   public List<PsiElement> createMockExpressions(PsiParameter[] parameterList, List<Boolean> changeMap){

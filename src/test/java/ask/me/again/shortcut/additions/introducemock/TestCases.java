@@ -7,7 +7,7 @@ class TestCases {
   private TestClass testClass;
 
   void simpleIntroduceMock() {
-    testClass.asd(null, null, null);
+    testClass.exampleMethod(1, null, null);
   }
 
   void contextMenuVariable() {
@@ -19,7 +19,7 @@ class TestCases {
   }
 
   void staticClass() {
-    TestClass.testAsd(0, null);
+    TestClass.staticMethod(0, null);
   }
 
   void builderClass() {

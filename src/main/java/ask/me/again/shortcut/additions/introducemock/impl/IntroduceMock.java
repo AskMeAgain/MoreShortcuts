@@ -8,6 +8,7 @@ import ask.me.again.shortcut.additions.introducemock.impl.extractors.MethodExtra
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.FieldTargetImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.VariableTargetImpl;
+import com.google.errorprone.annotations.Var;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -40,8 +41,8 @@ public class IntroduceMock {
     selection.put(ExececutionExtractor.Constructor, new ConstructorExtractorImpl(project));
     selection.put(ExececutionExtractor.Method, new MethodExtractorImpl(project));
 
-    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(project));
-    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(project));
+    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(psiFile, project));
+    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project));
   }
 
   public void runIntroduceMock(PsiParameter[] override, ExecutionTarget executionTarget)
@@ -65,7 +66,7 @@ public class IntroduceMock {
 
     var localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
 
-    writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
+    targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
 
     writeImport(executionTarget);
   }
@@ -127,7 +128,7 @@ public class IntroduceMock {
     WriteCommandAction.runWriteCommandAction(project, () -> {
       for (int i = 0; i < expressions.length; i++) {
         if (changeMap.get(i)) {
-          expressions[i].replace(factory.createReferenceFromText(variableNames.get(i), null));
+          expressions[i].replace(factory.createExpressionFromText(variableNames.get(i), null));
         }
       }
     });
@@ -143,22 +144,5 @@ public class IntroduceMock {
     }
 
     throw new ExpressionListNotFoundException();
-  }
-
-  private void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> result, List<Boolean> changeMap) {
-    WriteCommandAction.runWriteCommandAction(project, () -> {
-      var whiteSpace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
-
-      for (int i = result.size() - 1; i >= 0; i--) {
-        if (changeMap.get(i)) {
-          var element = result.get(i);
-          element.addAfter(whiteSpace, null);
-          element.addBefore(whiteSpace, null);
-          targetAnchor.addAfter(element, null);
-        }
-      }
-
-      new ReformatCodeProcessor(psiFile, true).run();
-    });
   }
 }

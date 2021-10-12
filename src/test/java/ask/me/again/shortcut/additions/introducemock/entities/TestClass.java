@@ -3,15 +3,23 @@ package ask.me.again.shortcut.additions.introducemock.entities;
 
 public class TestClass {
 
-  public static void testAsd(int i, String isa) {
-
+  public static String staticMethod(Integer i, String isa) {
+    return null;
   }
 
   public TestClass() {
   }
 
-  public void asd(Integer a, String d, Integer e) {
+  public void exampleMethod(Integer a, String d, Integer e) {
 
+  }
+
+  public void exampleMethod(String a, String d, Integer e) {
+
+  }
+
+  public String exampleMethod(int a, String d, double e) {
+    return null;
   }
 
   public TestClass nested(Integer a, String b) {

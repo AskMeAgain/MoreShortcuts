@@ -1,5 +1,8 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
+import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
+import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
@@ -11,8 +14,8 @@ import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
 
 public class FieldTargetImpl extends TargetBase {
 
-  public FieldTargetImpl(Project project) {
-    super(project);
+  public FieldTargetImpl(PsiFile psiFile, Project project) {
+    super(psiFile, project);
   }
 
   public PsiElement createExpression(PsiParameter psiParameter) {
@@ -43,5 +46,18 @@ public class FieldTargetImpl extends TargetBase {
           return x.getName();
         })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void writeExpressionsToCode(PsiElement realAnchor, List<PsiElement> expressionList, List<Boolean> changeMap) {
+    WriteCommandAction.runWriteCommandAction(project, () -> {
+      for (int i = expressionList.size() - 1; i >= 0; i--) {
+        if (changeMap.get(i)) {
+          realAnchor.addAfter(expressionList.get(i), null);
+        }
+      }
+
+      new ReformatCodeProcessor(psiFile, false).run();
+    });
   }
 }

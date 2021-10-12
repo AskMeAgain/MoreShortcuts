@@ -6,11 +6,16 @@
 
     <description>
         <![CDATA[
-            This plugin introduces a new shortcut: Introduce Mocks.
+            This plugin introduces new Intellij Shortucts and aims to speed up development of tests:
+             * Introduce Mocks To Variable
+             * Introduce Mocks To Field
+             * Add Mock Method
         ]]>
     </description>
     <change-notes>
         <![CDATA[
+            * More Bugfixes
+            * Added Add Mock Method Action
         ]]>
     </change-notes>
 

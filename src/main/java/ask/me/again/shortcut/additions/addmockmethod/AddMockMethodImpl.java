@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jgoodies.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -168,9 +169,18 @@ public class AddMockMethodImpl extends AnAction {
   private PsiMethod findMethod(PsiElement element) throws CouldNotFindMethodException, ClassFromTypeNotFoundException, MultipleAddMockMethodResultException {
 
     var parent = PsiTreeUtil.getParentOfType(element, PsiReferenceExpression.class);
+    var typeString = "";
     if (parent != null) {
-      var type = parent.getType().getCanonicalText();
-      var psiClass = PsiHelpers.getClassFromString(project, type);
+      typeString = parent.getType().getCanonicalText();
+    }
+
+    var localVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
+    if(localVar != null){
+      typeString = localVar.getType().getCanonicalText();
+    }
+
+    if(!Strings.isBlank(typeString)){
+    var psiClass = PsiHelpers.getClassFromString(project, typeString);
 
       var resultList = Arrays.stream(psiClass.getAllMethods())
           .filter(x -> x.getReturnType() != null)
