@@ -1,9 +1,9 @@
 package ask.me.again.shortcut.additions.addmockmethod;
 
+import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindAnchorException;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindMethodException;
 import ask.me.again.shortcut.additions.addmockmethod.exceptions.MultipleAddMockMethodResultException;
-import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.*;
@@ -15,7 +15,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jgoodies.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -186,6 +185,7 @@ public class AddMockMethodImpl extends AnAction {
           .filter(x -> x.getReturnType() != null)
           .filter(x -> !x.getReturnType().equalsToText("void"))
           .filter(x -> !x.hasModifierProperty(PsiModifier.PRIVATE))
+          .filter(x -> !x.hasModifierProperty(PsiModifier.STATIC))
           .collect(Collectors.toList());
 
       if (resultList.size() == 1) {
