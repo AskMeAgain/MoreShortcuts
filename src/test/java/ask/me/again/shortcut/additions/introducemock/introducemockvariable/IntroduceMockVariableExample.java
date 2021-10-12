@@ -6,9 +6,7 @@ import org.mockito.Mockito;
 class IntroduceMockVariableExample {
 
   void example() {
-    var string = Mockito.mock(String.class);
-    var integer = Mockito.mock(Integer.class);
-    var result = TestClass.staticMethod(integer, string);
+    var result = TestClass.staticMethod(null, null);
   }
 
 }

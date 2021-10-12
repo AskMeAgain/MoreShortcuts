@@ -30,6 +30,11 @@ public class MethodExtractorImpl extends ExtractorBase {
       if (result2 != null) {
         return true;
       }
+
+      var result3 = PsiTreeUtil.getChildOfType(methodReference, PsiNewExpression.class);
+      if (result3 != null) {
+        return true;
+      }
     }
     return false;
   }
@@ -63,6 +68,11 @@ public class MethodExtractorImpl extends ExtractorBase {
     var result2 = PsiTreeUtil.getChildOfType(methodReference, PsiMethodCallExpression.class);
     if (result2 != null) {
       return result2.getType().getCanonicalText();
+    }
+
+    var result3 = PsiTreeUtil.getChildOfType(methodReference, PsiNewExpression.class);
+    if (result3 != null) {
+      return result3.getType().getCanonicalText();
     }
 
     throw new PsiTypeNotFoundException();

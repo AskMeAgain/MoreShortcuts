@@ -3,7 +3,7 @@ package ask.me.again.shortcut.additions.introducemock.entities;
 
 public class TestClass {
 
-  public static String staticMethod(Integer i, String isa) {
+  public static String staticMethod(int i, String isa) {
     return null;
   }
 

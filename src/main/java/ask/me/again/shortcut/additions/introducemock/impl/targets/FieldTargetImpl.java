@@ -1,10 +1,13 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
-import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiParameter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,16 +39,22 @@ public class FieldTargetImpl extends TargetBase {
           if (x == null) {
             return null;
           }
-          if (!shortDict.containsKey(x.getName())) {
-            shortDict.put(x.getName(), 1);
+          var name = getNameSave(x);
+          if (!shortDict.containsKey(name)) {
+            shortDict.put(name, 1);
           } else {
-            var integer = shortDict.get(x.getName());
-            shortDict.put(x.getName(), integer + 1);
-            x.setName(x.getName() + integer);
+            var integer = shortDict.get(name);
+            shortDict.put(name, integer + 1);
+            x.setName(name + integer);
           }
-          return x.getName();
+          return name;
         })
         .collect(Collectors.toList());
+  }
+
+  @NotNull
+  private String getNameSave(PsiField name) {
+    return name.getName();
   }
 
   @Override
