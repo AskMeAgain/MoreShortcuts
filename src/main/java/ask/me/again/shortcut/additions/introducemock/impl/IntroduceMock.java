@@ -2,14 +2,12 @@ package ask.me.again.shortcut.additions.introducemock.impl;
 
 import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.entities.ExececutionExtractor;
+import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.extractors.ConstructorExtractorImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.extractors.MethodExtractorImpl;
-import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.FieldTargetImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.VariableTargetImpl;
-import com.google.errorprone.annotations.Var;
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -17,8 +15,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import lombok.SneakyThrows;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class IntroduceMock {
@@ -30,13 +32,28 @@ public class IntroduceMock {
 
   private final Map<ExececutionExtractor, IntroduceExtractors> selection = new HashMap<>();
   private final Map<ExecutionTarget, IntroduceTarget> targetMap = new HashMap<>();
+  private PsiExpressionList expressionList;
+  private List<String> variableNames;
+  private List<Boolean> changeMap;
 
-  public IntroduceMock(AnActionEvent e) {
+  private final ExecutionTarget executionTarget;
+  private PsiElement localVarAnchor;
+  private List<PsiElement> mockExpressions;
+  private PsiExpression[] expressions;
+  private PsiClass mockito;
+  private PsiClass mock;
+
+  @SneakyThrows
+  public IntroduceMock(AnActionEvent e, ExecutionTarget executionTarget) {
+    this.executionTarget = executionTarget;
     project = e.getProject();
     editor = e.getData(CommonDataKeys.EDITOR);
     psiFile = e.getData(CommonDataKeys.PSI_FILE);
 
     factory = JavaPsiFacade.getElementFactory(project);
+
+    mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
+    mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
 
     selection.put(ExececutionExtractor.Constructor, new ConstructorExtractorImpl(project));
     selection.put(ExececutionExtractor.Method, new MethodExtractorImpl(project));
@@ -45,36 +62,36 @@ public class IntroduceMock {
     targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project));
   }
 
-  public void runIntroduceMock(PsiParameter[] override, ExecutionTarget executionTarget)
+  public void runIntroduceMock(PsiParameter[] override)
       throws MultipleIntroduceMockResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException,
       PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
 
-    var expressionList = findPsiExpressionList();
+    expressionList = findPsiExpressionList();
+    expressions = expressionList.getExpressions();
 
     var executionType = findExecutionType(expressionList);
 
     var parameters = override.length == 0 ? getPsiParameters(expressionList, executionType) : override;
 
-    var changeMap = Arrays.stream(expressionList.getExpressionTypes())
+    changeMap = Arrays.stream(expressionList.getExpressionTypes())
         .map(x -> x.equalsToText("null"))
         .collect(Collectors.toList());
 
-    var mockExpressions = targetMap.get(executionTarget).createMockExpressions(parameters, changeMap);
+    mockExpressions = targetMap.get(executionTarget).createMockExpressions(parameters, changeMap);
 
-    var variableNames = targetMap.get(executionTarget).extractVariableNames(mockExpressions);
-    replaceNullValues(expressionList, variableNames, changeMap);
+    variableNames = targetMap.get(executionTarget).extractVariableNames(mockExpressions);
 
-    var localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
+    localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
 
+  }
+
+  public void doWriteStuff() throws ClassFromTypeNotFoundException {
     targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
-
+    replaceNullValues(expressionList, variableNames, changeMap);
     writeImport(executionTarget);
   }
 
   private void writeImport(ExecutionTarget executionTarget) throws ClassFromTypeNotFoundException {
-    var mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
-    var mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
-
     WriteCommandAction.runWriteCommandAction(project, () -> {
       var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
       if (importList != null) {
@@ -122,8 +139,6 @@ public class IntroduceMock {
   }
 
   private void replaceNullValues(PsiExpressionList expressionList, List<String> variableNames, List<Boolean> changeMap) {
-
-    var expressions = expressionList.getExpressions();
 
     WriteCommandAction.runWriteCommandAction(project, () -> {
       for (int i = 0; i < expressions.length; i++) {
