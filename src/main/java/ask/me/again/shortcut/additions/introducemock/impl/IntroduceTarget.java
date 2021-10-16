@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.impl;
 
-import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParameter;
 

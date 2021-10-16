@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
-import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;

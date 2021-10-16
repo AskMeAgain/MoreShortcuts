@@ -9,17 +9,16 @@ import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.psi.*;
+import lombok.NoArgsConstructor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+@NoArgsConstructor
 public class IntroduceMockImpl extends AnAction {
 
   private ExecutionTarget executionTarget;
   private PsiParameter[] override = new PsiParameter[0];
-
-  private IntroduceMockImpl() {
-  }
 
   protected IntroduceMockImpl(ExecutionTarget executionTarget) {
     this.executionTarget = executionTarget;
@@ -44,7 +43,6 @@ public class IntroduceMockImpl extends AnAction {
     try {
       new IntroduceMock(actionEvent).runIntroduceMock(override, executionTarget);
     } catch (MultipleIntroduceMockResultException multipleResultException) {
-
       createContextMenu(actionEvent, multipleResultException);
     } catch (ExecutionTypeNotFoundException etnfe) {
       PsiHelpers.print(actionEvent.getProject(), "Could not get the refactoring type out of the current block :(");
