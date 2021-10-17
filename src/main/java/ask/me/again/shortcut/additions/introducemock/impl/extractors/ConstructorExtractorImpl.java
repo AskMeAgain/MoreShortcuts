@@ -20,14 +20,15 @@ public class ConstructorExtractorImpl extends ExtractorBase {
   public boolean isType(PsiExpressionList expressionList) {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
     if (newExpression != null) {
-      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-      if (localVar != null) {
-        return true;
-      }
-      var assignmentExpression = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
-      if (assignmentExpression != null) {
-        return true;
-      }
+//      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
+//      if (localVar != null) {
+//        return true;
+//      }
+//      var assignmentExpression = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
+//      if (assignmentExpression != null) {
+//        return true;
+//      }
+      return true;
     }
     return false;
   }
@@ -35,7 +36,7 @@ public class ConstructorExtractorImpl extends ExtractorBase {
   @Override
   public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleIntroduceMockResultException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
-    var classString = getClassString(newExpression);
+    var classString = newExpression.getType().getCanonicalText();
     var psiClass = PsiHelpers.getClassFromString(project, classString);
 
     var result = Arrays.stream(psiClass.getConstructors())
@@ -51,20 +52,6 @@ public class ConstructorExtractorImpl extends ExtractorBase {
     }
   }
 
-  private String getClassString(PsiNewExpression newExpression) throws ClassFromExpressionNotFoundException {
-    var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-    if (localVar != null) {
-      return localVar.getType().getCanonicalText();
-    }
-
-    var assignment = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
-    if (assignment != null) {
-      return assignment.getType().getCanonicalText();
-    }
-
-    throw new ClassFromExpressionNotFoundException("Could not extract class");
-  }
-
   @Override
   public PsiElement findAnchor(PsiExpressionList expressionList) {
     PsiElement element = expressionList;
@@ -78,6 +65,12 @@ public class ConstructorExtractorImpl extends ExtractorBase {
       if (assignmentExpression != null) {
         return assignmentExpression;
       }
+
+      var expressionStatement = PsiTreeUtil.getParentOfType(element, PsiExpressionStatement.class);
+      if (expressionStatement != null) {
+        return expressionStatement;
+      }
+
       element = element.getParent();
     }
     throw new RuntimeException("Could not find parent");

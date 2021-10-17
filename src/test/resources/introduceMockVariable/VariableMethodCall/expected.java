@@ -6,8 +6,8 @@ import org.mockito.Mockito;
 class IntroduceMockVariableExample {
     void example() {
         var testClass = new TestClass();
-        var string = Mockito.mock(String.class);
         var integer = Mockito.mock(Integer.class);
+        var string = Mockito.mock(String.class);
         var result = testClass.nested(integer, string);
     }
 }

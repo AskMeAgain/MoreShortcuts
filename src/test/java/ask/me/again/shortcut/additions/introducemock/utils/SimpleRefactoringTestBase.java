@@ -27,8 +27,8 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
       myFixture.configureByFiles(
           String.format("/src/test/resources/%s/%s/input.java", testClassName, caseName),
           "/src/test/java" + MODULE + "/entities/TestClass.java",
-          "/src/test/resources/mockito.java",
-          "/src/test/resources/mock.java"
+          "/src/test/resources/defaults/mockito.java",
+          "/src/test/resources/defaults/mock.java"
       );
 
       myFixture.performEditorAction(getAction());

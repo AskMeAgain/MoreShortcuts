@@ -27,7 +27,10 @@ public class IntroduceMockVariableTest extends SimpleRefactoringTestBase {
         "BuilderVariableMethodCall",
         "BuilderVariableNoResultMethodCall",
         "BuilderFieldNoResultMethodCall",
-        "BuilderFieldMethodCall"
+        "BuilderFieldMethodCall",
+        "ConstructorCall",
+        "SameParameterName",
+        "NoResultConstructorCall"
     );
   }
 }

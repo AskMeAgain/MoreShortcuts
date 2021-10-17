@@ -6,6 +6,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
@@ -24,8 +26,16 @@ public class VariableTargetImpl extends TargetBase {
     return factory.createVariableDeclarationStatement(decapitalizeString(presentableText), varType, equalsCall);
   }
 
+  @Override
   public List<String> extractVariableNames(List<PsiElement> result) {
     var shortDict = new HashMap<String, Integer>();
+
+    //first run to check which variables are duplicate:
+    var duplicateMap = result.stream()
+        .map(x -> PsiTreeUtil.getChildOfType(x, PsiLocalVariable.class))
+        .filter(Objects::nonNull)
+        .map(PsiLocalVariable::getName)
+        .collect(Collectors.toMap(Function.identity(), x -> 1, Integer::sum));
 
     return result.stream()
         .map(x -> PsiTreeUtil.getChildOfType(x, PsiLocalVariable.class))
@@ -33,14 +43,15 @@ public class VariableTargetImpl extends TargetBase {
           if (x == null) {
             return null;
           }
-          if (!shortDict.containsKey(x.getName())) {
-            shortDict.put(x.getName(), 1);
-          } else {
-            var integer = shortDict.get(x.getName());
-            shortDict.put(x.getName(), integer + 1);
-            x.setName(x.getName() + integer);
+          var name = x.getName();
+          if(duplicateMap.get(name) > 1){
+            var index = shortDict.getOrDefault(name, 1);
+            x.setName(name + index);
+            shortDict.put(name, index + 1);
+            return name + index;
+          }else{
+            return name;
           }
-          return x.getName();
         })
         .collect(Collectors.toList());
   }
@@ -49,7 +60,7 @@ public class VariableTargetImpl extends TargetBase {
   public void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> mockExpressions, List<Boolean> changeMap) {
     var realAnchor = targetAnchor.getParent();
 
-    for (int i = mockExpressions.size() - 1; i >= 0; i--) {
+    for (int i = 0; i < mockExpressions.size(); i++) {
       if (changeMap.get(i)) {
         realAnchor.addBefore(mockExpressions.get(i), targetAnchor);
       }

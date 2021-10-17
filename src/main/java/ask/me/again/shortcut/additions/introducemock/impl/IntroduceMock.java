@@ -136,13 +136,7 @@ public class IntroduceMock {
   private void replaceNullValues(List<String> variableNames, List<Boolean> changeMap, PsiExpression[] expressions) {
     for (int i = 0; i < expressions.length; i++) {
       if (changeMap.get(i)) {
-        var expressionFromText = factory.createExpressionFromText(variableNames.get(i), null);
-
-        var clazz = factory.createClass("Integer");
-        clazz.setName(variableNames.get(i));
-        var expression = factory.createReferenceExpression(clazz);
-
-        expressionList.getExpressions()[i].replace(expression);
+        expressions[i].replace(factory.createExpressionFromText(variableNames.get(i), null));
       }
     }
   }

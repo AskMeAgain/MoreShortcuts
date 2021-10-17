@@ -11,7 +11,14 @@ public class TestClass {
     return null;
   }
 
+  public static String sameParameterName(String i, String isa) {
+    return null;
+  }
+
   public TestClass() {
+  }
+
+  public TestClass(String a, String b) {
   }
 
   public void exampleMethod(Integer a, String d, Integer e) {

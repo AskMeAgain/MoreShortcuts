@@ -13,7 +13,7 @@ public class IntroduceMockFieldTest extends SimpleRefactoringTestBase {
   }
 
   @TestFactory
-  public Iterable<DynamicTest> introduceMockField(TestInfo testInfo) throws Exception {
+  public Iterable<DynamicTest> introduceMockField(TestInfo testInfo) {
     return dynamicTestsWithIterable(testInfo,
         "ConstructorMethodCall",
         "VariableMethodCall",
@@ -27,7 +27,10 @@ public class IntroduceMockFieldTest extends SimpleRefactoringTestBase {
         "BuilderVariableMethodCall",
         "BuilderVariableNoResultMethodCall",
         "BuilderFieldNoResultMethodCall",
-        "BuilderFieldMethodCall"
+        "BuilderFieldMethodCall",
+        "ConstructorCall",
+        "NoResultConstructorCall",
+        "SameParameterName"
     );
   }
 }
