@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 
 public class IntroduceMock {
 
-  private final Project project;
-  private final Editor editor;
-  private final PsiElementFactory factory;
-  private final PsiFile psiFile;
+  private Project project;
+  private Editor editor;
+  private PsiElementFactory factory;
+  private PsiFile psiFile;
 
   private final Map<ExececutionExtractor, IntroduceExtractors> selection = new HashMap<>();
   private final Map<ExecutionTarget, IntroduceTarget> targetMap = new HashMap<>();
@@ -43,28 +43,19 @@ public class IntroduceMock {
   private PsiClass mockito;
   private PsiClass mock;
 
+  private final AnActionEvent actionEvent;
+
   @SneakyThrows
   public IntroduceMock(AnActionEvent e, ExecutionTarget executionTarget) {
     this.executionTarget = executionTarget;
-    project = e.getProject();
-    editor = e.getData(CommonDataKeys.EDITOR);
-    psiFile = e.getData(CommonDataKeys.PSI_FILE);
-
-    factory = JavaPsiFacade.getElementFactory(project);
-
-    mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
-    mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
-
-    selection.put(ExececutionExtractor.Constructor, new ConstructorExtractorImpl(project));
-    selection.put(ExececutionExtractor.Method, new MethodExtractorImpl(project));
-
-    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(psiFile, project));
-    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project));
+    this.actionEvent = e;
   }
 
   public void runIntroduceMock(PsiParameter[] override)
       throws MultipleIntroduceMockResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException,
       PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
+
+    setup();
 
     expressionList = findPsiExpressionList();
     expressions = expressionList.getExpressions();
@@ -82,10 +73,14 @@ public class IntroduceMock {
     variableNames = targetMap.get(executionTarget).extractVariableNames(mockExpressions);
 
     localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
-
   }
 
   public void doWriteStuff() throws ClassFromTypeNotFoundException {
+
+    if(mockExpressions == null || mockExpressions.isEmpty()){
+      return;
+    }
+
     targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
     replaceNullValues(variableNames, changeMap);
     writeImport(executionTarget);
@@ -139,14 +134,11 @@ public class IntroduceMock {
   }
 
   private void replaceNullValues(List<String> variableNames, List<Boolean> changeMap) {
-
-    WriteCommandAction.runWriteCommandAction(project, () -> {
-      for (int i = 0; i < expressions.length; i++) {
-        if (changeMap.get(i)) {
-          expressions[i].replace(factory.createExpressionFromText(variableNames.get(i), null));
-        }
+    for (int i = 0; i < expressions.length; i++) {
+      if (changeMap.get(i)) {
+        expressions[i].replace(factory.createExpressionFromText(variableNames.get(i), null));
       }
-    });
+    }
   }
 
   private PsiExpressionList findPsiExpressionList() throws ExpressionListNotFoundException {
@@ -159,5 +151,22 @@ public class IntroduceMock {
     }
 
     throw new ExpressionListNotFoundException();
+  }
+
+  private void setup() throws ClassFromTypeNotFoundException {
+    project = actionEvent.getProject();
+    editor = actionEvent.getData(CommonDataKeys.EDITOR);
+    psiFile = actionEvent.getData(CommonDataKeys.PSI_FILE);
+
+    factory = JavaPsiFacade.getElementFactory(project);
+
+    mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
+    mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
+
+    selection.put(ExececutionExtractor.Constructor, new ConstructorExtractorImpl(project));
+    selection.put(ExececutionExtractor.Method, new MethodExtractorImpl(project));
+
+    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(psiFile, project));
+    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project));
   }
 }

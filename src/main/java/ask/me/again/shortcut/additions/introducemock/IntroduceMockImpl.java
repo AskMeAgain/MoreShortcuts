@@ -6,12 +6,12 @@ import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiParameter;
 import lombok.NoArgsConstructor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.atomic.AtomicReference;
 
 @NoArgsConstructor
 public class IntroduceMockImpl extends AnAction {
@@ -39,32 +39,35 @@ public class IntroduceMockImpl extends AnAction {
   @Override
   public void actionPerformed(AnActionEvent actionEvent) {
 
-    AtomicReference<IntroduceMock> introduceMock = new AtomicReference<>();
+    var project = actionEvent.getProject();
+    var introduceMock = new IntroduceMock(actionEvent, executionTarget);
+
     ApplicationManager.getApplication().runReadAction(() -> {
       try {
-        introduceMock.set(new IntroduceMock(actionEvent, executionTarget));
-        introduceMock.get().runIntroduceMock(override);
+        introduceMock.runIntroduceMock(override);
       } catch (MultipleIntroduceMockResultException multipleResultException) {
         createContextMenu(actionEvent, multipleResultException);
-      } catch (ExecutionTypeNotFoundException etnfe) {
-        PsiHelpers.print(actionEvent.getProject(), "Could not get the refactoring type out of the current block :(");
-      } catch (PsiTypeNotFoundException ptnfe) {
-        PsiHelpers.print(actionEvent.getProject(), "Could not find psi type :(");
       } catch (ExpressionListNotFoundException elnfe) {
-        PsiHelpers.print(actionEvent.getProject(), "Could not find expression list :(");
+        PsiHelpers.print(project, "Could not find expression list :(");
+      } catch (ExecutionTypeNotFoundException etnfe) {
+        PsiHelpers.print(project, "Could not get the refactoring type out of the current block :(");
+      } catch (PsiTypeNotFoundException ptnfe) {
+        PsiHelpers.print(project, "Could not find psi type :(");
       } catch (Exception exception) {
         var sw = new StringWriter();
         var pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
-        PsiHelpers.print(actionEvent.getProject(), "Message: " + exception.getMessage() + "\nStack trace: " + sw);
+        PsiHelpers.print(project, "Message: " + exception.getMessage() + "\nStack trace: " + sw);
       }
     });
 
-    try {
-      introduceMock.get().doWriteStuff();
-    } catch (ClassFromTypeNotFoundException e) {
-      PsiHelpers.print(actionEvent.getProject(), "ClassFromTypeNotFoundException :(");
-    }
+    WriteCommandAction.runWriteCommandAction(project, () -> {
+      try {
+        introduceMock.doWriteStuff();
+      } catch (ClassFromTypeNotFoundException e) {
+        PsiHelpers.print(project, "ClassFromTypeNotFoundException :(");
+      }
+    });
   }
 
   private void createContextMenu(AnActionEvent actionEvent, MultipleIntroduceMockResultException multipleResultException) {
