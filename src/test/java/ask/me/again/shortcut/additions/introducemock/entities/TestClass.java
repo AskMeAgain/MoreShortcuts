@@ -7,6 +7,10 @@ public class TestClass {
     return null;
   }
 
+  public static String staticMethod2(Integer i, String isa) {
+    return null;
+  }
+
   public TestClass() {
   }
 

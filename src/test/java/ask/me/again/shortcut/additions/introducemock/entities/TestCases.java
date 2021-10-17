@@ -1,6 +1,4 @@
-package ask.me.again.shortcut.additions.introducemock;
-
-import ask.me.again.shortcut.additions.introducemock.entities.TestClass;
+package ask.me.again.shortcut.additions.introducemock.entities;
 
 class TestCases {
 
