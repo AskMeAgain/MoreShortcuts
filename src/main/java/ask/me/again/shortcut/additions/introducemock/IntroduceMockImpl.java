@@ -4,14 +4,21 @@ import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.PsiParameter;
 import lombok.NoArgsConstructor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 
 @NoArgsConstructor
 public class IntroduceMockImpl extends AnAction {
@@ -44,7 +51,7 @@ public class IntroduceMockImpl extends AnAction {
 
     ApplicationManager.getApplication().runReadAction(() -> {
       try {
-        introduceMock.runIntroduceMock(override);
+        introduceMock.analyze(override);
       } catch (MultipleIntroduceMockResultException multipleResultException) {
         createContextMenu(actionEvent, multipleResultException);
       } catch (ExpressionListNotFoundException elnfe) {
@@ -63,7 +70,8 @@ public class IntroduceMockImpl extends AnAction {
 
     WriteCommandAction.runWriteCommandAction(project, () -> {
       try {
-        introduceMock.doWriteStuff();
+        introduceMock.refactorCode();
+
       } catch (ClassFromTypeNotFoundException e) {
         PsiHelpers.print(project, "ClassFromTypeNotFoundException :(");
       }
@@ -73,22 +81,15 @@ public class IntroduceMockImpl extends AnAction {
   private void createContextMenu(AnActionEvent actionEvent, MultipleIntroduceMockResultException multipleResultException) {
     var actionGroup = new DefaultActionGroup();
 
-    multipleResultException.getPsiParametersList().forEach(parameterOverride -> {
-      actionGroup.add(new IntroduceMockImpl(getActionName(parameterOverride), parameterOverride, executionTarget));
-    });
-
-    var menu = ActionManager.getInstance().createActionPopupMenu("Filter", actionGroup);
+    multipleResultException.getPsiParametersList()
+        .forEach(parameterOverride -> actionGroup.add(new IntroduceMockImpl(getActionName(parameterOverride), parameterOverride, executionTarget)));
 
     var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
-    var contentComponent = editor.getContentComponent();
 
-    //var componentPopupBuilder = JBPopupFactory.getInstance().createComponentPopupBuilder(menu.getComponent(), contentComponent);
+    var popup = JBPopupFactory.getInstance()
+        .createActionGroupPopup(null, actionGroup, actionEvent.getDataContext(), SPEEDSEARCH, false);
 
-    //JBPopup popup = componentPopupBuilder.createPopup();
-    //popup.showInBestPositionFor(editor);
-
-    var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
-    menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
+    popup.showInBestPositionFor(editor);
   }
 
   private String getActionName(PsiParameter[] psiParameters) {

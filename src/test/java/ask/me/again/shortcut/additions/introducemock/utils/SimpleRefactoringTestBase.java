@@ -1,6 +1,8 @@
 package ask.me.again.shortcut.additions.introducemock.utils;
 
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestInfo;
 
@@ -11,9 +13,7 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
 
   protected final static String MODULE = "/ask/me/again/shortcut/additions/introducemock";
 
-  public Iterable<DynamicTest> dynamicTestsWithIterable(TestInfo testInfo, String... testcases) throws Exception {
-    setUp();
-
+  public Iterable<DynamicTest> dynamicTestsWithIterable(TestInfo testInfo, String... testcases) {
     var testName = testInfo.getTestMethod().get().getName();
 
     return Arrays.stream(testcases)
@@ -38,8 +38,18 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
 
   public abstract String getAction();
 
+  @BeforeEach
+  void setupTest() throws Exception {
+    setUp();
+  }
+
+  @AfterEach
+  void teardownTest() throws Exception {
+    tearDown();
+  }
+
   @Override
-  public String getTestDataPath() {
+  public final String getTestDataPath() {
     return System.getProperty("user.dir");
   }
 }

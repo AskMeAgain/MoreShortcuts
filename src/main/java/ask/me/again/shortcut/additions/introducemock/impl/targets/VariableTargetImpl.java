@@ -1,7 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -32,7 +30,7 @@ public class VariableTargetImpl extends TargetBase {
     return result.stream()
         .map(x -> PsiTreeUtil.getChildOfType(x, PsiLocalVariable.class))
         .map(x -> {
-          if(x == null){
+          if (x == null) {
             return null;
           }
           if (!shortDict.containsKey(x.getName())) {
@@ -48,18 +46,14 @@ public class VariableTargetImpl extends TargetBase {
   }
 
   @Override
-  public void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> expressionList, List<Boolean> changeMap) {
-    WriteCommandAction.runWriteCommandAction(project, () -> {
-        var realAnchor = targetAnchor.getParent();
+  public void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> mockExpressions, List<Boolean> changeMap) {
+    var realAnchor = targetAnchor.getParent();
 
-      for (int i = expressionList.size() - 1; i >= 0; i--) {
-        if (changeMap.get(i)) {
-          realAnchor.addBefore(expressionList.get(i), targetAnchor);
-        }
+    for (int i = mockExpressions.size() - 1; i >= 0; i--) {
+      if (changeMap.get(i)) {
+        realAnchor.addBefore(mockExpressions.get(i), targetAnchor);
       }
-
-      new ReformatCodeProcessor(psiFile, false).run();
-    });
+    }
   }
 
 }

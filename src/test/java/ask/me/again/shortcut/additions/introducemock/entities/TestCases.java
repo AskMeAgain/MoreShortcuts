@@ -1,5 +1,7 @@
 package ask.me.again.shortcut.additions.introducemock.entities;
 
+import org.mockito.Mockito;
+
 class TestCases {
 
   private TestClass testClass;
@@ -21,11 +23,13 @@ class TestCases {
   }
 
   void builderClass() {
+    var string = Mockito.mock(String.class);
+    var integer = Mockito.mock(Integer.class);
     testClass.nested(1, "")
         .nested(1, "")
         .nested(1, "")
         .nested(1, "")
-        .nested(null, null);
+        .nested(integer, string);
   }
 
   void builderClassAssignment() {

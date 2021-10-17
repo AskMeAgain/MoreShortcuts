@@ -13,6 +13,6 @@ public interface IntroduceTarget {
 
   List<String> extractVariableNames(List<PsiElement> result);
 
-  void writeExpressionsToCode(PsiElement anchor, List<PsiElement> expressionList, List<Boolean> changeMap);
+  void writeExpressionsToCode(PsiElement anchor, List<PsiElement> mockExpressions, List<Boolean> changeMap);
 
 }

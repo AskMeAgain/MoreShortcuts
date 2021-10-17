@@ -1,7 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -58,15 +57,13 @@ public class FieldTargetImpl extends TargetBase {
   }
 
   @Override
-  public void writeExpressionsToCode(PsiElement realAnchor, List<PsiElement> expressionList, List<Boolean> changeMap) {
-    WriteCommandAction.runWriteCommandAction(project, () -> {
-      for (int i = expressionList.size() - 1; i >= 0; i--) {
+  public void writeExpressionsToCode(PsiElement realAnchor, List<PsiElement> mockExpressions, List<Boolean> changeMap) {
+      for (int i = mockExpressions.size() - 1; i >= 0; i--) {
         if (changeMap.get(i)) {
-          realAnchor.addAfter(expressionList.get(i), null);
+          realAnchor.addAfter(mockExpressions.get(i), null);
         }
       }
 
       new ReformatCodeProcessor(psiFile, false).run();
-    });
   }
 }

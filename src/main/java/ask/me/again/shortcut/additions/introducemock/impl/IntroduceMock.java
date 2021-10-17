@@ -8,9 +8,9 @@ import ask.me.again.shortcut.additions.introducemock.impl.extractors.Constructor
 import ask.me.again.shortcut.additions.introducemock.impl.extractors.MethodExtractorImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.FieldTargetImpl;
 import ask.me.again.shortcut.additions.introducemock.impl.targets.VariableTargetImpl;
+import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -32,7 +32,6 @@ public class IntroduceMock {
 
   private final Map<ExececutionExtractor, IntroduceExtractors> selection = new HashMap<>();
   private final Map<ExecutionTarget, IntroduceTarget> targetMap = new HashMap<>();
-  private PsiExpressionList expressionList;
   private List<String> variableNames;
   private List<Boolean> changeMap;
 
@@ -44,6 +43,7 @@ public class IntroduceMock {
   private PsiClass mock;
 
   private final AnActionEvent actionEvent;
+  private PsiExpressionList expressionList;
 
   @SneakyThrows
   public IntroduceMock(AnActionEvent e, ExecutionTarget executionTarget) {
@@ -51,7 +51,7 @@ public class IntroduceMock {
     this.actionEvent = e;
   }
 
-  public void runIntroduceMock(PsiParameter[] override)
+  public void analyze(PsiParameter[] override)
       throws MultipleIntroduceMockResultException, ExecutionTypeNotFoundException, ExpressionListNotFoundException,
       PsiTypeNotFoundException, ClassFromTypeNotFoundException, ClassFromExpressionNotFoundException {
 
@@ -75,28 +75,28 @@ public class IntroduceMock {
     localVarAnchor = getAnchor(expressionList, executionType, executionTarget);
   }
 
-  public void doWriteStuff() throws ClassFromTypeNotFoundException {
+  public void refactorCode() throws ClassFromTypeNotFoundException {
 
-    if(mockExpressions == null || mockExpressions.isEmpty()){
+    if (mockExpressions == null || mockExpressions.isEmpty()) {
       return;
     }
 
     targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
-    replaceNullValues(variableNames, changeMap);
+    replaceNullValues(variableNames, changeMap, expressions);
     writeImport(executionTarget);
+
+    new ReformatCodeProcessor(psiFile, false).run();
   }
 
   private void writeImport(ExecutionTarget executionTarget) {
-    WriteCommandAction.runWriteCommandAction(project, () -> {
-      var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
-      if (importList != null) {
-        if (executionTarget == ExecutionTarget.Variable) {
-          importList.add(factory.createImportStatement(mockito));
-        } else if (executionTarget == ExecutionTarget.Field) {
-          importList.add(factory.createImportStatement(mock));
-        }
+    var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
+    if (importList != null) {
+      if (executionTarget == ExecutionTarget.Variable) {
+        importList.add(factory.createImportStatement(mockito));
+      } else if (executionTarget == ExecutionTarget.Field) {
+        importList.add(factory.createImportStatement(mock));
       }
-    });
+    }
   }
 
   private PsiElement getAnchor(PsiExpressionList expressionList, ExececutionExtractor executionType, ExecutionTarget executionTarget) {
@@ -133,10 +133,16 @@ public class IntroduceMock {
         .orElseThrow(ExecutionTypeNotFoundException::new);
   }
 
-  private void replaceNullValues(List<String> variableNames, List<Boolean> changeMap) {
+  private void replaceNullValues(List<String> variableNames, List<Boolean> changeMap, PsiExpression[] expressions) {
     for (int i = 0; i < expressions.length; i++) {
       if (changeMap.get(i)) {
-        expressions[i].replace(factory.createExpressionFromText(variableNames.get(i), null));
+        var expressionFromText = factory.createExpressionFromText(variableNames.get(i), null);
+
+        var clazz = factory.createClass("Integer");
+        clazz.setName(variableNames.get(i));
+        var expression = factory.createReferenceExpression(clazz);
+
+        expressionList.getExpressions()[i].replace(expression);
       }
     }
   }
