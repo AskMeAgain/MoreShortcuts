@@ -1,5 +1,7 @@
 package ask.me.again.shortcut.additions.introducemock.entities;
 
+import org.mockito.Mockito;
+
 class TestCases {
 
   private TestClass testClass;
@@ -8,12 +10,13 @@ class TestCases {
     testClass.exampleMethod(1, null, null);
   }
 
-  void contextMenuVariable() {
-    var testClass1 = new TestClass(1, null, null);
+  void context() {
+    var string = Mockito.mock(String.class);
+    testClass.context(1, string);
   }
 
-  void contextMenuField() {
-    testClass = new TestClass(1, null, null);
+  void contextMenuVariable() {
+    var testClass1 = new TestClass(1, null, null);
   }
 
   void staticClass() {

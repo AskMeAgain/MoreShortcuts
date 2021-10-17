@@ -79,6 +79,11 @@ public class IntroduceMockImpl extends AnAction {
     var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
     var contentComponent = editor.getContentComponent();
 
+    //var componentPopupBuilder = JBPopupFactory.getInstance().createComponentPopupBuilder(menu.getComponent(), contentComponent);
+
+    //JBPopup popup = componentPopupBuilder.createPopup();
+    //popup.showInBestPositionFor(editor);
+
     var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
     menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
   }
