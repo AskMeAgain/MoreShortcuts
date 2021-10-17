@@ -30,6 +30,14 @@ public class TestClass {
     return this;
   }
 
+  public TestClass context(Integer a, String b) {
+    return this;
+  }
+
+  public TestClass context(String a, String b) {
+    return this;
+  }
+
   public TestClass(TestClass a, TestClass b, Integer c) {
   }
 

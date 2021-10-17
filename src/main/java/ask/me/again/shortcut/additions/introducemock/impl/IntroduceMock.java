@@ -87,11 +87,11 @@ public class IntroduceMock {
 
   public void doWriteStuff() throws ClassFromTypeNotFoundException {
     targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
-    replaceNullValues(expressionList, variableNames, changeMap);
+    replaceNullValues(variableNames, changeMap);
     writeImport(executionTarget);
   }
 
-  private void writeImport(ExecutionTarget executionTarget) throws ClassFromTypeNotFoundException {
+  private void writeImport(ExecutionTarget executionTarget) {
     WriteCommandAction.runWriteCommandAction(project, () -> {
       var importList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
       if (importList != null) {
@@ -138,7 +138,7 @@ public class IntroduceMock {
         .orElseThrow(ExecutionTypeNotFoundException::new);
   }
 
-  private void replaceNullValues(PsiExpressionList expressionList, List<String> variableNames, List<Boolean> changeMap) {
+  private void replaceNullValues(List<String> variableNames, List<Boolean> changeMap) {
 
     WriteCommandAction.runWriteCommandAction(project, () -> {
       for (int i = 0; i < expressions.length; i++) {

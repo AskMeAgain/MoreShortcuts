@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.utils;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestInfo;
@@ -10,7 +9,7 @@ import java.util.stream.Collectors;
 
 public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixtureTestCase {
 
-  private final static String MODULE = "/ask/me/again/shortcut/additions/introducemock";
+  protected final static String MODULE = "/ask/me/again/shortcut/additions/introducemock";
 
   public Iterable<DynamicTest> dynamicTestsWithIterable(TestInfo testInfo, String... testcases) throws Exception {
     setUp();
@@ -32,16 +31,12 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
           "/src/test/resources/mock.java"
       );
 
-      myFixture.testAction(getAction());
-      checkResult(testClassName, caseName);
+      myFixture.performEditorAction(getAction());
+      myFixture.checkResultByFile(String.format("/src/test/resources/%s/%s/expected.java", testClassName, caseName));
     });
   }
 
-  public abstract AnAction getAction();
-
-  private void checkResult(String testClassName, String caseName) {
-    myFixture.checkResultByFile(String.format("/src/test/resources/%s/%s/expected.java", testClassName, caseName));
-  }
+  public abstract String getAction();
 
   @Override
   public String getTestDataPath() {
