@@ -9,7 +9,7 @@ class TestCases {
   }
 
   void context() {
-    testClass.context(1,null);
+    testClass.context(1, null);
   }
 
   void contextMenuVariable() {
