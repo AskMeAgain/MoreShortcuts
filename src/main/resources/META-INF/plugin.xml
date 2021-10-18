@@ -5,21 +5,7 @@
     <vendor url="https://github.com/AskMeAgain/ShortcutAdditions">AskMeAgain</vendor>
 
     <description>
-        <![CDATA[
-            This plugin introduces new Intellij Shortcuts and aims to speed up development of tests:
-            <ul>
-                <li>Introduce Mocks To Variable (CTRL + M, CTRL + V)</li>
-                <li>Introduce Mocks To Field (CTRL + M, CTRL + F)</li>
-                <li>Add Mock Method (CTRL + M, CTRL + M)</li>
-            </ul>
-
-            <h3>Add Mock Method</h3>
-            <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/add-mock-method.gif?raw=true"></img>
-            <h3>Introduce mock field</h3>
-            <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/introduce-mock-field.gif?raw=true"></img>
-            <h3>Introduce mock variable</h3>
-            <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/introduce-mock-variable.gif?raw=true"></img>
-        ]]>
+        <!--........................this will be replaced by the pathPluginXml gradle task...........................-->
     </description>
 
     <idea-version since-build="203.0"/>

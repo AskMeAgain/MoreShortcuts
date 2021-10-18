@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'ask.me.again'
-version '2.2'
+version '2.3'
 
 repositories {
     mavenCentral()
@@ -28,10 +28,9 @@ intellij {
 }
 
 patchPluginXml {
-    changeNotes = """
-      Published to the Intellij Marketplace.<br>
-      Added complete test Suite.<br>
-      """
+    version = project.getVersion() //TODO
+    changeNotes = new File("marketplace-changenotes.html").text
+    pluginDescription = new File("marketplace-description.html").text
 }
 
 test {

@@ -13,7 +13,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jgoodies.common.base.Strings;
+import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +52,7 @@ public class AddMockMethodImpl extends AnAction {
     factory = JavaPsiFacade.getElementFactory(project);
 
     try {
-      var cursorElement = psiFile.findElementAt(editor.getCaretModel().getOffset());
+      var cursorElement = getCursorElement();
 
       var method = override != null ? override : findMethod(cursorElement);
 
@@ -74,6 +76,17 @@ public class AddMockMethodImpl extends AnAction {
     } catch (MultipleAddMockMethodResultException ex) {
       createContextMenu(e, ex);
     }
+  }
+
+  @Nullable
+  private PsiElement getCursorElement() {
+    var simpleCursor = psiFile.findElementAt(editor.getCaretModel().getOffset());
+
+    if (simpleCursor != null) {
+      return simpleCursor;
+    }
+
+    throw new NotImplementedException("TODO");
   }
 
   private void writeImportStatements(PsiMethod method) throws ClassFromTypeNotFoundException {
@@ -174,12 +187,12 @@ public class AddMockMethodImpl extends AnAction {
     }
 
     var localVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
-    if(localVar != null){
+    if (localVar != null) {
       typeString = localVar.getType().getCanonicalText();
     }
 
-    if(!Strings.isBlank(typeString)){
-    var psiClass = PsiHelpers.getClassFromString(project, typeString);
+    if (!Strings.isBlank(typeString)) {
+      var psiClass = PsiHelpers.getClassFromString(project, typeString);
 
       var resultList = Arrays.stream(psiClass.getAllMethods())
           .filter(x -> x.getReturnType() != null)

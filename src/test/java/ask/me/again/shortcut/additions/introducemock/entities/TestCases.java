@@ -2,6 +2,8 @@ package ask.me.again.shortcut.additions.introducemock.entities;
 
 import org.mockito.Mockito;
 
+import static org.mockito.ArgumentMatchers.any;
+
 class TestCases {
 
   private TestClass testClass;
@@ -24,6 +26,8 @@ class TestCases {
 
   void builderClass() {
     var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn(null);
+
     var integer = Mockito.mock(Integer.class);
     testClass.nested(1, "")
         .nested(1, "")
