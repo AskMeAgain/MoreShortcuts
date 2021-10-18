@@ -13,11 +13,11 @@
                 <li>Add Mock Method (CTRL + M, CTRL + M)</li>
             </ul>
 
-            <h1>Add Mock Method</h1>
+            <h3>Add Mock Method</h3>
             <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/add-mock-method.gif?raw=true"></img>
-            <h1>Introduce mock field</h1>
+            <h3>Introduce mock field</h3>
             <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/introduce-mock-field.gif?raw=true"></img>
-            <h1>Introduce mock variable</h1>
+            <h3>Introduce mock variable</h3>
             <img src="https://github.com/AskMeAgain/ShortcutAdditions/blob/master/gifs/introduce-mock-variable.gif?raw=true"></img>
         ]]>
     </description>
