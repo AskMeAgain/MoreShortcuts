@@ -7,56 +7,50 @@ This plugin introduces new Intellij Shortcuts and aims to speed up development o
 
 <div>
     <h3>Add Mock Method (CTRL + M, CTRL + M)</h3>
-    <label>Before</label>
+    <p>Before</p>
     <pre>
-    var string[cursor] = Mockito.mock(String.class);
-    </pre>
-    <label>After</label>
+var string[cursor] = Mockito.mock(String.class);</pre>
+    <p>After</p>
     <pre>
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
-    </pre>
+var string = Mockito.mock(String.class);
+Mockito.when(string.compareTo(any())).thenReturn([cursor]null);</pre>
 </div>
 
 <div>
     <h3>Introduce mock field (CTRL + M, CTRL + F)</h3>
-    <label>Before</label>
+    <p>Before</p>
     <pre>
-    class IntroduceMockFieldExample {
-        void example() {
-            var result = new TestClass([cursor]null,null);
-        }
+class IntroduceMockFieldExample {
+    void example() {
+        var result = new TestClass([cursor]null,null);
     }
-    </pre>
-    <label>After</label>
+}</pre>
+    <p>After</p>
     <pre>
-    class IntroduceMockFieldExample {
-        @Mock
-        String string1;
-        @Mock
-        String string2;
+class IntroduceMockFieldExample {
+    @Mock
+    String string1;
+    @Mock
+    String string2;
 
-        void example() {
-            var result = new TestClass(string1, string2);
-        }
+    void example() {
+        var result = new TestClass(string1, string2);
     }
-    </pre>
+}</pre>
 </div>
 
 <div>
     <h3>Introduce Mock To Variable (CTRL + M, CTRL + V)</h3>
-    <label>Before</label>
+    <p>Before</p>
     <pre>
-    void example() {
-        var result = new TestClass([cursor]null, null);
-    }
-    </pre>
-    <label>After</label>
-    <pre>
-    void example() {
-        var string1 = Mockito.mock(String.class);
-        var string2 = Mockito.mock(String.class);
-        var result = new TestClass(string1, string2);
-    }
-    </pre>
+void example() {
+    var result = new TestClass([cursor]null, null);
+}</pre>
+    <p>After</p>
+<pre>
+void example() {
+    var string1 = Mockito.mock(String.class);
+    var string2 = Mockito.mock(String.class);
+    var result = new TestClass(string1, string2);
+}</pre>
 </div>
