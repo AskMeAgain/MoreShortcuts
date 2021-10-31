@@ -26,4 +26,9 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Gradle
-      run: gradle publishPlugin -PPRIVATE_KEY=${{ secrets.PRIVATE_KEY }} -PPRIVATE_KEY_PASSWORD=${{ secrets.PRIVATE_KEY_PASSWORD }} -PPUBLISH_TOKEN=${{ secrets.PUBLISH_TOKEN }} -PCERTIFICATE_CHAIN=${{ secrets.CERTIFICATE_CHAIN }}
+      run: gradle publishPlugin
+      env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+        PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
