@@ -28,13 +28,19 @@ intellij {
 }
 
 patchPluginXml {
-    version = project.getVersion() //TODO
+    version = project.getVersion()
     changeNotes = new File("marketplace-changenotes.html").text
     pluginDescription = new File("marketplace-description.html").text
 }
 
 test {
     useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
 
 signPlugin {
@@ -45,5 +51,5 @@ signPlugin {
 
 publishPlugin {
     token = System.getenv("PUBLISH_TOKEN")
-    channels = ['Unstable']
+    channels = [System.getenv("MARKETPLACE_CHANNEL")]
 }
