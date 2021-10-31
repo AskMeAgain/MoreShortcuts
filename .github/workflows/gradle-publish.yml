@@ -24,10 +24,13 @@ jobs:
         distribution: 'adopt'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
-
+    - name: Set output
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: Build with Gradle
       run: gradle publishPlugin
       env:
+        RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
