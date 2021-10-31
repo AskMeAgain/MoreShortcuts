@@ -8,7 +8,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  publish-to-marketplace:
 
     runs-on: ubuntu-latest
     permissions:
