@@ -1,0 +1,45 @@
+<idea-plugin>
+    <id>ask.me.again.shortcut.additions</id>
+    <name>Shortcut Additions</name>
+    <version>2.2</version>
+    <vendor url="https://github.com/AskMeAgain/ShortcutAdditions">AskMeAgain</vendor>
+
+    <description>
+        <!--........................this will be replaced by the pathPluginXml gradle task...........................-->
+    </description>
+
+    <idea-version since-build="203.0"/>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+
+    <actions>
+        <group id="ShortcutAdditions" text="Additional Refactorings" popup="true">
+            <add-to-group group-id="RefactoringMenu"
+                          anchor="after"
+                          relative-to-action="ask.me.again.shortcut.additions.introducemock.variable"/>
+            <action id="ask.me.again.shortcut.additions.introducemock.variable"
+                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToVariable"
+                    text="Introduce Mock To Variable"
+                    description="Introduce all Mocks">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl v"/>
+            </action>
+            <action id="ask.me.again.shortcut.additions.introducemock.field"
+                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToField"
+                    text="Introduce Mock To Field"
+                    description="Introduce all Mocks">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl f"/>
+            </action>
+            <action id="ask.me.again.shortcut.additions.addmockmethod"
+                    class="ask.me.again.shortcut.additions.addmockmethod.AddMockMethodImpl"
+                    text="Add Mock Method"
+                    description="Add Mock Method">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl m"/>
+            </action>
+        </group>
+    </actions>
+
+</idea-plugin>

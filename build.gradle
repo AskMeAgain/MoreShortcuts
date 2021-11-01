@@ -1,0 +1,55 @@
+plugins {
+    id 'org.jetbrains.intellij' version '1.2.0'
+    id 'java'
+}
+
+group 'ask.me.again'
+version System.getenv("RELEASE_VERSION")
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation "org.mockito:mockito-core:3.12.4"
+}
+
+intellij {
+    version = '2021.2.1'
+    plugins = ['com.intellij.java']
+}
+
+patchPluginXml {
+    version = project.getVersion()
+    changeNotes = new File("marketplace-changenotes.html").text
+    pluginDescription = new File("marketplace-description.html").text
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+signPlugin {
+    certificateChain = System.getenv("CERTIFICATE_CHAIN")
+    privateKey = System.getenv("PRIVATE_KEY")
+    password = System.getenv("PRIVATE_KEY_PASSWORD")
+}
+
+publishPlugin {
+    token = System.getenv("PUBLISH_TOKEN")
+    channels = [System.getenv("MARKETPLACE_CHANNEL")]
+}
