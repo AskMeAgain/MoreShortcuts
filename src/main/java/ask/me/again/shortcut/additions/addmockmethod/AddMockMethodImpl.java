@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jgoodies.common.base.Strings;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 
 public class AddMockMethodImpl extends AnAction {
 
@@ -169,13 +172,10 @@ public class AddMockMethodImpl extends AnAction {
     multipleResultException.getPsiMethodList()
         .forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(parameterOverride)));
 
-    var menu = ActionManager.getInstance().createActionPopupMenu("Method", actionGroup);
-
     var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
-    var contentComponent = editor.getContentComponent();
-
-    var point = editor.logicalPositionToXY(editor.getCaretModel().getPrimaryCaret().getLogicalPosition());
-    menu.getComponent().show(contentComponent, point.getLocation().x, point.getLocation().y + 30);
+    var popup = JBPopupFactory.getInstance()
+        .createActionGroupPopup(null, actionGroup, actionEvent.getDataContext(), SPEEDSEARCH, false);
+    popup.showInBestPositionFor(editor);
   }
 
   private PsiMethod findMethod(PsiElement element) throws CouldNotFindMethodException, ClassFromTypeNotFoundException, MultipleAddMockMethodResultException {
