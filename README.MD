@@ -8,6 +8,7 @@ It is IN the intellij plugin marketplace! Currently only in an unstable (unliste
 ready and my DevOps Pipeline is done.
 
 ### From Marketplace
+
 1. Settings
 2. Plugins
 3. Settings Cog (top right)
@@ -16,6 +17,7 @@ ready and my DevOps Pipeline is done.
 6. Search in der Marketplace for "Shortcut Additions"
 
 ### From Jar
+
 1. Download Jar from Release page
 2. Settings
 3. Plugins
@@ -30,7 +32,19 @@ ready and my DevOps Pipeline is done.
 Introduces Mockito mocks for every "null" value of the class. Place cursor inside the brackets and run the "Introduce
 Mock To Variable" action (**CTRL + M, CTRL + V**). In case of a conflict a context menu pops up to resolve it.
 
-![](gifs/introduce-mock-variable.gif)
+Before
+
+    void example() {
+        var result = new TestClass(null, null);
+    }
+
+After
+
+    void example() {
+        var string1 = Mockito.mock(String.class);
+        var string2 = Mockito.mock(String.class);
+        var result = new TestClass(string1, string2);
+    }
 
 ----------------------
 
@@ -40,7 +54,26 @@ Introduces Mockito mock fields for every "null" value of the class. Place cursor
 Introduce Mock To Field" action (**CTRL + M, CTRL + F**). Its also smart enough, that if a conflict arises it asks for
 the correct implementation via context menu
 
-![](gifs/introduce-mock-field.gif)
+Before
+
+    class IntroduceMockFieldExample {
+        void example() {
+            var result = new TestClass([cursor]null,null);
+        }
+    }
+
+After
+
+    class IntroduceMockFieldExample {
+        @Mock
+        String string1;
+        @Mock
+        String string2;
+    
+        void example() {
+            var result = new TestClass(string1, string2);
+        }
+    }
 
 ----------------------
 
@@ -50,5 +83,12 @@ Creates a mock method for the given method. Put cursor on a variable/field, exec
 action (**CTRL + M, CTRL + M**), select a method and a mock for a method will appear. It is smart enough to find the
 correct argument matchers of Mockito based on the type.
 
-![](gifs/add-mock-method.gif)
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
