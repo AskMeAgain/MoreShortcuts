@@ -20,14 +20,6 @@ public class ConstructorExtractorImpl extends ExtractorBase {
   public boolean isType(PsiExpressionList expressionList) {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
     if (newExpression != null) {
-//      var localVar = PsiTreeUtil.getParentOfType(newExpression, PsiLocalVariable.class);
-//      if (localVar != null) {
-//        return true;
-//      }
-//      var assignmentExpression = PsiTreeUtil.getParentOfType(newExpression, PsiAssignmentExpression.class);
-//      if (assignmentExpression != null) {
-//        return true;
-//      }
       return true;
     }
     return false;

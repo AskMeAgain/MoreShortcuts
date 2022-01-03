@@ -3,9 +3,11 @@ package ask.me.again.shortcut.additions;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+
+import java.util.List;
 
 public class PsiHelpers {
 
@@ -33,5 +35,22 @@ public class PsiHelpers {
       throw new ClassFromTypeNotFoundException();
     }
     return result;
+  }
+
+  public static List<PsiClass> findAllRecursivelyInBlock(PsiElement element){
+
+    for(int i = 0; i < 100; i++){
+      var temp = element.getParent();
+      if(temp instanceof PsiMethod){
+        break;
+      }
+      element = temp;
+    }
+
+    var children = PsiTreeUtil.findChildrenOfType(element, PsiIdentifier.class);
+
+  //TODO
+    return null;
+
   }
 }
