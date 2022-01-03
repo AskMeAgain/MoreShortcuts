@@ -66,7 +66,5 @@ public class FieldTargetImpl extends TargetBase {
         realAnchor.addAfter(mockExpressions.get(i), null);
       }
     }
-
-    new ReformatCodeProcessor(psiFile, false).run();
   }
 }

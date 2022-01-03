@@ -7,6 +7,7 @@ class IntroduceMockVariableExample {
     void example() {
         var testClass = new TestClass();
         var integer = Mockito.mock(Integer.class);
+
         var result = testClass.nested(integer, "Not null");
     }
 }

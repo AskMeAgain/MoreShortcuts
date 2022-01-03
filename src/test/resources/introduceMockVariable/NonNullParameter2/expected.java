@@ -8,6 +8,7 @@ class IntroduceMockVariableExample {
     void example() {
         var testClass = new TestClass();
         var string = Mockito.mock(String.class);
+
         var result = testClass.nested(1, string);
     }
 }
