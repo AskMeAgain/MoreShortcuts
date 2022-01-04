@@ -29,20 +29,20 @@ import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SP
 
 public class AddMockMethodImpl extends AnAction {
 
+    private PsiIdentifier identifier;
     private PsiMethod override;
     private Editor editor;
     private PsiFile psiFile;
     private Project project;
     private PsiElementFactory factory;
-    private PsiElement variableSelection;
 
     public AddMockMethodImpl() {
     }
 
-    public AddMockMethodImpl(PsiMethod override, PsiElement variableSelection) {
-        super(override == null? variableSelection.getText(): override.getName());
+    public AddMockMethodImpl(PsiMethod override, PsiIdentifier identifier) {
+        super(override == null? identifier.getText(): override.getName());
         this.override = override;
-        this.variableSelection = variableSelection;
+        this.identifier = identifier;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AddMockMethodImpl extends AnAction {
         factory = JavaPsiFacade.getElementFactory(project);
 
         try {
-            var cursorElement = variableSelection != null? variableSelection : getCursorElement();
+            var cursorElement = override == null && identifier == null?  getCursorElement() : identifier;
 
             var method = override != null ? override : findMethod(cursorElement);
 
@@ -175,7 +175,7 @@ public class AddMockMethodImpl extends AnAction {
         var actionGroup = new DefaultActionGroup();
 
         multipleResultException.getPsiMethodList()
-                .forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(parameterOverride, null)));
+                .forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(parameterOverride, identifier)));
 
         var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
         var popup = JBPopupFactory.getInstance()
@@ -188,7 +188,7 @@ public class AddMockMethodImpl extends AnAction {
 
         var findAllStuff = PsiHelpers.findAllRecursivelyInBlock(couldNotFindMethodException.getCursorPosition());
 
-        findAllStuff.forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(null, parameterOverride)));
+        findAllStuff.forEach(psiContainer -> actionGroup.add(new AddMockMethodImpl(null, psiContainer)));
 
         var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
         var popup = JBPopupFactory.getInstance()
