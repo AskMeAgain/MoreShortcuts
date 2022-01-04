@@ -43,11 +43,10 @@ public class PsiHelpers {
     public static List<PsiIdentifier> findAllRecursivelyInBlock(PsiElement element) {
 
         for (int i = 0; i < 100; i++) {
-            var temp = element.getParent();
-            if (temp instanceof PsiMethod) {
+            element = element.getParent();
+            if (element instanceof PsiMethod) {
                 break;
             }
-            element = temp;
         }
 
         var children = PsiTreeUtil.findChildrenOfType(element, PsiIdentifier.class);
@@ -55,6 +54,9 @@ public class PsiHelpers {
         var result = new ArrayList<PsiIdentifier>();
 
         for (var child : children) {
+            if (child.getParent() instanceof PsiParameter){
+                result.add(child);
+            }
             if (child.getParent() instanceof PsiLocalVariable) {
                 result.add(child);
             }

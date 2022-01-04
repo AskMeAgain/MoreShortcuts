@@ -40,7 +40,7 @@ public class AddMockMethodImpl extends AnAction {
     }
 
     public AddMockMethodImpl(PsiMethod override, PsiIdentifier identifier) {
-        super(override == null? identifier.getText(): override.getName());
+        super(override == null ? identifier.getText() : override.getName());
         this.override = override;
         this.identifier = identifier;
     }
@@ -60,7 +60,7 @@ public class AddMockMethodImpl extends AnAction {
         factory = JavaPsiFacade.getElementFactory(project);
 
         try {
-            var cursorElement = override == null && identifier == null?  getCursorElement() : identifier;
+            var cursorElement = identifier != null ? identifier : getCursorElement();
 
             var method = override != null ? override : findMethod(cursorElement);
 
@@ -103,7 +103,6 @@ public class AddMockMethodImpl extends AnAction {
         var set = Arrays.stream(method.getParameterList().getParameters())
                 .map(PsiParameter::getType)
                 .map(this::mapToString)
-                .map(x -> x.substring(0, x.length()))
                 .collect(Collectors.toSet());
 
         var classFromString = PsiHelpers.getClassFromString(project, "org.mockito.ArgumentMatchers");
@@ -166,6 +165,10 @@ public class AddMockMethodImpl extends AnAction {
                 return current;
             }
             current = current.getParent();
+
+            if(current instanceof PsiMethod){
+                return PsiTreeUtil.findChildOfType(current, PsiCodeBlock.class).getFirstBodyElement();
+            }
         }
 
         throw new CouldNotFindAnchorException();
@@ -188,7 +191,7 @@ public class AddMockMethodImpl extends AnAction {
 
         var findAllStuff = PsiHelpers.findAllRecursivelyInBlock(couldNotFindMethodException.getCursorPosition());
 
-        findAllStuff.forEach(psiContainer -> actionGroup.add(new AddMockMethodImpl(null, psiContainer)));
+        findAllStuff.forEach(psiIdentifier -> actionGroup.add(new AddMockMethodImpl(null, psiIdentifier)));
 
         var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
         var popup = JBPopupFactory.getInstance()
@@ -207,6 +210,11 @@ public class AddMockMethodImpl extends AnAction {
         var localVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         if (localVar != null) {
             typeString = localVar.getType().getCanonicalText();
+        }
+
+        var parameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
+        if (parameter != null) {
+            typeString = parameter.getType().getCanonicalText();
         }
 
         if (!Strings.isBlank(typeString)) {
