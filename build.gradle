@@ -51,5 +51,7 @@ signPlugin {
 
 publishPlugin {
     token = System.getenv("PUBLISH_TOKEN")
-    channels = [System.getenv("MARKETPLACE_CHANNEL")]
+    if (System.getenv("RELEASE_VERSION").endsWith("-SNAPSHOT")) {
+        channels = ["Unstable"]
+    }
 }
