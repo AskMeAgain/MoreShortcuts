@@ -92,3 +92,9 @@ After
     var string = Mockito.mock(String.class);
     Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
+#### New feature: variable finder
+
+if your cursor is on a non variable declaration, the plugin will search for all possible
+variable declarations and will provide you with a list of possible cases.
+
+![mock](mockmethod.gif)
