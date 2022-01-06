@@ -74,12 +74,15 @@ After
     var string = Mockito.mock(String.class);
     Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
+----------------------
+
 ## Add Verify Method
 
-Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut will introduce a correctly implemented
+Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut (**CTRL + M, CTRL + C**)
+will introduce a correctly implemented
 Mockito.verify of the chosen method.
 
-Also the [Variable finder](#new-feature-variable-finder) will search the current method for variables, to create the
+Also the [Variable finder](#new-feature-variable-finder) can search the current method for variables, to create the
 Mockito.Verify directly from anywhere.
 
 Before
@@ -91,7 +94,9 @@ After
     var string = Mockito.mock(String.class);
     Mockito.verify(string).compareTo([cursor]any());
 
-### New feature: Variable finder
+----------------------
+
+## New feature: Variable finder
 
 if your cursor is not on a variable and you press a shortcut which implements the variable finder, the plugin will
 search for all possible variable declarations and will provide you with a list of possible cases to chose from. It will
