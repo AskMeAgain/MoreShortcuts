@@ -70,12 +70,14 @@ public class AddMockMethodImpl extends AnAction {
 
             var method = override != null ? override : findMethod(cursorElement);
 
-            var resultText = getResultText(cursorElement, method);
+            var methodParameters = createParameters(method);
+            var resultText = getResultText(cursorElement, method, methodParameters);
 
             PsiElement expression = factory.createStatementFromText(resultText, null);
             var anchor = findAnchor(cursorElement);
 
-            writeExpression(anchor, expression);
+            var hasParameters = !methodParameters.isBlank();
+            writeExpression(anchor, expression, hasParameters);
             writeImportStatements(method);
 
         } catch (CouldNotFindMethodException ex) {
@@ -89,14 +91,14 @@ public class AddMockMethodImpl extends AnAction {
         }
     }
 
-    private String getResultText(PsiElement cursorElement, PsiMethod method) {
+    private String getResultText(PsiElement cursorElement, PsiMethod method, String parameters) {
         var template = introduceTextMode == IntroduceTextMode.MOCK_METHOD
                 ? "Mockito.when(%s.%s(%s)).thenReturn(null);"
                 : "Mockito.verify(%s).%s(%s);";
         return String.format(template,
                 cursorElement.getText(),
                 method.getName(),
-                createParameters(method));
+                parameters);
     }
 
     @Nullable
@@ -152,7 +154,7 @@ public class AddMockMethodImpl extends AnAction {
         }
     }
 
-    private void writeExpression(PsiElement anchor, PsiElement expression) {
+    private void writeExpression(PsiElement anchor, PsiElement expression, boolean hasParameters) {
         WriteCommandAction.runWriteCommandAction(project, () -> {
             var whiteSpace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
 
@@ -168,7 +170,10 @@ public class AddMockMethodImpl extends AnAction {
 
             var offset = expressionList.getTextOffset() + 1;
             editor.getCaretModel().moveToOffset(offset);
-            editor.getSelectionModel().setSelection(offset, offset + 4);
+
+            if (hasParameters) {
+                editor.getSelectionModel().setSelection(offset, offset + 4);
+            }
         });
     }
 
