@@ -4,26 +4,7 @@ This plugin adds some shortcuts to intellij idea
 
 ## Installation
 
-It is IN the intellij plugin marketplace! Currently only in an unstable (unlisted) Release channel until the plugin is
-ready and my DevOps Pipeline is done.
-
-### From Marketplace
-
-1. Settings
-2. Plugins
-3. Settings Cog (top right)
-4. Manage Plugin Repositories
-5. Input: https://plugins.jetbrains.com/plugins/unstable/list
-6. Search in der Marketplace for "Shortcut Additions"
-
-### From Jar
-
-1. Download Jar from Release page
-2. Settings
-3. Plugins
-4. Settings Cog (top right)
-5. Install Plugin from disk
-6. Select jar
+Get it from the [Intellij Marketplace](https://plugins.jetbrains.com/plugin/17814-shortcut-additions)
 
 ----------------------
 
@@ -43,6 +24,7 @@ After
     void example() {
         var string1 = Mockito.mock(String.class);
         var string2 = Mockito.mock(String.class);
+
         var result = new TestClass(string1, string2);
     }
 
@@ -92,9 +74,27 @@ After
     var string = Mockito.mock(String.class);
     Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
-#### New feature: variable finder
+## Add Verify Method
 
-if your cursor is on a non variable declaration, the plugin will search for all possible
-variable declarations and will provide you with a list of possible cases.
+Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut will introduce a correctly implemented
+Mockito.verify of the chosen method.
+
+Also the [Variable finder](#new-feature-variable-finder) will search the current method for variables, to create the
+Mockito.Verify directly from anywhere.
+
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.verify(string).compareTo([cursor]any());
+
+### New feature: Variable finder
+
+if your cursor is not on a variable and you press a shortcut which implements the variable finder, the plugin will
+search for all possible variable declarations and will provide you with a list of possible cases to chose from. It will
+then apply the shortcut to the selected variable:
 
 ![mock](mockmethod.gif)

@@ -1,10 +1,11 @@
-package ask.me.again.shortcut.additions.addmockmethod;
+package ask.me.again.shortcut.additions.introducetext.impl;
 
 import ask.me.again.shortcut.additions.PsiHelpers;
-import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindAnchorException;
-import ask.me.again.shortcut.additions.addmockmethod.exceptions.CouldNotFindMethodException;
-import ask.me.again.shortcut.additions.addmockmethod.exceptions.MultipleAddMockMethodResultException;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
+import ask.me.again.shortcut.additions.introducetext.entities.IntroduceTextMode;
+import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindAnchorException;
+import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindMethodException;
+import ask.me.again.shortcut.additions.introducetext.exceptions.MultipleAddMockMethodResultException;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -17,6 +18,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jgoodies.common.base.Strings;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 
+@NoArgsConstructor
 public class AddMockMethodImpl extends AnAction {
 
     private PsiIdentifier identifier;
@@ -35,14 +38,17 @@ public class AddMockMethodImpl extends AnAction {
     private PsiFile psiFile;
     private Project project;
     private PsiElementFactory factory;
+    private IntroduceTextMode introduceTextMode;
 
-    public AddMockMethodImpl() {
+    public AddMockMethodImpl(IntroduceTextMode introduceTextMode) {
+        this.introduceTextMode = introduceTextMode;
     }
 
-    public AddMockMethodImpl(PsiMethod override, PsiIdentifier identifier) {
+    public AddMockMethodImpl(PsiMethod override, PsiIdentifier identifier, IntroduceTextMode introduceTextMode) {
         super(override == null ? identifier.getText() : override.getName());
         this.override = override;
         this.identifier = identifier;
+        this.introduceTextMode = introduceTextMode;
     }
 
     @Override
@@ -64,10 +70,7 @@ public class AddMockMethodImpl extends AnAction {
 
             var method = override != null ? override : findMethod(cursorElement);
 
-            var resultText = String.format("Mockito.when(%s.%s(%s)).thenReturn(null);",
-                    cursorElement.getText(),
-                    method.getName(),
-                    createParameters(method));
+            var resultText = getResultText(cursorElement, method);
 
             PsiElement expression = factory.createStatementFromText(resultText, null);
             var anchor = findAnchor(cursorElement);
@@ -84,6 +87,16 @@ public class AddMockMethodImpl extends AnAction {
         } catch (MultipleAddMockMethodResultException ex) {
             createContextMenu(e, ex);
         }
+    }
+
+    private String getResultText(PsiElement cursorElement, PsiMethod method) {
+        var template = introduceTextMode == IntroduceTextMode.MOCK_METHOD
+                ? "Mockito.when(%s.%s(%s)).thenReturn(null);"
+                : "Mockito.verify(%s).%s(%s);";
+        return String.format(template,
+                cursorElement.getText(),
+                method.getName(),
+                createParameters(method));
     }
 
     @Nullable
@@ -166,7 +179,7 @@ public class AddMockMethodImpl extends AnAction {
             }
             current = current.getParent();
 
-            if(current instanceof PsiMethod){
+            if (current instanceof PsiMethod) {
                 return PsiTreeUtil.findChildOfType(current, PsiCodeBlock.class).getFirstBodyElement();
             }
         }
@@ -178,7 +191,7 @@ public class AddMockMethodImpl extends AnAction {
         var actionGroup = new DefaultActionGroup();
 
         multipleResultException.getPsiMethodList()
-                .forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(parameterOverride, identifier)));
+                .forEach(parameterOverride -> actionGroup.add(new AddMockMethodImpl(parameterOverride, identifier, introduceTextMode)));
 
         var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
         var popup = JBPopupFactory.getInstance()
@@ -191,7 +204,7 @@ public class AddMockMethodImpl extends AnAction {
 
         var findAllStuff = PsiHelpers.findAllRecursivelyInBlock(couldNotFindMethodException.getCursorPosition());
 
-        findAllStuff.forEach(psiIdentifier -> actionGroup.add(new AddMockMethodImpl(null, psiIdentifier)));
+        findAllStuff.forEach(psiIdentifier -> actionGroup.add(new AddMockMethodImpl(null, psiIdentifier, introduceTextMode)));
 
         var editor = actionEvent.getRequiredData(CommonDataKeys.EDITOR);
         var popup = JBPopupFactory.getInstance()

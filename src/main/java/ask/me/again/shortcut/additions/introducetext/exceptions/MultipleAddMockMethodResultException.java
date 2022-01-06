@@ -1,4 +1,4 @@
-package ask.me.again.shortcut.additions.addmockmethod.exceptions;
+package ask.me.again.shortcut.additions.introducetext.exceptions;
 
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;

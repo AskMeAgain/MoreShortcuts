@@ -1,9 +1,22 @@
 This plugin introduces new Intellij Shortcuts and aims to speed up development of tests:
 <ul>
     <li>Add Mock Method</li>
+    <li>Add Mockito Verify</li>
     <li>Introduce Mocks To Field</li>
     <li>Introduce Mocks To Variable</li>
 </ul>
+
+<div>
+    <h3>Add Mock Method (CTRL + M, CTRL + E)</h3>
+    <p>Before</p>
+    <pre>
+var string[cursor] = Mockito.mock(String.class);</pre>
+    <p>After</p>
+    <pre>
+var string = Mockito.mock(String.class);
+Mockito.verify(string.compareTo([cursor]any());</pre>
+    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut a selected variable</h7>
+</div>
 
 <div>
     <h3>Add Mock Method (CTRL + M, CTRL + M)</h3>
@@ -14,7 +27,7 @@ var string[cursor] = Mockito.mock(String.class);</pre>
     <pre>
 var string = Mockito.mock(String.class);
 Mockito.when(string.compareTo(any())).thenReturn([cursor]null);</pre>
-    <p>Variable finder: You can also just put your cursor anywhere and the plugin will ask your for the correct mock implementation</p>
+    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut a selected variable</h7>
 </div>
 
 <div>
