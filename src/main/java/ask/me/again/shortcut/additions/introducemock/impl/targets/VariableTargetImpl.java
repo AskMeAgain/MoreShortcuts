@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -21,9 +20,15 @@ public class VariableTargetImpl extends TargetBase {
 
   public PsiDeclarationStatement createExpression(PsiParameter psiParameter) {
     var presentableText = psiParameter.getType().getPresentableText();
+
+    if (presentableText.contains("<")) {
+      presentableText = presentableText.substring(0, presentableText.indexOf("<"));
+    }
+
     var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(String.format("Mockito.mock(%s.class)", presentableText), null);
 
     var varType = factory.createTypeByFQClassName("var");
+
     return factory.createVariableDeclarationStatement(decapitalizeString(presentableText), varType, equalsCall);
   }
 
@@ -45,12 +50,12 @@ public class VariableTargetImpl extends TargetBase {
             return null;
           }
           var name = x.getName();
-          if(duplicateMap.get(name) > 1){
+          if (duplicateMap.get(name) > 1) {
             var index = shortDict.getOrDefault(name, 1);
             x.setName(name + index);
             shortDict.put(name, index + 1);
             return name + index;
-          }else{
+          } else {
             return name;
           }
         })

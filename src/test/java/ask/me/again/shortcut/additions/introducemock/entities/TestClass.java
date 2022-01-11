@@ -3,6 +3,10 @@ package ask.me.again.shortcut.additions.introducemock.entities;
 
 public class TestClass {
 
+  public void testMethodGeneric(GenericTestClass<String,String> generic){
+
+  }
+
   public static String staticMethod(int i, String isa) {
     return null;
   }
