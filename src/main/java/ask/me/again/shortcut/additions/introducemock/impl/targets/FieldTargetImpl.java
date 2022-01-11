@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -24,7 +23,13 @@ public class FieldTargetImpl extends TargetBase {
   public PsiElement createExpression(PsiParameter psiParameter) {
     var presentableText = psiParameter.getType().getPresentableText();
 
-    PsiField fieldFromText = factory.createFieldFromText(presentableText + " " + decapitalizeString(presentableText) + ";", null);
+    var variableName = decapitalizeString(presentableText);
+
+    if(variableName.contains("<")){
+      variableName = variableName.substring(0, variableName.indexOf("<"));
+    }
+
+    PsiField fieldFromText = factory.createFieldFromText(presentableText + " " + variableName + ";", null);
     fieldFromText.getModifierList().addAnnotation("Mock");
     return fieldFromText;
   }

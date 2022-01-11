@@ -30,7 +30,8 @@ public class IntroduceMockFieldTest extends SimpleRefactoringTestBase {
         "BuilderFieldMethodCall",
         "ConstructorCall",
         "NoResultConstructorCall",
-        "SameParameterName"
+        "SameParameterName",
+        "GenericMethodCall"
     );
   }
 }
