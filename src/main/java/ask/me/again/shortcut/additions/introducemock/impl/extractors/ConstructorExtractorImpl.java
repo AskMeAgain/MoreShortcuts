@@ -33,7 +33,12 @@ public class ConstructorExtractorImpl extends ExtractorBase {
 
     var result = Arrays.stream(psiClass.getConstructors())
         .map(PsiMethod::getParameterList)
-        .filter(x -> x.getParametersCount() == expressionList.getExpressionCount())
+        .filter(x -> {
+          if (!expressionList.isEmpty()) {
+            return x.getParametersCount() == expressionList.getExpressionCount();
+          }
+          return true;
+        })
         .map(PsiParameterList::getParameters)
         .collect(Collectors.toList());
 

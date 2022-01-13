@@ -48,7 +48,12 @@ public class MethodExtractorImpl extends ExtractorBase {
 
     var result = Arrays.stream(psiClass.getMethods())
         .filter(x -> x.getName().equals(methodName))
-        .filter(x -> x.getParameterList().getParametersCount() == expressionList.getExpressionCount())
+        .filter(x -> {
+          if (!expressionList.isEmpty()) {
+            return x.getParameterList().getParametersCount() == expressionList.getExpressionCount();
+          }
+          return true;
+        })
         .map(x -> x.getParameterList().getParameters())
         .collect(Collectors.toList());
 

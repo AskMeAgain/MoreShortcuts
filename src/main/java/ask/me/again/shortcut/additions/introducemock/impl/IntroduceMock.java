@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class IntroduceMock {
 
@@ -64,9 +65,16 @@ public class IntroduceMock {
 
     var parameters = override.length == 0 ? getPsiParameters(expressionList, executionType) : override;
 
-    changeMap = Arrays.stream(expressionList.getExpressionTypes())
-        .map(x -> x.equalsToText("null"))
-        .collect(Collectors.toList());
+    if (expressionList.isEmpty()) {
+      changeMap = IntStream.range(0, parameters.length)
+          .boxed()
+          .map(x -> true)
+          .collect(Collectors.toList());
+    } else {
+      changeMap = Arrays.stream(expressionList.getExpressionTypes())
+          .map(x -> x.equalsToText("null"))
+          .collect(Collectors.toList());
+    }
 
     mockExpressions = targetMap.get(executionTarget).createMockExpressions(parameters, changeMap);
 
@@ -82,7 +90,12 @@ public class IntroduceMock {
     }
 
     targetMap.get(executionTarget).writeExpressionsToCode(localVarAnchor, mockExpressions, changeMap);
-    replaceNullValues(variableNames, changeMap, expressions);
+
+    if (!expressionList.isEmpty()) {
+      replaceNullValues(variableNames, changeMap, expressions);
+    } else {
+      variableNames.forEach(name -> expressionList.add(factory.createExpressionFromText(name, null)));
+    }
     writeImport(executionTarget);
 
     new ReformatCodeProcessor(psiFile, false).run();
