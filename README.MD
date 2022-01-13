@@ -79,8 +79,7 @@ After
 ## Add Verify Method
 
 Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut (**CTRL + M, CTRL + C**)
-will introduce a correctly implemented
-Mockito.verify of the chosen method.
+will introduce a correctly implemented Mockito.verify of the chosen method.
 
 Also the [Variable finder](#new-feature-variable-finder) can search the current method for variables, to create the
 Mockito.Verify directly from anywhere.
@@ -103,3 +102,13 @@ search for all possible variable declarations and will provide you with a list o
 then apply the shortcut to the selected variable:
 
 ![mock](mockmethod.gif)
+
+----------------------
+
+## Multiline Counting
+
+Every need to rename alot of variables in a sequential way? **CTRL + M, CTRL + 1** on a multiline cursor will open a
+small popup to set a starting index and an interval. The plugin will insert the start number and then write sequential
+numbers based on the interval
+
+![multilinecount](multilinecount.gif)

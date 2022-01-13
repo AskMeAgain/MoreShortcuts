@@ -1,13 +1,13 @@
 This plugin introduces new Intellij Shortcuts and aims to speed up development of tests:
 <ul>
-    <li>Add Mock Method</li>
     <li>Add Mockito Verify</li>
+    <li>Add Mock Method</li>
     <li>Introduce Mocks To Field</li>
     <li>Introduce Mocks To Variable</li>
 </ul>
 
 <div>
-    <h3>Add Mock Method (CTRL + M, CTRL + C)</h3>
+    <h3>Add Verify Method (CTRL + M, CTRL + C)</h3>
     <p>Before</p>
     <pre>
 var string[cursor] = Mockito.mock(String.class);</pre>
@@ -15,7 +15,9 @@ var string[cursor] = Mockito.mock(String.class);</pre>
     <pre>
 var string = Mockito.mock(String.class);
 Mockito.verify(string.compareTo([cursor]any());</pre>
-    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut to a selected variable</h7>
+    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut to a selected
+        variable
+    </h7>
 </div>
 
 <div>
@@ -27,7 +29,9 @@ var string[cursor] = Mockito.mock(String.class);</pre>
     <pre>
 var string = Mockito.mock(String.class);
 Mockito.when(string.compareTo(any())).thenReturn([cursor]null);</pre>
-    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut to a selected variable</h7>
+    <h7>Variable finder: You can also just put your cursor anywhere and the plugin will apply the shortcut to a selected
+        variable
+    </h7>
 </div>
 
 <div>
@@ -61,10 +65,37 @@ void example() {
     var result = new TestClass([cursor]null, null);
 }</pre>
     <p>After</p>
-<pre>
+    <pre>
 void example() {
     var string1 = Mockito.mock(String.class);
     var string2 = Mockito.mock(String.class);
     var result = new TestClass(string1, string2);
+}</pre>
+</div>
+
+<div>
+    <h3>Multiline Count (CTRL + M, CTRL + 1). A popup will to specify the start value and the interval between each
+        steps.</h3>
+    <p>Before</p>
+    <pre>
+void example() {
+    var result1 = new TestClass([cursor]);
+    var result2 = new TestClass([cursor]);
+    var result3 = new TestClass([cursor]);
+    var result4 = new TestClass([cursor]);
+    var result5 = new TestClass([cursor]);
+    var result6 = new TestClass([cursor]);
+    var result7 = new TestClass([cursor]);
+}</pre>
+    <p>After</p>
+    <pre>
+void example() {
+    var result1 = new TestClass("1");
+    var result2 = new TestClass("2");
+    var result3 = new TestClass("3");
+    var result4 = new TestClass("4");
+    var result5 = new TestClass("5");
+    var result6 = new TestClass("6");
+    var result7 = new TestClass("8");
 }</pre>
 </div>
