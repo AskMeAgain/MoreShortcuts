@@ -109,6 +109,8 @@ then apply the shortcut to the selected variable:
 
 Every need to rename alot of variables in a sequential way? **CTRL + M, CTRL + 1** on a multiline cursor will open a
 small popup to set a starting index and an interval. The plugin will insert the start number and then write sequential
-numbers based on the interval
+numbers based on the interval.
+
+PS: this does also work for characters, just insert A or a to count in uppercase and lowercase letters
 
 ![multilinecount](multilinecount.gif)

@@ -26,6 +26,27 @@ public class MultilineUtils {
     });
   }
 
+  public static void extractedChar(@NotNull AnActionEvent e, char startChar, int multiplier) {
+    var editor = e.getRequiredData(CommonDataKeys.EDITOR);
+    var document = editor.getDocument();
+
+    var project = e.getProject();
+
+    var counter = new AtomicInteger();
+    var startCount = (int) startChar;
+
+    WriteCommandAction.runWriteCommandAction(project, () -> {
+      editor.getCaretModel().runForEachCaret(caret -> {
+        var number = String.valueOf(getChar(multiplier, counter, startCount));
+        document.insertString(caret.getOffset(), number);
+      });
+    });
+  }
+
+  private static char getChar(int multiplier, AtomicInteger counter, int startCount) {
+    return (char) (startCount + counter.getAndIncrement() * multiplier);
+  }
+
   /**
    * http://docs.oracle.com/javase/tutorial/uiswing/examples/layout/SpringGridProject/src/layout/SpringUtilities.java
    */

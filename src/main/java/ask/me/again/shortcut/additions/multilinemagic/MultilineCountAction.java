@@ -41,10 +41,15 @@ public class MultilineCountAction extends AnAction {
 
     @Override
     public void doOKAction() {
-      var from = Integer.parseInt(startField.getText());
-      var index = Integer.parseInt(endField.getText());
-
-      MultilineUtils.extracted(e, from, index);
+      try {
+        var from = Integer.parseInt(startField.getText());
+        var index = Integer.parseInt(endField.getText());
+        MultilineUtils.extracted(e, from, index);
+      } catch (NumberFormatException ex) {
+        var from = startField.getText();
+        var index = Integer.parseInt(endField.getText());
+        MultilineUtils.extractedChar(e, from.toCharArray()[0], index);
+      }
 
       this.close(0);
     }

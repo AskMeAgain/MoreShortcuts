@@ -7,8 +7,10 @@ import ask.me.again.shortcut.additions.introducemock.exceptions.PsiTypeNotFoundE
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MethodExtractorImpl extends ExtractorBase {
@@ -41,6 +43,18 @@ public class MethodExtractorImpl extends ExtractorBase {
 
   public PsiParameter[] getPsiParameters(PsiExpressionList expressionList) throws MultipleIntroduceMockResultException, PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     var methodReference = PsiTreeUtil.getPrevSiblingOfType(expressionList, PsiReferenceExpression.class);
+    java.util.List<PsiParameter[]> result = getPsiParametersFromReference(expressionList, methodReference);
+
+    if (result.size() > 1) {
+      throw new MultipleIntroduceMockResultException(result);
+    } else {
+      return result.get(0);
+    }
+  }
+
+  @NotNull
+  public List<PsiParameter[]> getPsiParametersFromReference(PsiExpressionList expressionList, PsiReferenceExpression methodReference)
+      throws PsiTypeNotFoundException, ClassFromTypeNotFoundException {
     var methodName = methodReference.getReferenceName();
 
     var classNameFromReference = getClassNameFromReference(methodReference);
@@ -56,12 +70,7 @@ public class MethodExtractorImpl extends ExtractorBase {
         })
         .map(x -> x.getParameterList().getParameters())
         .collect(Collectors.toList());
-
-    if (result.size() > 1) {
-      throw new MultipleIntroduceMockResultException(result);
-    } else {
-      return result.get(0);
-    }
+    return result;
   }
 
   private String getClassNameFromReference(PsiReferenceExpression methodReference) throws PsiTypeNotFoundException {
