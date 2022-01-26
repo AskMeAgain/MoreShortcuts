@@ -62,6 +62,13 @@ public class PsiHelpers {
             }
         }
 
+        //find fields
+        var classParent = element.getParent();
+        PsiTreeUtil.findChildrenOfType(classParent, PsiField.class).forEach(field -> {
+            var identifier = PsiTreeUtil.getChildOfType(field, PsiIdentifier.class);
+            result.add(identifier);
+        });
+
         return result;
     }
 }

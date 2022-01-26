@@ -66,7 +66,8 @@ public class AddMockMethodImpl extends AnAction {
         factory = JavaPsiFacade.getElementFactory(project);
 
         try {
-            var cursorElement = identifier != null ? identifier : getCursorElement();
+            var cursorPosition = getCursorElement();
+            var cursorElement = identifier != null ? identifier : cursorPosition;
 
             var method = override != null ? override : findMethod(cursorElement);
 
@@ -74,7 +75,7 @@ public class AddMockMethodImpl extends AnAction {
             var resultText = getResultText(cursorElement, method, methodParameters);
 
             PsiElement expression = factory.createStatementFromText(resultText, null);
-            var anchor = findAnchor(cursorElement);
+            var anchor = findAnchor(cursorElement, cursorPosition);
 
             var hasParameters = !methodParameters.isBlank();
             writeExpression(anchor, expression, hasParameters);
@@ -177,8 +178,11 @@ public class AddMockMethodImpl extends AnAction {
         });
     }
 
-    private PsiElement findAnchor(PsiElement current) throws CouldNotFindAnchorException {
+    private PsiElement findAnchor(PsiElement current, PsiElement cursor) throws CouldNotFindAnchorException {
         for (int i = 0; i < 20; i++) {
+            if(current.getParent() instanceof PsiField){
+                return cursor;
+            }
             if (current.getParent() instanceof PsiCodeBlock) {
                 return current;
             }
@@ -233,6 +237,11 @@ public class AddMockMethodImpl extends AnAction {
         var parameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
         if (parameter != null) {
             typeString = parameter.getType().getCanonicalText();
+        }
+
+        var fieldParam = PsiTreeUtil.getParentOfType(element, PsiField.class);
+        if (fieldParam != null) {
+            typeString = fieldParam.getType().getCanonicalText();
         }
 
         if (!Strings.isBlank(typeString)) {
