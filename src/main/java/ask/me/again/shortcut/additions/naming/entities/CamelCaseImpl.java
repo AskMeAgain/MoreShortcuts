@@ -4,13 +4,6 @@ import ask.me.again.shortcut.additions.naming.NamingSchemeUtils;
 
 public class CamelCaseImpl implements NamingScheme {
 
-  private static final String PATTERN = "[a-z]+((\\d)|([A-Z0-9][a-z0-9]+))*([A-Z])?";
-
-  @Override
-  public boolean isOfType(String text) {
-    return text.matches(PATTERN);
-  }
-
   @Override
   public String apply(String text) {
     var separator = NamingSchemeUtils.findSeparator(text);

@@ -14,15 +14,6 @@ public class NamingSchemeUtils {
       new DotCaseImpl()
   );
 
-  public static int findScheme(String text) {
-    for (int i = 0; i < SCHEMES.size(); i++) {
-      if (SCHEMES.get(i).isOfType(text)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   public static String applyNext(String text, int i) {
     var index = (i + 1) % SCHEMES.size();
     return SCHEMES.get(index).apply(text);

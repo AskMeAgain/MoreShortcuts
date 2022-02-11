@@ -8,12 +8,17 @@ import com.intellij.openapi.util.TextRange;
 import org.jetbrains.annotations.NotNull;
 
 public class NamingSchemeAction extends AnAction {
+
+  private static int index = 0;
+
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
     var document = editor.getDocument();
 
     var project = e.getProject();
+
+    ++index;
 
     editor.getCaretModel().runForEachCaret(caret -> {
 
@@ -22,8 +27,7 @@ public class NamingSchemeAction extends AnAction {
       var text = document.getText(TextRange.from(start, end - start));
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
-            var schemeIndex = NamingSchemeUtils.findScheme(text);
-            var newText = NamingSchemeUtils.applyNext(text, schemeIndex);
+            var newText = NamingSchemeUtils.applyNext(text, index);
             document.replaceString(start, end, newText);
           }
       );

@@ -4,13 +4,6 @@ import ask.me.again.shortcut.additions.naming.NamingSchemeUtils;
 
 public class SnakeCaseImpl implements NamingScheme {
 
-  private static final String PATTERN = "^[A-Z]+(?:[_][A-Z]+)*$";
-
-  @Override
-  public boolean isOfType(String text) {
-    return text.matches(PATTERN);
-  }
-
   @Override
   public String apply(String text) {
 

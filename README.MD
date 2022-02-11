@@ -120,4 +120,6 @@ PS: this does also work for characters, just insert A or a to count in uppercase
 ## NamingSchemeCycling
 
 Ever needed to switch naming schemes of a selection? **CTRL + SHIFT + ALT + U** and the selection will cycle through 
-naming schemes. Currently supported are: **camelCase, dot.case, PascalCase, SNAKE_CASE, doener-case**
+naming schemes. Currently supported are: **camelCase, dot.case, PascalCase, SNAKE_CASE and doener-case**.
+
+![namingscheme](namingscheme.gif)
