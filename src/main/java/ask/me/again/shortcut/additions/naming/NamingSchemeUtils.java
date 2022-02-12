@@ -8,8 +8,8 @@ public class NamingSchemeUtils {
 
   private static final List<NamingScheme> SCHEMES = List.of(
       new SnakeCaseImpl(),
-      new DoenerCaseImpl(),
       new CamelCaseImpl(),
+      new DoenerCaseImpl(),
       new PascalCaseImpl(),
       new DotCaseImpl()
   );

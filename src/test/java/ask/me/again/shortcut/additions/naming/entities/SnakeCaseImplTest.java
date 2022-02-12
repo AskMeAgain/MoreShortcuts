@@ -9,27 +9,24 @@ class SnakeCaseImplTest {
 
   @ParameterizedTest
   @CsvSource({
-      "SNAKE_CASE_TEST,true",
-      "snake_case_test,false",
-      "snake_caSe_test,false",
-      "snake.case.test,false",
-      "snake.caSe.test,false",
-      "snake-case-test,false",
-      "snake-caSe-test,false",
-      "snakeCaseTest,false",
-      "SnakeCaseTest,false"
+      "SNAKE_CASE_TEST",
+      "snake_case_test",
+      "snake_caSe_test",
+      "snake.case.test",
+      "snake.caSe.test",
+      "snake-case-test",
+      "snake-caSe-test",
+      "snakeCaseTest",
+      "SnakeCaseTest"
   })
-  void apply(String input, boolean isOfType) {
+  void apply(String input) {
     //Arrange --------------------------------------------------------------------------------
     var snakeCase = new SnakeCaseImpl();
 
     //Act ------------------------------------------------------------------------------------
     var snakeCaseResult = snakeCase.apply(input);
-    var resultApplicable = snakeCase.isOfType(input);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals("SNAKE_CASE_TEST", snakeCaseResult);
-    assertEquals(isOfType, resultApplicable);
-
   }
 }

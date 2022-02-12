@@ -9,26 +9,23 @@ class DoenerCaseImplTest {
 
   @ParameterizedTest
   @CsvSource({
-      "doener_case_test,false",
-      "doener_caSe_test,false",
-      "doener.case.test,false",
-      "doener.caSe.test,false",
-      "doener-case-test,true",
-      "doener-caSe-test,false",
-      "doenerCaseTest,false",
-      "DoenerCaseTest,false"
+      "doener_case_test",
+      "doener_caSe_test",
+      "doener.case.test",
+      "doener.caSe.test",
+      "doener-case-test",
+      "doener-caSe-test",
+      "doenerCaseTest",
+      "DoenerCaseTest"
   })
-  void apply(String input, boolean isOfType) {
+  void apply(String input) {
     //Arrange --------------------------------------------------------------------------------
     var doenerCase = new DoenerCaseImpl();
 
     //Act ------------------------------------------------------------------------------------
     var snakeCaseResult = doenerCase.apply(input);
-    var resultApplicable = doenerCase.isOfType(input);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals("doener-case-test", snakeCaseResult);
-    assertEquals(isOfType, resultApplicable);
-
   }
 }

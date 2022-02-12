@@ -1,0 +1,4 @@
+camelCaseTest
+camelCaseTest
+camelCaseTest3
+camelCas2eTest

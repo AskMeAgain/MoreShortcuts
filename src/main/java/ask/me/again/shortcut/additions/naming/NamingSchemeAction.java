@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class NamingSchemeAction extends AnAction {
 
-  private static int index = 0;
+  public static int index = 0;
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {

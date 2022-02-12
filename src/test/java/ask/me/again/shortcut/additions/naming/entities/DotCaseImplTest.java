@@ -9,14 +9,14 @@ class DotCaseImplTest {
 
   @ParameterizedTest
   @CsvSource({
-      "dot_case_test,false",
-      "dot_caSe_test,false",
-      "dot.case.test,true",
-      "dot.caSe.test,false",
-      "dot-case-test,false",
-      "dot-caSe-test,false",
-      "dotCaseTest,false",
-      "DotCaseTest,false"
+      "dot_case_test",
+      "dot_caSe_test",
+      "dot.case.test",
+      "dot.caSe.test",
+      "dot-case-test",
+      "dot-caSe-test",
+      "dotCaseTest",
+      "DotCaseTest"
   })
   void apply(String input, boolean isOfType) {
     //Arrange --------------------------------------------------------------------------------
@@ -24,11 +24,8 @@ class DotCaseImplTest {
 
     //Act ------------------------------------------------------------------------------------
     var snakeCaseResult = dotCase.apply(input);
-    var resultApplicable = dotCase.isOfType(input);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals("dot.case.test", snakeCaseResult);
-    assertEquals(isOfType, resultApplicable);
-
   }
 }

@@ -9,17 +9,17 @@ class CamelCaseImplTest {
 
   @ParameterizedTest
   @CsvSource({
-      "camel_case_test,false",
-      "Camel_case_test,false",
-      "camel_Case_Test,false",
-      "camel.case.test,false",
-      "camel.caSe.test,false",
-      "Camel.caSe.test,false",
-      "camel-case-test,false",
-      "camel-caSe-test,false",
-      "Camel-caSe-test,false",
-      "camelCaseTest,true",
-      "CamelCaseTest,false"
+      "camel_case_test",
+      "Camel_case_test",
+      "camel_Case_Test",
+      "camel.case.test",
+      "camel.caSe.test",
+      "Camel.caSe.test",
+      "camel-case-test",
+      "camel-caSe-test",
+      "Camel-caSe-test",
+      "camelCaseTest",
+      "CamelCaseTest"
   })
   void apply(String input, boolean isOfType) {
     //Arrange --------------------------------------------------------------------------------
@@ -27,11 +27,8 @@ class CamelCaseImplTest {
 
     //Act ------------------------------------------------------------------------------------
     var snakeCaseResult = camelCase.apply(input);
-    var resultApplicable = camelCase.isOfType(input);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals("camelCaseTest", snakeCaseResult);
-    assertEquals(isOfType, resultApplicable);
-
   }
 }
