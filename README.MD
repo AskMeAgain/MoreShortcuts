@@ -119,7 +119,22 @@ PS: this does also work for characters, just insert A or a to count in uppercase
 
 ## NamingSchemeCycling
 
-Ever needed to switch naming schemes of a selection? **CTRL + SHIFT + ALT + U** and the selection will cycle through 
+Ever needed to switch naming schemes of a selection? **CTRL + SHIFT + ALT + U** and the selection will cycle through
 naming schemes. Currently supported are: **camelCase, dot.case, PascalCase, SNAKE_CASE and doener-case**.
 
 ![namingscheme](namingscheme.gif)
+
+----------------------
+
+## SmartPaste
+
+Copy some code and paste it onto a selected text via **ALT + V**. Depending on the content of the clipboard and the text
+selection a different behaviour occurs (with multi cursor support!):
+
+| Selection                  | Clipboard              | Result                                                      |
+|----------------------------|------------------------|-------------------------------------------------------------|
+| "abc";                     | coolMethod(            | coolMethod("abc");                                          |
+| coolMethod("abc");         | "def"                  | coolMethod("def");                                          |
+| public void coolMethod() { | var newString = "abc"; | public void coolMethod { <br/>var newString = "abc"; <br/>} |
+
+![smartpaste](smartinsertion.gif)

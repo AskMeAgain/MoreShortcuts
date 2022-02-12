@@ -15,23 +15,23 @@ public class IntroduceMockVariableTest extends SimpleRefactoringTestBase {
   @TestFactory
   public Iterable<DynamicTest> introduceMockVariable(TestInfo testInfo) {
     return dynamicTestsWithIterable(testInfo,
-        "ConstructorMethodCall",
-        "ConstructorNoResultMethodCall",
-        "VariableMethodCall",
-        "FieldMethodCall",
-        "StaticMethodCall1",
-        "StaticMethodCall2",
-        "NonNullParameter1",
-        "NonNullParameter2",
-        "FieldNoResultMethodCall",
-        "BuilderVariableMethodCall",
-        "BuilderVariableNoResultMethodCall",
-        "BuilderFieldNoResultMethodCall",
-        "BuilderFieldMethodCall",
-        "ConstructorCall",
-        "SameParameterName",
-        "NoResultConstructorCall",
-        "GenericMethodCall"
+        "ConstructorMethodCall","",
+        "ConstructorNoResultMethodCall","",
+        "VariableMethodCall","",
+        "FieldMethodCall","",
+        "StaticMethodCall1","",
+        "StaticMethodCall2","",
+        "NonNullParameter1","",
+        "NonNullParameter2","",
+        "FieldNoResultMethodCall","",
+        "BuilderVariableMethodCall","",
+        "BuilderVariableNoResultMethodCall","",
+        "BuilderFieldNoResultMethodCall","",
+        "BuilderFieldMethodCall","",
+        "ConstructorCall","",
+        "SameParameterName","",
+        "NoResultConstructorCall","",
+        "GenericMethodCall",""
     );
   }
 }

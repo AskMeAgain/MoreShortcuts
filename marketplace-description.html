@@ -114,3 +114,33 @@ void example() {
     THIS_IS_A_COOL_TEST_IN_CAMEL_CASE
 </pre>
 </div>
+
+<div>
+    <h3>SmartPaste (ALT + V)</h3>
+    Copy some code and paste it onto a selected text via shortcut. Depending on the content of the clipboard and the text
+    selection a different behaviour occurs (with multi cursor support!).
+
+    <table>
+        <tr>
+            <th>Selection</th>
+            <th>Clipboard</th>
+            <th>Result</th>
+        </tr>
+        <tr>
+            <td>"abc";</td>
+            <td>coolMethod( </td>
+            <td>coolMethod("abc"); </td>
+        </tr>
+        <tr>
+            <td>coolMethod("abc");</td>
+            <td>"def"</td>
+            <td>coolMethod("def");</td>
+        </tr>
+        <tr>
+            <td>public void coolMethod() {</td>
+            <td>var newString = "abc";</td>
+            <td>public void coolMethod { <br/>var newString = "abc"; <br/>}</td>
+        </tr>
+    </table>
+</div>
+

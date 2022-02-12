@@ -8,30 +8,30 @@ import org.junit.jupiter.api.TestInfo;
 public class IntroduceMockFieldTest extends SimpleRefactoringTestBase {
 
   @Override
-  public String getAction(){
+  public String getAction() {
     return "ask.me.again.shortcut.additions.introducemock.field";
   }
 
   @TestFactory
   public Iterable<DynamicTest> introduceMockField(TestInfo testInfo) {
     return dynamicTestsWithIterable(testInfo,
-        "ConstructorMethodCall",
-        "VariableMethodCall",
-        "FieldMethodCall",
-        "StaticMethodCall1",
-        "StaticMethodCall2",
-        "NonNullParameter1",
-        "NonNullParameter2",
-        "ConstructorNoResultMethodCall",
-        "FieldNoResultMethodCall",
-        "BuilderVariableMethodCall",
-        "BuilderVariableNoResultMethodCall",
-        "BuilderFieldNoResultMethodCall",
-        "BuilderFieldMethodCall",
-        "ConstructorCall",
-        "NoResultConstructorCall",
-        "SameParameterName",
-        "GenericMethodCall"
+        "ConstructorMethodCall", "",
+        "VariableMethodCall", "",
+        "FieldMethodCall", "",
+        "StaticMethodCall1", "",
+        "StaticMethodCall2", "",
+        "NonNullParameter1", "",
+        "NonNullParameter2", "",
+        "ConstructorNoResultMethodCall", "",
+        "FieldNoResultMethodCall", "",
+        "BuilderVariableMethodCall", "",
+        "BuilderVariableNoResultMethodCall", "",
+        "BuilderFieldNoResultMethodCall", "",
+        "BuilderFieldMethodCall", "",
+        "ConstructorCall", "",
+        "NoResultConstructorCall", "",
+        "SameParameterName", "",
+        "GenericMethodCall", ""
     );
   }
 }

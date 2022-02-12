@@ -1,7 +1,6 @@
-package ask.me.again.shortcut.additions.naming.entities;
+package ask.me.again.shortcut.additions.naming;
 
 import ask.me.again.shortcut.additions.introducemock.utils.SimpleRefactoringTestBase;
-import ask.me.again.shortcut.additions.naming.NamingSchemeAction;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInfo;
@@ -17,11 +16,11 @@ public class CyclingNamingSchemeActionTest extends SimpleRefactoringTestBase {
   public Iterable<DynamicTest> cyclingNamingScheme(TestInfo testInfo) {
     NamingSchemeAction.index = -2;
     return dynamicTestsWithIterable(testInfo,
-        "SnakeCase",
-        "CamelCase",
-        "DoenerCase",
-        "PascalCase",
-        "DotCase"
+        "SnakeCase", "",
+        "CamelCase", "",
+        "DoenerCase", "",
+        "PascalCase", "",
+        "DotCase", ""
     );
   }
 }

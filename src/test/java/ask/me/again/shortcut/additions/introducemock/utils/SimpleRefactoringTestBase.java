@@ -1,13 +1,14 @@
 package ask.me.again.shortcut.additions.introducemock.utils;
 
+import com.intellij.ide.CopyPasteManagerEx;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.intellij.util.ui.TextTransferable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestInfo;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixtureTestCase {
 
@@ -16,12 +17,18 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
   public Iterable<DynamicTest> dynamicTestsWithIterable(TestInfo testInfo, String... testcases) {
     var testName = testInfo.getTestMethod().get().getName();
 
-    return Arrays.stream(testcases)
-        .map(x -> createDynamicTest(testName, x))
-        .collect(Collectors.toList());
+    var result = new ArrayList<DynamicTest>();
+    for (int i = 0; i < testcases.length; i++, i++) {
+      var x = testcases[i];
+      var y = testcases[i + 1];
+      var test = createDynamicTest(testName, x, y);
+      result.add(test);
+    }
+
+    return result;
   }
 
-  private DynamicTest createDynamicTest(String testClassName, String caseName) {
+  private DynamicTest createDynamicTest(String testClassName, String caseName, String clipboard) {
     return DynamicTest.dynamicTest(caseName, () ->
     {
       myFixture.configureByFiles(
@@ -31,6 +38,7 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
           "/src/test/resources/defaults/mock.java"
       );
 
+      CopyPasteManagerEx.getInstance().setContents(new TextTransferable(clipboard));
       myFixture.performEditorAction(getAction());
       myFixture.checkResultByFile(String.format("/src/test/resources/%s/%s/expected.java", testClassName, caseName));
     });

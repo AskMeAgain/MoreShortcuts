@@ -55,7 +55,13 @@
                     class="ask.me.again.shortcut.additions.naming.NamingSchemeAction"
                     text="Cycle naming scheme"
                     description="Iterates all naming schemes">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift u" />
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift u"/>
+            </action>
+            <action id="ask.me.again.shortcut.additions.smartpaste.SmartPasteAction"
+                    class="ask.me.again.shortcut.additions.smartpaste.SmartPasteAction"
+                    text="Smart pasting"
+                    description="Pastes text from clipboard and replaces selection smart">
+                <keyboard-shortcut keymap="$default" first-keystroke="alt v"/>
             </action>
         </group>
     </actions>

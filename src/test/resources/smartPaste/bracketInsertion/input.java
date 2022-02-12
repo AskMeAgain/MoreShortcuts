@@ -1,0 +1,1 @@
+<selection>coolMethod("abc");</selection>
