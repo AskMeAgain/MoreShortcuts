@@ -1,0 +1,1 @@
+coolMethod("def");

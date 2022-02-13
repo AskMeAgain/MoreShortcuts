@@ -19,9 +19,9 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
 
     var result = new ArrayList<DynamicTest>();
     for (int i = 0; i < testcases.length; i++, i++) {
-      var x = testcases[i];
-      var y = testcases[i + 1];
-      var test = createDynamicTest(testName, x, y);
+      var caseName = testcases[i];
+      var clipboard = testcases[i + 1];
+      var test = createDynamicTest(testName, caseName, clipboard);
       result.add(test);
     }
 

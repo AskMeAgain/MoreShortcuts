@@ -16,7 +16,10 @@ public class SmartPasteTest extends SimpleRefactoringTestBase {
   public Iterable<DynamicTest> smartPaste(TestInfo testInfo) {
 
     return dynamicTestsWithIterable(testInfo,
-        "bracketInsertion","\"def\""
+        "bracketInsertion","\"def\"",
+        "bracketInsertion2","if(true){",
+        "methodOrigin","coolMethod(",
+        "methodTarget","\"def\""
     );
   }
 }
