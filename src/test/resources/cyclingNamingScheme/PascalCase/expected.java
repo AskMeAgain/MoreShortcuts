@@ -1,4 +1,1 @@
-PascalCaseTest
-PascalCaseTest
 PascalCaseTest3
-PascalCas2eTest

@@ -21,7 +21,7 @@ class CamelCaseImplTest {
       "camelCaseTest",
       "CamelCaseTest"
   })
-  void apply(String input, boolean isOfType) {
+  void apply(String input) {
     //Arrange --------------------------------------------------------------------------------
     var camelCase = new CamelCaseImpl();
 

@@ -18,7 +18,7 @@ class DotCaseImplTest {
       "dotCaseTest",
       "DotCaseTest"
   })
-  void apply(String input, boolean isOfType) {
+  void apply(String input) {
     //Arrange --------------------------------------------------------------------------------
     var dotCase = new DotCaseImpl();
 
