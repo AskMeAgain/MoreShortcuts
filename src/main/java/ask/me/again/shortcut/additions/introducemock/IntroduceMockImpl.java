@@ -4,7 +4,6 @@ import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -60,6 +59,8 @@ public class IntroduceMockImpl extends AnAction {
         PsiHelpers.print(project, "Could not get the refactoring type out of the current block :(");
       } catch (PsiTypeNotFoundException ptnfe) {
         PsiHelpers.print(project, "Could not find psi type :(");
+      } catch (UnsupportedOperationException exception) {
+        PsiHelpers.print(project, "Message: " + exception.getMessage());
       } catch (Exception exception) {
         var sw = new StringWriter();
         var pw = new PrintWriter(sw);
