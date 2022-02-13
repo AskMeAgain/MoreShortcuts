@@ -1,0 +1,1 @@
+anotherMethod(<selection>"abc"</selection>);

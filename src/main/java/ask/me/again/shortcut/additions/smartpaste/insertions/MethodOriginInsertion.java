@@ -21,6 +21,7 @@ public class MethodOriginInsertion implements SmartInsertion {
     var textBeforeBracket = clipboard.substring(0, clipboard.indexOf(startMarker) + 1);
     var textAfterBracket = clipboard.substring(clipboard.indexOf(endMarker));
 
-    return SmartInsertionUtils.normalizeSemicolon(textBeforeBracket + originalText + textAfterBracket);
+    var newText = textBeforeBracket + originalText + textAfterBracket;
+    return SmartInsertionUtils.normalizeSemicolon(newText, clipboard);
   }
 }

@@ -21,7 +21,8 @@ public class BracketsAtEndInsertion implements SmartInsertion {
     var bracketEnd = clipboard.charAt(clipboard.length() - 1);
 
     if (bracketEnd == '(') {
-      return SmartInsertionUtils.normalizeSemicolon(clipboard + originalText + bracketMap.get(bracketEnd));
+      var newText = clipboard + originalText + bracketMap.get(bracketEnd);
+      return SmartInsertionUtils.normalizeSemicolon(newText, clipboard);
     }
 
     return clipboard + "\n" + originalText + "\n" + bracketMap.get(bracketEnd);

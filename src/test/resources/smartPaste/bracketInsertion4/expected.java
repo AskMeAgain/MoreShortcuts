@@ -1,0 +1,1 @@
+anyMethod(otherMethod("asd"));

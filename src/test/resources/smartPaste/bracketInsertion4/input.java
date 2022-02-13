@@ -1,0 +1,1 @@
+anyMethod(<selection>"asd");</selection>

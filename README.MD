@@ -133,6 +133,7 @@ selection a different behaviour occurs (with multi cursor support!):
 
 | Selection                  | Clipboard              | Result                                                      |
 |----------------------------|------------------------|-------------------------------------------------------------|
+| "abc"                      | coolMethod(            | coolMethod("abc")                                           |
 | "abc";                     | coolMethod(            | coolMethod("abc");                                          |
 | coolMethod("abc");         | "def"                  | coolMethod("def");                                          |
 | public void coolMethod() { | var newString = "abc"; | public void coolMethod { <br/>var newString = "abc"; <br/>} |

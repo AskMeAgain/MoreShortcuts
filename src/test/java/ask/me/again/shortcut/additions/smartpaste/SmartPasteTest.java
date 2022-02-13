@@ -19,7 +19,9 @@ public class SmartPasteTest extends SimpleRefactoringTestBase {
         "bracketInsertion","\"def\"",
         "bracketInsertion2","if(true){",
         "methodOrigin","coolMethod(",
-        "methodTarget","\"def\""
+        "methodTarget","\"def\"",
+        "bracketInsertion3","coolMethod(",
+        "bracketInsertion4","otherMethod("
     );
   }
 }

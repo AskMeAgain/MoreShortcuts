@@ -1,1 +1,1 @@
-coolMethod("abc");
+coolMethod("abc")
