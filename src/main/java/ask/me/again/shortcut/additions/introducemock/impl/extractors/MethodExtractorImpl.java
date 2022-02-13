@@ -37,6 +37,11 @@ public class MethodExtractorImpl extends ExtractorBase {
       if (result3 != null) {
         return true;
       }
+
+      var result4 = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceParameterList.class);
+      if (result4 != null) {
+        return true;
+      }
     }
     return false;
   }
@@ -87,6 +92,11 @@ public class MethodExtractorImpl extends ExtractorBase {
     var result3 = PsiTreeUtil.getChildOfType(methodReference, PsiNewExpression.class);
     if (result3 != null) {
       return result3.getType().getCanonicalText();
+    }
+
+    var result4 = PsiTreeUtil.getChildOfType(methodReference, PsiReferenceParameterList.class);
+    if (result4 != null) {
+      throw new UnsupportedOperationException("Varargs not supported sadly :(");
     }
 
     throw new PsiTypeNotFoundException();
