@@ -51,8 +51,8 @@
                     description="start counting from X">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl 1"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.naming.NamingSchemeAction"
-                    class="ask.me.again.shortcut.additions.naming.NamingSchemeAction"
+            <action id="ask.me.again.shortcut.additions.naming.impl.NamingSchemeAction"
+                    class="ask.me.again.shortcut.additions.naming.impl.NamingSchemeAction"
                     text="Cycle naming scheme"
                     description="Iterates all naming schemes">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift u"/>

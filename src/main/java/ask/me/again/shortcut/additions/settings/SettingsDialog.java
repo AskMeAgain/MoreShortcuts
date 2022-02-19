@@ -1,6 +1,7 @@
 package ask.me.again.shortcut.additions.settings;
 
-import ask.me.again.shortcut.additions.naming.NamingSchemeSettingsPanel;
+import ask.me.again.shortcut.additions.multilinemagic.MultilineMagicSettingsPanel;
+import ask.me.again.shortcut.additions.naming.settings.NamingSchemeSettingsPanel;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -27,7 +28,7 @@ public class SettingsDialog extends DialogWrapper {
 
     this.settings = List.of(
         //new IntroduceMockSettingsPanel(),
-        //new MultilineMagicSettingsPanel(),
+        new MultilineMagicSettingsPanel(),
         //new IntroduceTextSettingsPanel(),
         new NamingSchemeSettingsPanel(PropertiesComponent.getInstance(e.getProject()))
     );

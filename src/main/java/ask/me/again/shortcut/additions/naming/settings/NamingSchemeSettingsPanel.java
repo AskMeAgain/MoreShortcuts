@@ -1,4 +1,4 @@
-package ask.me.again.shortcut.additions.naming;
+package ask.me.again.shortcut.additions.naming.settings;
 
 import ask.me.again.shortcut.additions.multilinemagic.MultilineUtils;
 import ask.me.again.shortcut.additions.settings.SettingsCreator;
@@ -9,6 +9,8 @@ import java.awt.event.ItemEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ask.me.again.shortcut.additions.naming.service.NamingSchemeService.*;
+
 public class NamingSchemeSettingsPanel implements SettingsCreator {
 
   private final PropertiesComponent instance;
@@ -17,25 +19,24 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
   public NamingSchemeSettingsPanel(PropertiesComponent propertiesComponent) {
     this.instance = propertiesComponent;
 
-    allowedNamingSchemes.put("SNAKE_CASE", getBooleanFromPersistance(computeName("SNAKE_CASE")));
-    allowedNamingSchemes.put("doener-case", getBooleanFromPersistance(computeName("doener-case")));
-    allowedNamingSchemes.put("dot.case", getBooleanFromPersistance(computeName("dot.case")));
-    allowedNamingSchemes.put("PascalCase", getBooleanFromPersistance(computeName("PascalCase")));
-    allowedNamingSchemes.put("camelCase", getBooleanFromPersistance(computeName("camelCase")));
+    SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBooleanFromPersistence(scheme.getName())));
+  }
+
+  @Override
+  public void save() {
+    allowedNamingSchemes.forEach((k, v) -> instance.setValue(computeName(k), v));
   }
 
   public static String computeName(String name) {
     return "shortcut_naming_scheme_" + name;
   }
 
-  private boolean getBooleanFromPersistance(String path) {
-    return instance.getBoolean(path, false);
-  }
-
+  @Override
   public String getName() {
     return "Naming Schemes";
   }
 
+  @Override
   public JComponent getSettingsWindow() {
     var jPanel = new JPanel(new SpringLayout());
 
@@ -52,18 +53,17 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
       jPanel.add(checkBox);
     });
 
-    MultilineUtils.makeCompactGrid(jPanel,
-        allowedNamingSchemes.size(), 1, //rows, cols
-        6, 6,        //initX, initY
-        6, 6);       //xPad, yPad
+    MultilineUtils.makeCompactGrid(
+        jPanel,
+        allowedNamingSchemes.size(), 1,
+        6, 6,
+        6, 6
+    );
 
     return jPanel;
   }
 
-  @Override
-  public void save() {
-    allowedNamingSchemes.forEach((k, v) -> {
-      instance.setValue(computeName(k), v);
-    });
+  private boolean getBooleanFromPersistence(String schemeName) {
+    return instance.getBoolean(computeName(schemeName), false);
   }
 }

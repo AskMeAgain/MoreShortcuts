@@ -1,25 +1,25 @@
 package ask.me.again.shortcut.additions.naming.entities;
 
-import ask.me.again.shortcut.additions.naming.NamingSchemeUtils;
+import ask.me.again.shortcut.additions.naming.service.NamingSchemeService;
 
 public class CamelCaseImpl implements NamingScheme {
 
   @Override
   public String apply(String text) {
-    var separator = NamingSchemeUtils.findSeparator(text);
+    var separator = findSeparator(text);
 
     switch (separator) {
       case '.':
-        var result = NamingSchemeUtils.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
+        var result = NamingSchemeService.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
             .replaceAll("\\.", "");
-        return NamingSchemeUtils.makeFirstLetterLowercase(result);
+        return NamingSchemeService.makeFirstLetterLowercase(result);
       case '_':
       case '-':
-        var result2 = NamingSchemeUtils.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
+        var result2 = NamingSchemeService.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
             .replaceAll(String.valueOf(separator), "");
-        return NamingSchemeUtils.makeFirstLetterLowercase(result2);
+        return NamingSchemeService.makeFirstLetterLowercase(result2);
       default:
-        return NamingSchemeUtils.makeFirstLetterLowercase(text);
+        return NamingSchemeService.makeFirstLetterLowercase(text);
     }
   }
 

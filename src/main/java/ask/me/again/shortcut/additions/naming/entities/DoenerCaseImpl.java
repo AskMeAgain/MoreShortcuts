@@ -1,15 +1,10 @@
 package ask.me.again.shortcut.additions.naming.entities;
 
-import ask.me.again.shortcut.additions.naming.NamingSchemeUtils;
-
 public class DoenerCaseImpl implements NamingScheme {
 
   @Override
   public String apply(String text) {
-
-    var separator = NamingSchemeUtils.findSeparator(text);
-
-    switch (separator) {
+    switch (findSeparator(text)) {
       case '_':
         return text.replaceAll("_", "-").toLowerCase();
       case '.':

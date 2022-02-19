@@ -1,26 +1,26 @@
 package ask.me.again.shortcut.additions.naming.entities;
 
-import ask.me.again.shortcut.additions.naming.NamingSchemeUtils;
+import ask.me.again.shortcut.additions.naming.service.NamingSchemeService;
 
 public class PascalCaseImpl implements NamingScheme {
 
   @Override
   public String apply(String text) {
 
-    var separator = NamingSchemeUtils.findSeparator(text);
+    var separator = findSeparator(text);
 
     switch (separator) {
       case '.':
-        var result = NamingSchemeUtils.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
+        var result = NamingSchemeService.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
             .replaceAll("\\.", "");
-        return NamingSchemeUtils.makeFirstLetterUppercase(result);
+        return NamingSchemeService.makeFirstLetterUppercase(result);
       case '_':
       case '-':
-        var result2 = NamingSchemeUtils.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
+        var result2 = NamingSchemeService.makeUpperCaseNextToSeparator(text.toLowerCase(), separator)
             .replaceAll(String.valueOf(separator), "");
-        return NamingSchemeUtils.makeFirstLetterUppercase(result2);
+        return NamingSchemeService.makeFirstLetterUppercase(result2);
       default:
-        return NamingSchemeUtils.makeFirstLetterUppercase(text);
+        return NamingSchemeService.makeFirstLetterUppercase(text);
     }
   }
 

@@ -1,15 +1,18 @@
-package ask.me.again.shortcut.additions.naming;
+package ask.me.again.shortcut.additions.naming.impl;
 
+import ask.me.again.shortcut.additions.naming.service.NamingSchemeService;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.util.TextRange;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class NamingSchemeAction extends AnAction {
 
-  public static int index = 0;
+  @VisibleForTesting
+  public static int INDEX = 0;
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
@@ -17,8 +20,9 @@ public class NamingSchemeAction extends AnAction {
     var document = editor.getDocument();
 
     var project = e.getProject();
+    var service = new NamingSchemeService(project);
 
-    ++index;
+    ++INDEX;
 
     editor.getCaretModel().runForEachCaret(caret -> {
 
@@ -27,15 +31,8 @@ public class NamingSchemeAction extends AnAction {
       var text = document.getText(TextRange.from(start, end - start));
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
-            for (int i = 0; i < NamingSchemeUtils.SCHEMES.size(); i++) {
-              var newText = NamingSchemeUtils.applyNext(text, index + i, project);
-
-              if (!newText.equals(text)) {
-                index += i;
-                document.replaceString(start, end, newText);
-                break;
-              }
-            }
+            var newText = service.applyNext(text, INDEX);
+            document.replaceString(start, end, newText);
           }
       );
     });

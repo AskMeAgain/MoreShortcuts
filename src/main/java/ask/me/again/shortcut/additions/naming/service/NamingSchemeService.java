@@ -1,45 +1,42 @@
-package ask.me.again.shortcut.additions.naming;
+package ask.me.again.shortcut.additions.naming.service;
 
+import ask.me.again.shortcut.additions.naming.settings.NamingSchemeSettingsPanel;
 import ask.me.again.shortcut.additions.naming.entities.*;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class NamingSchemeUtils {
+public class NamingSchemeService {
 
-  public static final List<NamingScheme> SCHEMES = List.of(
-      new SnakeCaseImpl(),
-      new CamelCaseImpl(),
-      new DoenerCaseImpl(),
+  private final List<NamingScheme> schemes;
+
+  public static List<NamingScheme> SCHEMES = List.of(
       new PascalCaseImpl(),
-      new DotCaseImpl()
+      new CamelCaseImpl(),
+      new DotCaseImpl(),
+      new DoenerCaseImpl(),
+      new SnakeCaseImpl()
   );
 
-  public static String applyNext(String text, int startIndex, Project project) {
+  public NamingSchemeService(Project project) {
     var instance = PropertiesComponent.getInstance(project);
 
-    return Stream.of(SCHEMES, SCHEMES)
-        .flatMap(Collection::stream)
-        .skip(startIndex % SCHEMES.size())
+    schemes = SCHEMES.stream()
         .filter(x -> instance.getBoolean(NamingSchemeSettingsPanel.computeName(x.getName())))
+        .collect(Collectors.toList());
+  }
+
+  public String applyNext(String text, int index) {
+    return Stream.of(schemes, schemes)
+        .flatMap(Collection::stream)
+        .skip(index % schemes.size())
         .map(x -> x.apply(text))
         .findFirst()
         .orElse(text);
-  }
-
-  public static Character findSeparator(String text) {
-    if (text.contains("_")) {
-      return '_';
-    } else if (text.contains("-")) {
-      return '-';
-    } else if (text.contains(".")) {
-      return '.';
-    } else {
-      return 'n';
-    }
   }
 
   public static String makeUpperCaseNextToSeparator(String text, Character separator) {
