@@ -1,12 +1,16 @@
 package ask.me.again.shortcut.additions.naming;
 
 import ask.me.again.shortcut.additions.naming.entities.*;
+import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.project.Project;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class NamingSchemeUtils {
 
-  private static final List<NamingScheme> SCHEMES = List.of(
+  public static final List<NamingScheme> SCHEMES = List.of(
       new SnakeCaseImpl(),
       new CamelCaseImpl(),
       new DoenerCaseImpl(),
@@ -14,9 +18,16 @@ public class NamingSchemeUtils {
       new DotCaseImpl()
   );
 
-  public static String applyNext(String text, int i) {
-    var index = (i + 1) % SCHEMES.size();
-    return SCHEMES.get(index).apply(text);
+  public static String applyNext(String text, int startIndex, Project project) {
+    var instance = PropertiesComponent.getInstance(project);
+
+    return Stream.of(SCHEMES, SCHEMES)
+        .flatMap(Collection::stream)
+        .skip(startIndex % SCHEMES.size())
+        .filter(x -> instance.getBoolean(NamingSchemeSettingsPanel.computeName(x.getName())))
+        .map(x -> x.apply(text))
+        .findFirst()
+        .orElse(text);
   }
 
   public static Character findSeparator(String text) {
@@ -46,12 +57,12 @@ public class NamingSchemeUtils {
     return result.toString();
   }
 
-  public static String makeFirstLetterUppercase(String text){
+  public static String makeFirstLetterUppercase(String text) {
     var firstChar = String.valueOf(text.charAt(0)).toUpperCase();
     return firstChar + text.substring(1);
   }
 
-  public static String makeFirstLetterLowercase(String text){
+  public static String makeFirstLetterLowercase(String text) {
     var firstChar = String.valueOf(text.charAt(0)).toLowerCase();
     return firstChar + text.substring(1);
   }

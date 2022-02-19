@@ -18,20 +18,18 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
     this.instance = propertiesComponent;
 
     allowedNamingSchemes.put("SNAKE_CASE", getBooleanFromPersistance(computeName("SNAKE_CASE")));
-//    allowedNamingSchemes.put("doener-case", getBooleanFromPersistance(computeName("doener-case")));
-//    allowedNamingSchemes.put("dot.case", getBooleanFromPersistance(computeName("dot.case")));
-//    allowedNamingSchemes.put("PascalCase", getBooleanFromPersistance(computeName("PascalCase")));
-//    allowedNamingSchemes.put("camelCase", getBooleanFromPersistance(computeName("camelCase")));
+    allowedNamingSchemes.put("doener-case", getBooleanFromPersistance(computeName("doener-case")));
+    allowedNamingSchemes.put("dot.case", getBooleanFromPersistance(computeName("dot.case")));
+    allowedNamingSchemes.put("PascalCase", getBooleanFromPersistance(computeName("PascalCase")));
+    allowedNamingSchemes.put("camelCase", getBooleanFromPersistance(computeName("camelCase")));
   }
 
-  private String computeName(String name) {
+  public static String computeName(String name) {
     return "shortcut_naming_scheme_" + name;
   }
 
   private boolean getBooleanFromPersistance(String path) {
-    var result = instance.getBoolean(path, false);
-    System.out.println("Persistance: " + path + " -> " + result);
-    return result;
+    return instance.getBoolean(path, false);
   }
 
   public String getName() {
@@ -48,11 +46,9 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
       checkBox.setSelected(isEnabled);
       checkBox.addItemListener(e -> {
         var v1 = e.getStateChange() == ItemEvent.SELECTED;
-        System.out.println("Voted: '" + computeName(k) + "' -> " + v1);
         allowedNamingSchemes.put(k, v1);
       });
 
-      System.out.println("On Start: '" + k + "' -> " + isEnabled);
       jPanel.add(checkBox);
     });
 
@@ -67,7 +63,6 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
   @Override
   public void save() {
     allowedNamingSchemes.forEach((k, v) -> {
-      System.out.println("Saved: '" + computeName(k) + "' -> " + v);
       instance.setValue(computeName(k), v);
     });
   }

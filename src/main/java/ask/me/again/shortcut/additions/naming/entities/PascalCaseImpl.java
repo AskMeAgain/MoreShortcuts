@@ -23,4 +23,9 @@ public class PascalCaseImpl implements NamingScheme {
         return NamingSchemeUtils.makeFirstLetterUppercase(text);
     }
   }
+
+  @Override
+  public String getName() {
+    return "PascalCase";
+  }
 }

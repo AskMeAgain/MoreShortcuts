@@ -22,4 +22,9 @@ public class CamelCaseImpl implements NamingScheme {
         return NamingSchemeUtils.makeFirstLetterLowercase(text);
     }
   }
+
+  @Override
+  public String getName() {
+    return "camelCase";
+  }
 }

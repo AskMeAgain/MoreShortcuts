@@ -27,8 +27,15 @@ public class NamingSchemeAction extends AnAction {
       var text = document.getText(TextRange.from(start, end - start));
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
-            var newText = NamingSchemeUtils.applyNext(text, index);
-            document.replaceString(start, end, newText);
+            for (int i = 0; i < NamingSchemeUtils.SCHEMES.size(); i++) {
+              var newText = NamingSchemeUtils.applyNext(text, index + i, project);
+
+              if (!newText.equals(text)) {
+                index += i;
+                document.replaceString(start, end, newText);
+                break;
+              }
+            }
           }
       );
     });

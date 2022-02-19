@@ -20,4 +20,9 @@ public class DotCaseImpl implements NamingScheme {
         return (text.charAt(0) + text.substring(1).replaceAll("([A-Z])", ".$1")).toLowerCase();
     }
   }
+
+  @Override
+  public String getName() {
+    return "dot.case";
+  }
 }

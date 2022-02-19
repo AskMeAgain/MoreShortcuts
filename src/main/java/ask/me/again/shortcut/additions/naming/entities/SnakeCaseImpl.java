@@ -20,4 +20,9 @@ public class SnakeCaseImpl implements NamingScheme {
         return (text.charAt(0) + text.substring(1).replaceAll("([A-Z])", "_$1")).toUpperCase();
     }
   }
+
+  @Override
+  public String getName() {
+    return "SNAKE_CASE";
+  }
 }
