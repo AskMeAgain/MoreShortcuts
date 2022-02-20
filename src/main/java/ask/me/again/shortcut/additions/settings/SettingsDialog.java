@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.settings;
 
+import ask.me.again.shortcut.additions.mockswitchtype.settings.SwitchMockVariantSettingsPanel;
 import ask.me.again.shortcut.additions.multilinemagic.settings.MultilineMagicSettingsPanel;
 import ask.me.again.shortcut.additions.naming.settings.NamingSchemeSettingsPanel;
 import com.intellij.ide.util.PropertiesComponent;
@@ -32,6 +33,7 @@ public class SettingsDialog extends DialogWrapper {
         //new IntroduceMockSettingsPanel(),
         new MultilineMagicSettingsPanel(instance),
         //new IntroduceTextSettingsPanel(),
+        new SwitchMockVariantSettingsPanel(instance),
         new NamingSchemeSettingsPanel(instance)
     );
 

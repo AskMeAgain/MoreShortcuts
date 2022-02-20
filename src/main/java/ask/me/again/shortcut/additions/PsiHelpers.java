@@ -21,7 +21,7 @@ public class PsiHelpers {
         Messages.showMessageDialog(project, message, "Error x(", null);
     }
 
-    public static PsiClass getClassFromString(Project project, String name) throws ClassFromTypeNotFoundException {
+    public static PsiClass getClassFromString(Project project, String name) {
 
         //substring until generic -> (char)60 == '<'
         int beginIndex = name.indexOf(60);

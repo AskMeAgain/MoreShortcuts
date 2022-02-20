@@ -69,8 +69,8 @@
                     description="Open Settings menue">
                 <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl shift m"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.mockswitchtype.SwitchMockingVariantAction"
-                    class="ask.me.again.shortcut.additions.mockswitchtype.SwitchMockingVariantAction"
+            <action id="ask.me.again.shortcut.additions.mockswitchtype.impl.SwitchMockingVariantAction"
+                    class="ask.me.again.shortcut.additions.mockswitchtype.impl.SwitchMockingVariantAction"
                     text="Mock Switch Type"
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl s"/>

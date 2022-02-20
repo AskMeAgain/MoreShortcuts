@@ -24,6 +24,10 @@ public abstract class SettingsCreator {
     return instance.getBoolean(computeName(schemeName), false);
   }
 
+  protected boolean getBoolean(String schemeName, Boolean defaultValue) {
+    return instance.getBoolean(computeName(schemeName), defaultValue);
+  }
+
   protected String getString(String schemeName, String defaultValue) {
     return getString(instance, computeName(schemeName), defaultValue);
   }
