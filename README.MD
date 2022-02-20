@@ -139,3 +139,12 @@ selection a different behaviour occurs (with multi cursor support!):
 | public void coolMethod() { | var newString = "abc"; | public void coolMethod { <br/>var newString = "abc"; <br/>} |
 
 ![smartpaste](smartinsertion.gif)
+
+----------------------
+
+## Switch Mockito Mocking Variant
+
+Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mockito.doReturn mock method variants via **CTRL + M, CTRL + S**.
+
+![mockvariant](mockvariant.gif)
+

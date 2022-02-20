@@ -116,6 +116,21 @@ void example() {
 </div>
 
 <div>
+    <h3>Switch Mockito Mocking Variant (CTRL + M, CTRL + S)</h3>
+
+    Put cursor (multi cursors!) on a line and switch between Mockito.when and Mockito.doReturn mock method variants
+
+    <p>Before</p>
+    <pre>
+    (cursor)Mockito.doReturn("abcd").when(mockName).getStuff("test", "test", "test");
+    (cursor)Mockito.when(mockName.getStuff("Test2")).thenReturn("abcd");</pre>
+    <p>After</p>
+    <pre>
+    Mockito.when(mockName.getStuff("test", "test", "test")).thenReturn("abcd");
+    Mockito.doReturn("abcd").when(mockName).getStuff("Test2");</pre>
+</div>
+
+<div>
     <h3>SmartPaste (ALT + V)</h3>
     Copy some code and paste it onto a selected text via shortcut. Depending on the content of the clipboard and the text
     selection a different behaviour occurs (with multi cursor support!).
