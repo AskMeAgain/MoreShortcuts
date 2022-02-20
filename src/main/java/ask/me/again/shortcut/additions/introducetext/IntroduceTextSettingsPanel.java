@@ -2,10 +2,15 @@ package ask.me.again.shortcut.additions.introducetext;
 
 import ask.me.again.shortcut.additions.multilinemagic.MultilineUtils;
 import ask.me.again.shortcut.additions.settings.SettingsCreator;
+import com.intellij.ide.util.PropertiesComponent;
 
 import javax.swing.*;
 
-public class IntroduceTextSettingsPanel implements SettingsCreator {
+public class IntroduceTextSettingsPanel extends SettingsCreator {
+
+  public IntroduceTextSettingsPanel(PropertiesComponent propertiesComponent) {
+      super(propertiesComponent);
+  }
 
   public String getName(){
     return "Naming Schemes";

@@ -2,10 +2,15 @@ package ask.me.again.shortcut.additions.introducemock;
 
 import ask.me.again.shortcut.additions.multilinemagic.MultilineUtils;
 import ask.me.again.shortcut.additions.settings.SettingsCreator;
+import com.intellij.ide.util.PropertiesComponent;
 
 import javax.swing.*;
 
-public class IntroduceMockSettingsPanel implements SettingsCreator {
+public class IntroduceMockSettingsPanel extends SettingsCreator {
+
+  public IntroduceMockSettingsPanel(PropertiesComponent propertiesComponent) {
+      super(propertiesComponent);
+  }
 
   public String getName(){
     return "Introduce Mock/Field";

@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.naming.service;
 
-import ask.me.again.shortcut.additions.naming.settings.NamingSchemeSettingsPanel;
 import ask.me.again.shortcut.additions.naming.entities.*;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
@@ -9,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class NamingSchemeService {
 
@@ -26,7 +27,7 @@ public class NamingSchemeService {
     var instance = PropertiesComponent.getInstance(project);
 
     schemes = SCHEMES.stream()
-        .filter(x -> instance.getBoolean(NamingSchemeSettingsPanel.computeName(x.getName())))
+        .filter(x -> instance.getBoolean(computeName(x.getName())))
         .collect(Collectors.toList());
   }
 

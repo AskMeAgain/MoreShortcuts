@@ -1,5 +1,8 @@
-package ask.me.again.shortcut.additions.multilinemagic;
+package ask.me.again.shortcut.additions.multilinemagic.impl;
 
+import ask.me.again.shortcut.additions.multilinemagic.MultilineUtils;
+import ask.me.again.shortcut.additions.settings.SettingsCreator;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -9,14 +12,15 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
+import static ask.me.again.shortcut.additions.multilinemagic.settings.MultilineMagicSettingsPanel.MULTILINE_MAGIC_DEFAULT_INTERVAL;
+import static ask.me.again.shortcut.additions.multilinemagic.settings.MultilineMagicSettingsPanel.MULTILINE_MAGIC_DEFAULT_VALUE;
+
 @NoArgsConstructor
 public class MultilineCountAction extends AnAction {
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
-    var dialog = new ConnectServerDialog(e);
-
-    dialog.show();
+    new ConnectServerDialog(e).show();
   }
 
   public static class ConnectServerDialog extends DialogWrapper {
@@ -57,17 +61,21 @@ public class MultilineCountAction extends AnAction {
     @Override
     protected @Nullable JComponent createCenterPanel() {
       JPanel p = new JPanel(new SpringLayout());
+      var instance = PropertiesComponent.getInstance(e.getProject());
 
       var l = new JLabel("Start", JLabel.TRAILING);
-      p.add(l);
-      startField = new JTextField("0", 10);
-      l.setLabelFor(startField);
-      p.add(startField);
-
       var l2 = new JLabel("Interval", JLabel.TRAILING);
+
+      p.add(l);
       p.add(l2);
-      endField = new JTextField(10);
+
+      startField = new JTextField(SettingsCreator.getString(instance, MULTILINE_MAGIC_DEFAULT_VALUE, "0"), 10);
+      endField = new JTextField(SettingsCreator.getString(instance, MULTILINE_MAGIC_DEFAULT_INTERVAL, "0"), 10);
+
+      l.setLabelFor(startField);
       l.setLabelFor(endField);
+
+      p.add(startField);
       p.add(endField);
 
       MultilineUtils.makeCompactGrid(p,

@@ -10,25 +10,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ask.me.again.shortcut.additions.naming.service.NamingSchemeService.*;
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
-public class NamingSchemeSettingsPanel implements SettingsCreator {
+public class NamingSchemeSettingsPanel extends SettingsCreator {
 
-  private final PropertiesComponent instance;
   private final Map<String, Boolean> allowedNamingSchemes = new HashMap<>();
 
   public NamingSchemeSettingsPanel(PropertiesComponent propertiesComponent) {
-    this.instance = propertiesComponent;
+    super(propertiesComponent);
 
-    SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBooleanFromPersistence(scheme.getName())));
+    SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBoolean(scheme.getName())));
   }
 
   @Override
   public void save() {
-    allowedNamingSchemes.forEach((k, v) -> instance.setValue(computeName(k), v));
-  }
-
-  public static String computeName(String name) {
-    return "shortcut_naming_scheme_" + name;
+    allowedNamingSchemes.forEach((k, v) -> setString(computeName(k), v));
   }
 
   @Override
@@ -61,9 +57,5 @@ public class NamingSchemeSettingsPanel implements SettingsCreator {
     );
 
     return jPanel;
-  }
-
-  private boolean getBooleanFromPersistence(String schemeName) {
-    return instance.getBoolean(computeName(schemeName), false);
   }
 }

@@ -1,12 +1,42 @@
 package ask.me.again.shortcut.additions.settings;
 
+import com.intellij.ide.util.PropertiesComponent;
+
 import javax.swing.*;
 
-public interface SettingsCreator {
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
-  String getName();
+public abstract class SettingsCreator {
 
-  JComponent getSettingsWindow();
+  private final PropertiesComponent instance;
 
-  void save();
+  public SettingsCreator(PropertiesComponent propertiesComponent) {
+    this.instance = propertiesComponent;
+  }
+
+  public abstract String getName();
+
+  public abstract JComponent getSettingsWindow();
+
+  public abstract void save();
+
+  protected boolean getBoolean(String schemeName) {
+    return instance.getBoolean(computeName(schemeName), false);
+  }
+
+  protected String getString(String schemeName, String defaultValue) {
+    return getString(instance, computeName(schemeName), defaultValue);
+  }
+
+  protected void setString(String schemeName, Boolean value) {
+    instance.setValue(computeName(schemeName), value);
+  }
+
+  protected void setString(String schemeName, String value) {
+    instance.setValue(computeName(schemeName), value);
+  }
+
+  public static String getString(PropertiesComponent instance, String schemeName, String defaultValue) {
+    return instance.getValue(computeName(schemeName), defaultValue);
+  }
 }
