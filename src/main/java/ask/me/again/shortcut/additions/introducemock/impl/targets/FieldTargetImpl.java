@@ -13,8 +13,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
+import static ask.me.again.shortcut.additions.introducemock.IntroduceMockSettingsPanel.PRIVATE_FIELD;
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class FieldTargetImpl extends TargetBase {
+
+  String s;
+
+  private String ss;
 
   public FieldTargetImpl(PsiFile psiFile, Project project) {
     super(psiFile, project);
@@ -25,12 +31,17 @@ public class FieldTargetImpl extends TargetBase {
 
     var variableName = decapitalizeString(presentableText);
 
-    if(variableName.contains("<")){
+    if (variableName.contains("<")) {
       variableName = variableName.substring(0, variableName.indexOf("<"));
     }
 
     PsiField fieldFromText = factory.createFieldFromText(presentableText + " " + variableName + ";", null);
     fieldFromText.getModifierList().addAnnotation("Mock");
+
+    if (propertyComponent.getBoolean(computeName(PRIVATE_FIELD), false)) {
+      fieldFromText.getModifierList().add(factory.createKeyword("private"));
+    }
+
     return fieldFromText;
   }
 
@@ -52,12 +63,12 @@ public class FieldTargetImpl extends TargetBase {
             return null;
           }
           var name = x.getName();
-          if(duplicateMap.get(name) > 1){
+          if (duplicateMap.get(name) > 1) {
             var index = shortDict.getOrDefault(name, 1);
             x.setName(name + index);
             shortDict.put(name, index + 1);
             return name + index;
-          }else{
+          } else {
             return name;
           }
         })

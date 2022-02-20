@@ -5,44 +5,43 @@ import ask.me.again.shortcut.additions.settings.SettingsCreator;
 import com.intellij.ide.util.PropertiesComponent;
 
 import javax.swing.*;
+import java.awt.event.ItemEvent;
 
 public class IntroduceMockSettingsPanel extends SettingsCreator {
 
+  public static final String PRIVATE_FIELD = "private_field";
+
+  private Boolean privateFields;
+
   public IntroduceMockSettingsPanel(PropertiesComponent propertiesComponent) {
-      super(propertiesComponent);
+    super(propertiesComponent);
+    privateFields = getBoolean(PRIVATE_FIELD, false);
   }
 
-  public String getName(){
+  public String getName() {
     return "Introduce Mock/Field";
   }
 
   public JComponent getSettingsWindow() {
-    JPanel p = new JPanel(new SpringLayout());
+    var panel = new JPanel(new SpringLayout());
+    var checkBox = new JCheckBox("Make Fields private");
 
-    var l = new JLabel("Start", JLabel.TRAILING);
-    p.add(l);
-    var startField = new JTextField("0", 10);
-    l.setLabelFor(startField);
-    p.add(startField);
+    checkBox.setSelected(privateFields);
+    checkBox.addItemListener(e -> privateFields = e.getStateChange() == ItemEvent.SELECTED);
 
-    var l2 = new JLabel("Interval", JLabel.TRAILING);
-    p.add(l2);
-    var endField = new JTextField(10);
-    l.setLabelFor(endField);
-    p.add(endField);
+    panel.add(checkBox);
 
-    MultilineUtils.makeCompactGrid(p,
-        2, 2, //rows, cols
+    MultilineUtils.makeCompactGrid(
+        panel,
+        1, 1, //rows, cols
         6, 6,        //initX, initY
         6, 6);       //xPad, yPad
 
-    return p;
+    return panel;
   }
 
   @Override
   public void save() {
-    //var instance = PropertiesComponent.getInstance();
-    //instance.setValue("");
+    setString(PRIVATE_FIELD, privateFields);
   }
-
 }
