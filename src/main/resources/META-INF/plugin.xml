@@ -65,8 +65,9 @@
             </action>
             <action id="ask.me.again.shortcut.additions.settings.OpenSettingsAction"
                     class="ask.me.again.shortcut.additions.settings.OpenSettingsAction"
-                    text="Open ShortCut Addition Settings"
-                    description="Open Settings menue">
+                    text="ShortCutAdditions Settings"
+                    description="Open Settings menu">
+                <add-to-group group-id="ToolsMenu" anchor="first"/>
                 <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl shift m"/>
             </action>
             <action id="ask.me.again.shortcut.additions.mockswitchtype.impl.SwitchMockingVariantAction"
