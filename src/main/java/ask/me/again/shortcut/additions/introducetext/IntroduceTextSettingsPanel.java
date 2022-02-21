@@ -5,44 +5,44 @@ import ask.me.again.shortcut.additions.settings.SettingsCreator;
 import com.intellij.ide.util.PropertiesComponent;
 
 import javax.swing.*;
+import java.awt.event.ItemEvent;
 
 public class IntroduceTextSettingsPanel extends SettingsCreator {
 
+  public static final String MOCK_METHOD_VERIFY_STATIC_IMPORT = "mock_method_verify_static_import";
+
+  private Boolean staticImport;
+
   public IntroduceTextSettingsPanel(PropertiesComponent propertiesComponent) {
-      super(propertiesComponent);
+    super(propertiesComponent);
+    staticImport = getBoolean(MOCK_METHOD_VERIFY_STATIC_IMPORT, false);
   }
 
-  public String getName(){
-    return "Naming Schemes";
+  public String getName() {
+    return "Mock Method/Verify";
   }
 
   public JComponent getSettingsWindow() {
-    JPanel p = new JPanel(new SpringLayout());
+    var panel = new JPanel(new SpringLayout());
+    var staticImportCheckbox = new JCheckBox("Static Imports");
 
-    var l = new JLabel("asdasdasdasdas", JLabel.TRAILING);
-    p.add(l);
-    var startField = new JTextField("0", 10);
-    l.setLabelFor(startField);
-    p.add(startField);
+    staticImportCheckbox.setSelected(staticImport);
+    staticImportCheckbox.addItemListener(e -> staticImport = e.getStateChange() == ItemEvent.SELECTED);
 
-    var l2 = new JLabel("Interval", JLabel.TRAILING);
-    p.add(l2);
-    var endField = new JTextField(10);
-    l.setLabelFor(endField);
-    p.add(endField);
+    panel.add(staticImportCheckbox);
 
-    MultilineUtils.makeCompactGrid(p,
-        2, 2, //rows, cols
+    MultilineUtils.makeCompactGrid(
+        panel,
+        1, 1, //rows, cols
         6, 6,        //initX, initY
         6, 6);       //xPad, yPad
 
-    return p;
+    return panel;
   }
 
   @Override
   public void save() {
-    //var instance = PropertiesComponent.getInstance();
-    //instance.setValue("");
+    setString(MOCK_METHOD_VERIFY_STATIC_IMPORT, staticImport);
   }
 
 }

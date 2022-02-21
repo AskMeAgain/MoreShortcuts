@@ -1,6 +1,7 @@
 package ask.me.again.shortcut.additions.settings;
 
 import ask.me.again.shortcut.additions.introducemock.IntroduceMockSettingsPanel;
+import ask.me.again.shortcut.additions.introducetext.IntroduceTextSettingsPanel;
 import ask.me.again.shortcut.additions.mockswitchtype.settings.SwitchMockVariantSettingsPanel;
 import ask.me.again.shortcut.additions.multilinemagic.settings.MultilineMagicSettingsPanel;
 import ask.me.again.shortcut.additions.naming.settings.NamingSchemeSettingsPanel;
@@ -31,6 +32,7 @@ public class SettingsDialog extends DialogWrapper {
     var instance = PropertiesComponent.getInstance(e.getProject());
 
     this.settings = List.of(
+        new IntroduceTextSettingsPanel(instance),
         new IntroduceMockSettingsPanel(instance),
         new MultilineMagicSettingsPanel(instance),
         new SwitchMockVariantSettingsPanel(instance),

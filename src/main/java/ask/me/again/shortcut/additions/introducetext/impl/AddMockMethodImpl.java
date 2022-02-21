@@ -1,12 +1,14 @@
 package ask.me.again.shortcut.additions.introducetext.impl;
 
 import ask.me.again.shortcut.additions.PsiHelpers;
+import ask.me.again.shortcut.additions.commons.CommonPsiUtils;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducetext.entities.IntroduceTextMode;
 import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindAnchorException;
 import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindMethodException;
 import ask.me.again.shortcut.additions.introducetext.exceptions.MultipleAddMockMethodResultException;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -27,11 +29,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ask.me.again.shortcut.additions.introducetext.IntroduceTextSettingsPanel.MOCK_METHOD_VERIFY_STATIC_IMPORT;
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 
 @NoArgsConstructor
 public class AddMockMethodImpl extends AnAction {
 
+    private PropertiesComponent instance;
     private PsiIdentifier identifier;
     private PsiMethod override;
     private Editor editor;
@@ -64,6 +69,7 @@ public class AddMockMethodImpl extends AnAction {
         project = e.getData(CommonDataKeys.PROJECT);
         psiFile = e.getData(CommonDataKeys.PSI_FILE);
         factory = JavaPsiFacade.getElementFactory(project);
+        instance = PropertiesComponent.getInstance(project);
 
         try {
             var cursorPosition = getCursorElement();
@@ -96,10 +102,16 @@ public class AddMockMethodImpl extends AnAction {
         var template = introduceTextMode == IntroduceTextMode.MOCK_METHOD
                 ? "Mockito.when(%s.%s(%s)).thenReturn(null);"
                 : "Mockito.verify(%s).%s(%s);";
-        return String.format(template,
-                cursorElement.getText(),
-                method.getName(),
-                parameters);
+        var codeText = String.format(template,
+            cursorElement.getText(),
+            method.getName(),
+            parameters);
+
+        if (instance.getBoolean(computeName(MOCK_METHOD_VERIFY_STATIC_IMPORT), false)) {
+            codeText = codeText.replaceFirst("Mockito\\.", "");
+        }
+
+        return codeText;
     }
 
     @Nullable
@@ -133,6 +145,10 @@ public class AddMockMethodImpl extends AnAction {
                 }
             }
         });
+
+        if (instance.getBoolean(computeName(MOCK_METHOD_VERIFY_STATIC_IMPORT), false)) {
+            CommonPsiUtils.addStaticImports(psiFile, project, "verify", "when");
+        }
     }
 
 
