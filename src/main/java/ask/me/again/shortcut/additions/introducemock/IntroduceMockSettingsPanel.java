@@ -10,12 +10,15 @@ import java.awt.event.ItemEvent;
 public class IntroduceMockSettingsPanel extends SettingsCreator {
 
   public static final String PRIVATE_FIELD = "private_field";
+  public static final String INTRODUCE_MOCK_STATIC_IMPORT = "introduce_mock_static_import";
 
   private Boolean privateFields;
+  private Boolean staticImport;
 
   public IntroduceMockSettingsPanel(PropertiesComponent propertiesComponent) {
     super(propertiesComponent);
     privateFields = getBoolean(PRIVATE_FIELD, false);
+    staticImport = getBoolean(INTRODUCE_MOCK_STATIC_IMPORT, false);
   }
 
   public String getName() {
@@ -24,16 +27,21 @@ public class IntroduceMockSettingsPanel extends SettingsCreator {
 
   public JComponent getSettingsWindow() {
     var panel = new JPanel(new SpringLayout());
-    var checkBox = new JCheckBox("Make Fields private");
+    var privateFieldCheckbox = new JCheckBox("Make Fields private");
+    var staticImportCheckbox = new JCheckBox("Static Imports");
 
-    checkBox.setSelected(privateFields);
-    checkBox.addItemListener(e -> privateFields = e.getStateChange() == ItemEvent.SELECTED);
+    privateFieldCheckbox.setSelected(privateFields);
+    staticImportCheckbox.setSelected(staticImport);
 
-    panel.add(checkBox);
+    privateFieldCheckbox.addItemListener(e -> privateFields = e.getStateChange() == ItemEvent.SELECTED);
+    staticImportCheckbox.addItemListener(e -> staticImport = e.getStateChange() == ItemEvent.SELECTED);
+
+    panel.add(privateFieldCheckbox);
+    panel.add(staticImportCheckbox);
 
     MultilineUtils.makeCompactGrid(
         panel,
-        1, 1, //rows, cols
+        2, 1, //rows, cols
         6, 6,        //initX, initY
         6, 6);       //xPad, yPad
 
@@ -43,5 +51,6 @@ public class IntroduceMockSettingsPanel extends SettingsCreator {
   @Override
   public void save() {
     setString(PRIVATE_FIELD, privateFields);
+    setString(INTRODUCE_MOCK_STATIC_IMPORT, staticImport);
   }
 }

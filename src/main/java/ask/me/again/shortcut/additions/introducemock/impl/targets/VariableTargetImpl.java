@@ -11,6 +11,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
+import static ask.me.again.shortcut.additions.introducemock.IntroduceMockSettingsPanel.INTRODUCE_MOCK_STATIC_IMPORT;
+import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class VariableTargetImpl extends TargetBase {
 
@@ -25,7 +27,11 @@ public class VariableTargetImpl extends TargetBase {
       presentableText = presentableText.substring(0, presentableText.indexOf("<"));
     }
 
-    var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(String.format("Mockito.mock(%s.class)", presentableText), null);
+    var codeText = String.format("Mockito.mock(%s.class)", presentableText);
+    if (propertyComponent.getBoolean(computeName(INTRODUCE_MOCK_STATIC_IMPORT), false)) {
+      codeText = codeText.replaceFirst("Mockito\\.", "");
+    }
+    var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(codeText, null);
 
     var varType = factory.createTypeByFQClassName("var");
 
