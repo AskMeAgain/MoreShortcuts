@@ -59,7 +59,7 @@ After
 
 ----------------------
 
-## Add Mock Method
+## Add Mock Method (implements [VariableFinder](#variablefinder))
 
 Creates a mock method for the given method. Put cursor on a variable/field, execute "Add Mock Method"
 action (**CTRL + M, CTRL + M**), select a method and a mock for a method will appear. It is smart enough to find the
@@ -76,7 +76,7 @@ After
 
 ----------------------
 
-## Add Verify Method
+## Add Verify Method (implements [VariableFinder](#variablefinder))
 
 Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut (**CTRL + M, CTRL + C**)
 will introduce a correctly implemented Mockito.verify of the chosen method.
@@ -92,16 +92,6 @@ After
 
     var string = Mockito.mock(String.class);
     Mockito.verify(string).compareTo([cursor]any());
-
-----------------------
-
-## New feature: Variable finder
-
-if your cursor is not on a variable and you press a shortcut which implements the variable finder, the plugin will
-search for all possible variable declarations and will provide you with a list of possible cases to chose from. It will
-then apply the shortcut to the selected variable:
-
-![mock](mockmethod.gif)
 
 ----------------------
 
@@ -148,3 +138,12 @@ Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mock
 
 ![mockvariant](mockvariant.gif)
 
+----------------------
+
+## VariableFinder
+
+if your cursor is not on a variable and you press a shortcut which implements the variable finder, the plugin will
+search for all possible variable declarations and will provide you with a list of possible cases to chose from. It will
+then apply the shortcut to the selected variable:
+
+![mock](mockmethod.gif)

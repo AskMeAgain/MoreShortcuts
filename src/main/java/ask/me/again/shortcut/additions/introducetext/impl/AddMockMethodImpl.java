@@ -4,7 +4,6 @@ import ask.me.again.shortcut.additions.PsiHelpers;
 import ask.me.again.shortcut.additions.commons.CommonPsiUtils;
 import ask.me.again.shortcut.additions.introducemock.exceptions.ClassFromTypeNotFoundException;
 import ask.me.again.shortcut.additions.introducetext.entities.IntroduceTextMode;
-import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindAnchorException;
 import ask.me.again.shortcut.additions.introducetext.exceptions.CouldNotFindMethodException;
 import ask.me.again.shortcut.additions.introducetext.exceptions.MultipleAddMockMethodResultException;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
@@ -23,7 +22,6 @@ import com.jgoodies.common.base.Strings;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,18 +79,15 @@ public class AddMockMethodImpl extends AnAction {
             var resultText = getResultText(cursorElement, method, methodParameters);
 
             PsiElement expression = factory.createStatementFromText(resultText, null);
-            var anchor = findAnchor(cursorElement, cursorPosition);
 
             var hasParameters = !methodParameters.isBlank();
-            writeExpression(anchor, expression, hasParameters);
+            writeExpression(cursorPosition, expression, hasParameters);
             writeImportStatements(method);
 
         } catch (CouldNotFindMethodException ex) {
             createContextMenuForVariable(e, ex);
         } catch (ClassFromTypeNotFoundException ex) {
             PsiHelpers.print(project, "ClassFromTypeNotFoundException!");
-        } catch (CouldNotFindAnchorException couldNotFindAnchorException) {
-            PsiHelpers.print(project, "couldNotFindAnchorException!");
         } catch (MultipleAddMockMethodResultException ex) {
             createContextMenu(e, ex);
         }
@@ -114,7 +109,6 @@ public class AddMockMethodImpl extends AnAction {
         return codeText;
     }
 
-    @Nullable
     private PsiElement getCursorElement() {
         var simpleCursor = psiFile.findElementAt(editor.getCaretModel().getOffset());
 
@@ -192,24 +186,6 @@ public class AddMockMethodImpl extends AnAction {
                 editor.getSelectionModel().setSelection(offset, offset + 4);
             }
         });
-    }
-
-    private PsiElement findAnchor(PsiElement current, PsiElement cursor) throws CouldNotFindAnchorException {
-        for (int i = 0; i < 20; i++) {
-            if(current.getParent() instanceof PsiField){
-                return cursor;
-            }
-            if (current.getParent() instanceof PsiCodeBlock) {
-                return current;
-            }
-            current = current.getParent();
-
-            if (current instanceof PsiMethod) {
-                return PsiTreeUtil.findChildOfType(current, PsiCodeBlock.class).getFirstBodyElement();
-            }
-        }
-
-        throw new CouldNotFindAnchorException();
     }
 
     private void createContextMenu(AnActionEvent actionEvent, MultipleAddMockMethodResultException multipleResultException) {
