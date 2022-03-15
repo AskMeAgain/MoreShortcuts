@@ -9,8 +9,7 @@ import java.awt.event.ItemEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ask.me.again.shortcut.additions.naming.service.NamingSchemeService.*;
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
+import static ask.me.again.shortcut.additions.naming.service.NamingSchemeService.SCHEMES;
 
 public class NamingSchemeSettingsPanel extends SettingsCreator {
 
@@ -20,11 +19,20 @@ public class NamingSchemeSettingsPanel extends SettingsCreator {
     super(propertiesComponent);
 
     SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBoolean(scheme.getName())));
+
+    var allOff = allowedNamingSchemes.keySet().stream()
+        .noneMatch(allowedNamingSchemes::get);
+
+    if(allOff){
+      allowedNamingSchemes.keySet().forEach(key -> {
+        allowedNamingSchemes.put(key, true);
+      });
+    }
   }
 
   @Override
   public void save() {
-    allowedNamingSchemes.forEach((k, v) -> setString(computeName(k), v));
+    allowedNamingSchemes.forEach(this::setBoolean);
   }
 
   @Override
@@ -38,9 +46,8 @@ public class NamingSchemeSettingsPanel extends SettingsCreator {
 
     allowedNamingSchemes.forEach((k, v) -> {
       var checkBox = new JCheckBox(k);
-      var isEnabled = allowedNamingSchemes.get(k);
 
-      checkBox.setSelected(isEnabled);
+      checkBox.setSelected(v);
       checkBox.addItemListener(e -> {
         var v1 = e.getStateChange() == ItemEvent.SELECTED;
         allowedNamingSchemes.put(k, v1);

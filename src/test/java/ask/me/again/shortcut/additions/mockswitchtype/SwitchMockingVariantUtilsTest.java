@@ -3,7 +3,6 @@ package ask.me.again.shortcut.additions.mockswitchtype;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 class SwitchMockingVariantUtilsTest {
 
@@ -25,7 +24,6 @@ class SwitchMockingVariantUtilsTest {
   void convertLineFromCase1To22() {
     //Arrange --------------------------------------------------------------------------------
     var text = "Mockito.doReturn(resultObject).when(mock).getMockMethod(object1, object2);";
-    when(text.length()).thenReturn(null);
 
     //Act ------------------------------------------------------------------------------------
     var newText = SwitchMockingVariantUtils.convertLine(text, false);

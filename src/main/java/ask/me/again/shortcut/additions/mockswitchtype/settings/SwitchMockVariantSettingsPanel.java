@@ -20,7 +20,7 @@ public class SwitchMockVariantSettingsPanel extends SettingsCreator {
 
   @Override
   public void save() {
-    setString(IMPORT_FLAG, staticImportFlag);
+    setBoolean(IMPORT_FLAG, staticImportFlag);
   }
 
   @Override

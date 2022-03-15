@@ -50,7 +50,7 @@ public class IntroduceMockSettingsPanel extends SettingsCreator {
 
   @Override
   public void save() {
-    setString(PRIVATE_FIELD, privateFields);
-    setString(INTRODUCE_MOCK_STATIC_IMPORT, staticImport);
+    setBoolean(PRIVATE_FIELD, privateFields);
+    setBoolean(INTRODUCE_MOCK_STATIC_IMPORT, staticImport);
   }
 }

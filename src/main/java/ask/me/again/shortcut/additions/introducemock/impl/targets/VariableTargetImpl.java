@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
+import ask.me.again.shortcut.additions.settings.SettingsUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
 import static ask.me.again.shortcut.additions.introducemock.IntroduceMockSettingsPanel.INTRODUCE_MOCK_STATIC_IMPORT;
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class VariableTargetImpl extends TargetBase {
 
@@ -28,7 +28,7 @@ public class VariableTargetImpl extends TargetBase {
     }
 
     var codeText = String.format("Mockito.mock(%s.class)", presentableText);
-    if (propertyComponent.getBoolean(computeName(INTRODUCE_MOCK_STATIC_IMPORT), false)) {
+    if (SettingsUtils.getBoolean((INTRODUCE_MOCK_STATIC_IMPORT), false, propertyComponent)) {
       codeText = codeText.replaceFirst("Mockito\\.", "");
     }
     var equalsCall = (PsiMethodCallExpression) factory.createExpressionFromText(codeText, null);

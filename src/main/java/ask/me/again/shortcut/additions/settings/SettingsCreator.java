@@ -4,8 +4,6 @@ import com.intellij.ide.util.PropertiesComponent;
 
 import javax.swing.*;
 
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
-
 public abstract class SettingsCreator {
 
   private final PropertiesComponent instance;
@@ -21,26 +19,26 @@ public abstract class SettingsCreator {
   public abstract void save();
 
   protected boolean getBoolean(String schemeName) {
-    return instance.getBoolean(computeName(schemeName), false);
+    return SettingsUtils.getBoolean((schemeName), instance);
   }
 
   protected boolean getBoolean(String schemeName, Boolean defaultValue) {
-    return instance.getBoolean(computeName(schemeName), defaultValue);
+    return SettingsUtils.getBoolean((schemeName), defaultValue, instance);
   }
 
   protected String getString(String schemeName, String defaultValue) {
-    return getString(instance, computeName(schemeName), defaultValue);
+    return getString(instance, (schemeName), defaultValue);
   }
 
-  protected void setString(String schemeName, Boolean value) {
-    instance.setValue(computeName(schemeName), value);
+  protected void setBoolean(String schemeName, Boolean value) {
+    SettingsUtils.setBoolean((schemeName), value, instance);
   }
 
   protected void setString(String schemeName, String value) {
-    instance.setValue(computeName(schemeName), value);
+    SettingsUtils.setString((schemeName), value, instance);
   }
 
   public static String getString(PropertiesComponent instance, String schemeName, String defaultValue) {
-    return instance.getValue(computeName(schemeName), defaultValue);
+    return SettingsUtils.getString((schemeName), defaultValue, instance);
   }
 }

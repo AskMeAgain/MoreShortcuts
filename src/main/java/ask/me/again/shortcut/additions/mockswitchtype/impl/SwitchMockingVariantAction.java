@@ -2,6 +2,7 @@ package ask.me.again.shortcut.additions.mockswitchtype.impl;
 
 import ask.me.again.shortcut.additions.commons.CommonPsiUtils;
 import ask.me.again.shortcut.additions.mockswitchtype.SwitchMockingVariantUtils;
+import ask.me.again.shortcut.additions.settings.SettingsUtils;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -13,7 +14,6 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import static ask.me.again.shortcut.additions.mockswitchtype.settings.SwitchMockVariantSettingsPanel.IMPORT_FLAG;
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class SwitchMockingVariantAction extends AnAction {
 
@@ -26,8 +26,8 @@ public class SwitchMockingVariantAction extends AnAction {
     var document = editor.getDocument();
     var codeStyleManager = CodeStyleManager.getInstance(project);
     var psiFile = e.getData(CommonDataKeys.PSI_FILE);
-    var addStaticImport = PropertiesComponent.getInstance(e.getProject())
-        .getBoolean(computeName(IMPORT_FLAG), false);
+    var addStaticImport = SettingsUtils
+        .getBoolean((IMPORT_FLAG), false, PropertiesComponent.getInstance(e.getProject()));
 
     editor.getCaretModel().runForEachCaret(caret -> {
 

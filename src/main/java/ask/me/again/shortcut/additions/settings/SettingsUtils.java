@@ -1,5 +1,7 @@
 package ask.me.again.shortcut.additions.settings;
 
+import com.intellij.ide.util.PropertiesComponent;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -12,8 +14,32 @@ import java.util.Objects;
 
 public class SettingsUtils {
 
-  public static String computeName(String name) {
-    return "shortcut_naming_scheme_" + name;
+  private static String computeName(String name) {
+    return "shortcut_additions_8" + name;
+  }
+
+  public static boolean getBoolean(String schemeName, PropertiesComponent instance) {
+    return instance.getBoolean(computeName(schemeName), false);
+  }
+
+  public static boolean getBoolean(String schemeName, Boolean defaultValue, PropertiesComponent instance) {
+    return instance.getBoolean(computeName(schemeName), false);
+  }
+
+  public static String getString(String schemeName, String defaultValue, PropertiesComponent instance) {
+    return getString(instance, computeName(schemeName), defaultValue);
+  }
+
+  public static void setBoolean(String schemeName, Boolean value, PropertiesComponent instance) {
+    instance.setValue(computeName(schemeName), value);
+  }
+
+  public static void setString(String schemeName, String value, PropertiesComponent instance) {
+    instance.setValue(computeName(schemeName), value);
+  }
+
+  public static String getString(PropertiesComponent instance, String schemeName, String defaultValue) {
+    return instance.getValue(computeName(schemeName), defaultValue);
   }
 
   //https://stackoverflow.com/a/27190162/5563263

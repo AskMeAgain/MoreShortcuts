@@ -42,7 +42,7 @@ public class IntroduceTextSettingsPanel extends SettingsCreator {
 
   @Override
   public void save() {
-    setString(MOCK_METHOD_VERIFY_STATIC_IMPORT, staticImport);
+    setBoolean(MOCK_METHOD_VERIFY_STATIC_IMPORT, staticImport);
   }
 
 }

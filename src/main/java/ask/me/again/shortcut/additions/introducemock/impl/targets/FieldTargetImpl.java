@@ -1,5 +1,6 @@
 package ask.me.again.shortcut.additions.introducemock.impl.targets;
 
+import ask.me.again.shortcut.additions.settings.SettingsUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static ask.me.again.shortcut.additions.PsiHelpers.decapitalizeString;
 import static ask.me.again.shortcut.additions.introducemock.IntroduceMockSettingsPanel.PRIVATE_FIELD;
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 
 public class FieldTargetImpl extends TargetBase {
 
@@ -38,7 +38,7 @@ public class FieldTargetImpl extends TargetBase {
     PsiField fieldFromText = factory.createFieldFromText(presentableText + " " + variableName + ";", null);
     fieldFromText.getModifierList().addAnnotation("Mock");
 
-    if (propertyComponent.getBoolean(computeName(PRIVATE_FIELD), false)) {
+    if (SettingsUtils.getBoolean((PRIVATE_FIELD), false, propertyComponent)) {
       fieldFromText.getModifierList().add(factory.createKeyword("private"));
     }
 

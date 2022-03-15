@@ -5,6 +5,7 @@ import ask.me.again.shortcut.additions.commons.CommonPsiUtils;
 import ask.me.again.shortcut.additions.introducemock.entities.ExecutionTarget;
 import ask.me.again.shortcut.additions.introducemock.exceptions.*;
 import ask.me.again.shortcut.additions.introducemock.impl.IntroduceMock;
+import ask.me.again.shortcut.additions.settings.SettingsUtils;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -20,7 +21,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static ask.me.again.shortcut.additions.mockswitchtype.settings.SwitchMockVariantSettingsPanel.IMPORT_FLAG;
-import static ask.me.again.shortcut.additions.settings.SettingsUtils.computeName;
 import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 
 @NoArgsConstructor
@@ -81,7 +81,7 @@ public class IntroduceMockImpl extends AnAction {
       }
     });
 
-    if (PropertiesComponent.getInstance(project).getBoolean(computeName(IMPORT_FLAG), false)) {
+    if (SettingsUtils.getBoolean((IMPORT_FLAG), false, PropertiesComponent.getInstance(project))) {
       CommonPsiUtils.addStaticImports(actionEvent.getData(CommonDataKeys.PSI_FILE), project, "mock");
     }
   }
