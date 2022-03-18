@@ -18,16 +18,12 @@ public abstract class SettingsCreator {
 
   public abstract void save();
 
-  protected boolean getBoolean(String schemeName) {
-    return SettingsUtils.getBoolean((schemeName), instance);
-  }
-
   protected boolean getBoolean(String schemeName, Boolean defaultValue) {
-    return SettingsUtils.getBoolean((schemeName), defaultValue, instance);
+    return SettingsUtils.getBoolean(schemeName, defaultValue, instance);
   }
 
   protected String getString(String schemeName, String defaultValue) {
-    return getString(instance, (schemeName), defaultValue);
+    return SettingsUtils.getString(schemeName, defaultValue, instance);
   }
 
   protected void setBoolean(String schemeName, Boolean value) {
@@ -35,10 +31,6 @@ public abstract class SettingsCreator {
   }
 
   protected void setString(String schemeName, String value) {
-    SettingsUtils.setString((schemeName), value, instance);
-  }
-
-  public static String getString(PropertiesComponent instance, String schemeName, String defaultValue) {
-    return SettingsUtils.getString((schemeName), defaultValue, instance);
+    SettingsUtils.setString(schemeName, value, instance);
   }
 }

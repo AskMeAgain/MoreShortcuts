@@ -1,7 +1,7 @@
 package ask.me.again.shortcut.additions.multilinemagic.impl;
 
 import ask.me.again.shortcut.additions.multilinemagic.MultilineUtils;
-import ask.me.again.shortcut.additions.settings.SettingsCreator;
+import ask.me.again.shortcut.additions.settings.SettingsUtils;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -60,30 +60,30 @@ public class MultilineCountAction extends AnAction {
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-      JPanel p = new JPanel(new SpringLayout());
+      JPanel panel = new JPanel(new SpringLayout());
       var instance = PropertiesComponent.getInstance(e.getProject());
 
-      var l = new JLabel("Start", JLabel.TRAILING);
-      var l2 = new JLabel("Interval", JLabel.TRAILING);
+      var startLabel = new JLabel("Start", JLabel.TRAILING);
+      var intervalLabel = new JLabel("Interval", JLabel.TRAILING);
 
-      p.add(l);
-      p.add(l2);
+      startField = new JTextField(SettingsUtils.getString(MULTILINE_MAGIC_DEFAULT_VALUE, "0", instance), 10);
+      endField = new JTextField(SettingsUtils.getString(MULTILINE_MAGIC_DEFAULT_INTERVAL, "1", instance), 10);
 
-      startField = new JTextField(SettingsCreator.getString(instance, MULTILINE_MAGIC_DEFAULT_VALUE, "0"), 10);
-      endField = new JTextField(SettingsCreator.getString(instance, MULTILINE_MAGIC_DEFAULT_INTERVAL, "0"), 10);
+      startLabel.setLabelFor(startField);
+      startLabel.setLabelFor(endField);
 
-      l.setLabelFor(startField);
-      l.setLabelFor(endField);
+      panel.add(startLabel);
+      panel.add(startField);
 
-      p.add(startField);
-      p.add(endField);
+      panel.add(intervalLabel);
+      panel.add(endField);
 
-      MultilineUtils.makeCompactGrid(p,
+      MultilineUtils.makeCompactGrid(panel,
           2, 2, //rows, cols
           6, 6,        //initX, initY
           6, 6);       //xPad, yPad
 
-      return p;
+      return panel;
     }
   }
 }

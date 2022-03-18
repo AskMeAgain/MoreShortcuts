@@ -26,12 +26,8 @@ public class NamingSchemeService {
     var instance = PropertiesComponent.getInstance(project);
 
     schemes = SCHEMES.stream()
-        .filter(x -> SettingsUtils.getBoolean(x.getName(), instance))
+        .filter(x -> SettingsUtils.getBoolean(x.getName(), true, instance))
         .collect(Collectors.toList());
-
-    if (schemes.isEmpty()) {
-      schemes = SCHEMES;
-    }
   }
 
   public String applyNext(String text, int index) {

@@ -15,31 +15,23 @@ import java.util.Objects;
 public class SettingsUtils {
 
   private static String computeName(String name) {
-    return "shortcut_additions_8" + name;
-  }
-
-  public static boolean getBoolean(String schemeName, PropertiesComponent instance) {
-    return instance.getBoolean(computeName(schemeName), false);
+    return "shortcut_additions_10" + name;
   }
 
   public static boolean getBoolean(String schemeName, Boolean defaultValue, PropertiesComponent instance) {
-    return instance.getBoolean(computeName(schemeName), false);
+    return Boolean.parseBoolean(instance.getValue(computeName(schemeName), defaultValue.toString()));
   }
 
   public static String getString(String schemeName, String defaultValue, PropertiesComponent instance) {
-    return getString(instance, computeName(schemeName), defaultValue);
+    return instance.getValue(computeName(schemeName), defaultValue);
   }
 
   public static void setBoolean(String schemeName, Boolean value, PropertiesComponent instance) {
-    instance.setValue(computeName(schemeName), value);
+    instance.setValue(computeName(schemeName), value.toString());
   }
 
   public static void setString(String schemeName, String value, PropertiesComponent instance) {
     instance.setValue(computeName(schemeName), value);
-  }
-
-  public static String getString(PropertiesComponent instance, String schemeName, String defaultValue) {
-    return instance.getValue(computeName(schemeName), defaultValue);
   }
 
   //https://stackoverflow.com/a/27190162/5563263

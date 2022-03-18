@@ -18,7 +18,7 @@ public class NamingSchemeSettingsPanel extends SettingsCreator {
   public NamingSchemeSettingsPanel(PropertiesComponent propertiesComponent) {
     super(propertiesComponent);
 
-    SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBoolean(scheme.getName())));
+    SCHEMES.forEach(scheme -> allowedNamingSchemes.put(scheme.getName(), getBoolean(scheme.getName(), true)));
 
     var allOff = allowedNamingSchemes.keySet().stream()
         .noneMatch(allowedNamingSchemes::get);
