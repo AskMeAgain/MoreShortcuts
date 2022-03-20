@@ -22,7 +22,7 @@ public class BracketsAtEndInsertion implements SmartInsertion {
 
     if (bracketEnd == '(') {
       var newText = clipboard + originalText + bracketMap.get(bracketEnd);
-      return SmartInsertionUtils.normalizeSemicolon(newText, clipboard);
+      return SmartInsertionUtils.normalizeSemicolon(newText);
     }
 
     return clipboard + "\n" + originalText + "\n" + bracketMap.get(bracketEnd);
