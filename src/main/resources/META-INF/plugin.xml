@@ -76,10 +76,10 @@
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl s"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.mapstructbuilder.MapStructBuilderAction"
-                    class="ask.me.again.shortcut.additions.mapstructbuilder.MapStructBuilderAction"
-                    text="Generate Mapstruct Builder"
-                    description="Generate MapStruct builder from text selection">
+            <action id="ask.me.again.shortcut.additions.mapstructbuilder.LombokToMapStructAction"
+                    class="ask.me.again.shortcut.additions.mapstructbuilder.LombokToMapStructAction"
+                    text="Lombok to MapStruct"
+                    description="Generate MapStruct builder from Lombok text selection">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl g" second-keystroke="ctrl m"/>
             </action>
         </group>

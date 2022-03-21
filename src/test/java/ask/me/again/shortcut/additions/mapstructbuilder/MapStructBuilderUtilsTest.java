@@ -1,6 +1,5 @@
 package ask.me.again.shortcut.additions.mapstructbuilder;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -15,7 +14,7 @@ class MapStructBuilderUtilsTest {
   void findOutputType(String line, String expected) {
     //Arrange --------------------------------------------------------------------------------
     //Act ------------------------------------------------------------------------------------
-    var result = MapStructBuilderUtils.findOutputType(line);
+    var result = LombokToMapStructUtils.findOutputType(line);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals(result, expected);
@@ -28,7 +27,7 @@ class MapStructBuilderUtilsTest {
   void findTarget(String line, String expected) {
     //Arrange --------------------------------------------------------------------------------
     //Act ------------------------------------------------------------------------------------
-    var result = MapStructBuilderUtils.findTarget(line);
+    var result = LombokToMapStructUtils.findTarget(line);
 
     //Assert ---------------------------------------------------------------------------------
     assertEquals(result, expected);
@@ -42,7 +41,7 @@ class MapStructBuilderUtilsTest {
   void findSource(String line, String expected) {
     //Arrange --------------------------------------------------------------------------------
     //Act ------------------------------------------------------------------------------------
-    var result = MapStructBuilderUtils.findSource(line);
+    var result = LombokToMapStructUtils.findSource(line);
     //Assert ---------------------------------------------------------------------------------
     assertEquals(result, expected);
 

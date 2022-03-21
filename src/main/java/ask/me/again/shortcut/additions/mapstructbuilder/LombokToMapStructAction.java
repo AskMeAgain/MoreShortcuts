@@ -11,12 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
-import static ask.me.again.shortcut.additions.mapstructbuilder.MapStructBuilderTemplate.MAPPING_TEMPLATE;
-import static ask.me.again.shortcut.additions.mapstructbuilder.MapStructBuilderTemplate.TEMPLATE;
+public class LombokToMapStructAction extends AnAction {
 
-public class MapStructBuilderAction extends AnAction {
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
 
@@ -31,43 +28,21 @@ public class MapStructBuilderAction extends AnAction {
       var end = caret.getSelectionEnd();
       var text = document.getText(TextRange.from(start, end - start));
 
-      var split = text.split("\n");
-      var mappings = getMappings(split);
+      var packageName = ((PsiClassOwner) psiFile).getPackageName();
 
-      var outputType = MapStructBuilderUtils.findOutputType(split[0]);
+      var lines = text.split("\n");
 
-      var packageName = ((PsiClassOwner)psiFile).getPackageName();
-
-      var result = TEMPLATE
-          .replace("$PACKAGE", packageName)
-          .replace("$OUTPUT_TYPE", outputType)
-          .replace("$MAPPINGS", String.join("\n", mappings));
+      var result = LombokToMapStructUtils.buildMapper(lines, packageName);
+      var name = LombokToMapStructUtils.findOutputType(lines[0]) + "Mapper.java";
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
         try {
-          var resultFile = data.getParent().createChildData(null, outputType + "Mapper.java");
+          var resultFile = data.getParent().createChildData(null, name);
           resultFile.setBinaryContent(result.getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
           ex.printStackTrace();
         }
       });
     });
-  }
-
-  @NotNull
-  private ArrayList<String> getMappings(String[] split) {
-    var mappings = new ArrayList<String>();
-    for (int i = 1; i < split.length - 1; i++) {
-      var mappingLine = split[i];
-
-      var target = MapStructBuilderUtils.findTarget(mappingLine);
-      var source = MapStructBuilderUtils.findSource(mappingLine);
-
-      var template = MAPPING_TEMPLATE
-          .replace("$OUTPUT_NAME", target)
-          .replace("$INPUT_NAME", source);
-      mappings.add(template);
-    }
-    return mappings;
   }
 }

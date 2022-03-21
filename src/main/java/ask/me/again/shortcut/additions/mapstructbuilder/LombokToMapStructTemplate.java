@@ -1,6 +1,6 @@
 package ask.me.again.shortcut.additions.mapstructbuilder;
 
-public class MapStructBuilderTemplate {
+public class LombokToMapStructTemplate {
 
   public static String TEMPLATE = "" +
       "package $PACKAGE;\n" +
