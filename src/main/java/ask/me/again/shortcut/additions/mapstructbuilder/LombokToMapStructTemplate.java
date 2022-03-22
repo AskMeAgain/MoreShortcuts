@@ -11,7 +11,7 @@ public class LombokToMapStructTemplate {
       "@Mapper\n" +
       "public interface $OUTPUT_TYPEMapper {\n" +
       "$MAPPINGS\n" +
-      "  $OUTPUT_TYPE map(Object input);\n" +
+      "  $OUTPUT_TYPE map($INPUTS);\n" +
       "\n" +
       "}";
 

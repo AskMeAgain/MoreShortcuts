@@ -46,4 +46,17 @@ class MapStructBuilderUtilsTest {
     assertEquals(result, expected);
 
   }
+
+  @ParameterizedTest
+  @CsvSource({
+      ".number1mul2(input.getNumber1()),input"
+  })
+  void findSourceOrigin(String line, String expected) {
+    //Arrange --------------------------------------------------------------------------------
+    //Act ------------------------------------------------------------------------------------
+    var result = LombokToMapStructUtils.findSourceOrigin(line);
+
+    //Assert ---------------------------------------------------------------------------------
+    assertEquals(result, expected);
+  }
 }

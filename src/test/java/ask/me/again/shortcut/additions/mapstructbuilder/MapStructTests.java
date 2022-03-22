@@ -12,7 +12,7 @@ public class MapStructTests {
 
   @ParameterizedTest
   @CsvSource({
-      "simple1","complex1", "complex2"
+      "simple1", "simple2", "complex1", "complex2", "complex3"
   })
   void test(String testCase) throws IOException {
     //Arrange --------------------------------------------------------------------------------
