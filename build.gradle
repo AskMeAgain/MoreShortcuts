@@ -22,6 +22,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-params:5.8.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.1'
     testImplementation "org.mockito:mockito-core:3.12.4"
+
+    testImplementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 }
 
 intellij {

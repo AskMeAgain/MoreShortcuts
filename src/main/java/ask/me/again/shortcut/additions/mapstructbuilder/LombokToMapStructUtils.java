@@ -91,7 +91,7 @@ public class LombokToMapStructUtils {
 
         var template = MAPPING_TEMPLATE
             .replace("$OUTPUT_NAME", String.join(".", tempList))
-            .replace("$INPUT_NAME", source);
+            .replace("$INPUT_NAME", sourceOrigin + "." + source);
         container.inputObject(sourceOrigin);
         container.mapping(template);
       }
