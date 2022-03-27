@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 
-public class MapStructTests {
+public class MapStructBuilderTests {
 
-  private final ClassLoader classLoader = MapStructTests.class.getClassLoader();
+  private final ClassLoader classLoader = MapStructBuilderTests.class.getClassLoader();
 
   @ParameterizedTest
   @CsvSource({
-      "simple1", "simple2", "complex1", "complex2", "complex3"
+      "simple1", "simple2", "complex1", "complex2", "complex3","complex4"
   })
   void test(String testCase) throws IOException {
     //Arrange --------------------------------------------------------------------------------

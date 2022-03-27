@@ -89,9 +89,19 @@ public class LombokToMapStructUtils {
         var tempList = new ArrayList<>(stack);
         tempList.add(target);
 
+        String inputName;
+        if (sourceOrigin == null) {
+          inputName = source;
+          if (!source.equals("")) {
+            container.inputObject(source);
+          }
+        } else {
+          inputName = sourceOrigin + "." + source;
+        }
+
         var template = MAPPING_TEMPLATE
             .replace("$OUTPUT_NAME", String.join(".", tempList))
-            .replace("$INPUT_NAME", sourceOrigin + "." + source);
+            .replace("$INPUT_NAME", inputName);
         container.inputObject(sourceOrigin);
         container.mapping(template);
       }
