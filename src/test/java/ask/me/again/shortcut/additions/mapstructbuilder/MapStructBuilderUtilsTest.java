@@ -43,7 +43,7 @@ class MapStructBuilderUtilsTest {
     //Act ------------------------------------------------------------------------------------
     var result = LombokToMapStructUtils.findSource(line);
     //Assert ---------------------------------------------------------------------------------
-    assertEquals(result, expected);
+    assertEquals(result.getLine(), expected);
 
   }
 

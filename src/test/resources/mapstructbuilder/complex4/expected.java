@@ -5,10 +5,10 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface ComplexOutputsMapper {
-  @Mapping(target = "orig1", source = "")
+  @Mapping(target = "orig1", source = "anotherOne")
   @Mapping(target = "orig2", source = "input.number1")
   @Mapping(target = "mul.nested1", source = "input2.anotherZero.anotherOne.anotherOneOne")
-  @Mapping(target = "mul.nested2", source = "")
-  ComplexOutputs map(Object input, Object input2);
+  @Mapping(target = "mul.nested2", constant = "a")
+  ComplexOutputs map(Object anotherOne, Object input, Object input2);
 
 }

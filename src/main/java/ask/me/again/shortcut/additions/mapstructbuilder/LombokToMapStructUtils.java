@@ -1,5 +1,7 @@
 package ask.me.again.shortcut.additions.mapstructbuilder;
 
+import com.google.common.base.Strings;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -16,6 +18,7 @@ public class LombokToMapStructUtils {
     var outputType = LombokToMapStructUtils.findOutputType(split[0]);
 
     return TEMPLATE
+        .replace("$IN_PACKAGE", !Strings.isNullOrEmpty(packageName) ? "package $PACKAGE;" : "")
         .replace("$PACKAGE", packageName)
         .replace("$INPUTS", mappings.getInputObjects().stream()
             .filter(Objects::nonNull)
@@ -45,14 +48,36 @@ public class LombokToMapStructUtils {
     return matcher.group(1);
   }
 
-  public static String findSource(String line) {
+  public static SourceResult findSource(String line) {
     var matcher = Pattern.compile("\\.get(.*?)\\(\\)").matcher(line);
     var result = new ArrayList<String>();
 
     while (matcher.find()) {
       result.add(makeLowerCase(matcher.group(1)));
     }
-    return String.join(".", result);
+
+    if (result.isEmpty()) {
+      var all = Pattern.compile("\\((.*?)\\)").matcher(line);
+      if (all.find()) {
+        var group = all.group(1);
+        result.add(group);
+
+        if (group.startsWith("\"") && group.endsWith("\"")) {
+          var joinedConstant = String.join(".", result);
+          return SourceResult.builder()
+              .line(joinedConstant.substring(1, joinedConstant.length() - 1))
+              .isSource(false)
+              .isConstant(true)
+              .build();
+        }
+      }
+    }
+
+    return SourceResult.builder()
+        .line(String.join(".", result))
+        .isSource(true)
+        .isConstant(false)
+        .build();
   }
 
   public static String findSourceOrigin(String line) {
@@ -89,19 +114,26 @@ public class LombokToMapStructUtils {
         var tempList = new ArrayList<>(stack);
         tempList.add(target);
 
-        String inputName;
+        SourceResult inputName;
         if (sourceOrigin == null) {
           inputName = source;
-          if (!source.equals("")) {
-            container.inputObject(source);
+          if (source.isSource() && !source.getLine().equals("")) {
+            container.inputObject(source.getLine());
           }
         } else {
-          inputName = sourceOrigin + "." + source;
+          inputName = SourceResult.builder()
+              .line(sourceOrigin + "." + source.getLine())
+              .isConstant(false)
+              .isSource(true)
+              .build();
         }
 
         var template = MAPPING_TEMPLATE
+            .replace("$SOURCE", inputName.isSource() ? ", source = \"$INPUT_NAME\"" : "")
+            .replace("$CONSTANT", inputName.isConstant() ? ", constant = \"$CONSTANT_NAME\"" : "")
             .replace("$OUTPUT_NAME", String.join(".", tempList))
-            .replace("$INPUT_NAME", inputName);
+            .replace("$INPUT_NAME", inputName.getLine())
+            .replace("$CONSTANT_NAME", inputName.getLine());
         container.inputObject(sourceOrigin);
         container.mapping(template);
       }

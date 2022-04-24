@@ -3,7 +3,7 @@ package ask.me.again.shortcut.additions.mapstructbuilder;
 public class LombokToMapStructTemplate {
 
   public static String TEMPLATE = "" +
-      "package $PACKAGE;\n" +
+      "$IN_PACKAGE\n" +
       "\n" +
       "import org.mapstruct.Mapper;\n" +
       "import org.mapstruct.Mapping;\n" +
@@ -16,5 +16,5 @@ public class LombokToMapStructTemplate {
       "}";
 
   public static String MAPPING_TEMPLATE =
-      "  @Mapping(target = \"$OUTPUT_NAME\", source = \"$INPUT_NAME\")";
+      "  @Mapping(target = \"$OUTPUT_NAME\"$SOURCE$CONSTANT)";
 }
