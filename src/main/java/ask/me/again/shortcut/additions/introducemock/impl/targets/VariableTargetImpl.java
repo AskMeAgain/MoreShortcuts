@@ -70,6 +70,8 @@ public class VariableTargetImpl extends TargetBase {
 
   @Override
   public void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> mockExpressions, List<Boolean> changeMap) {
+    var whitespace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n\n");
+
     var realAnchor = targetAnchor.getParent();
 
     for (int i = 0; i < mockExpressions.size(); i++) {
@@ -77,5 +79,6 @@ public class VariableTargetImpl extends TargetBase {
         realAnchor.addBefore(mockExpressions.get(i), targetAnchor);
       }
     }
+    realAnchor.addBefore(whitespace, targetAnchor);
   }
 }
