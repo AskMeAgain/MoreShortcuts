@@ -55,10 +55,6 @@ public class YmlInsertion implements SmartInsertion {
 
     var value   = result.getValue();
 
-   // result.setValue();
-
-    //walkNodes(block, stack);
-
     return "";
   }
 }

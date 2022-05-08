@@ -9,11 +9,13 @@ public class HtmlInsertion implements SmartInsertion {
 
   @Override
   public boolean isApplicable(String originalText, String clipboardText, AnActionEvent e) {
-    return clipboardText.endsWith(">") && clipboardText.startsWith("<");
+    var trimmedText = clipboardText.trim();
+    return trimmedText.endsWith(">") && trimmedText.startsWith("<");
   }
 
   @Override
   public String apply(String originalText, String clipboard, AnActionEvent e) {
-    return clipboard + "\n" + originalText + "\n" + clipboard.charAt(0) + "/" + clipboard.substring(1);
+    var trimmedClipboard = clipboard.trim();
+    return trimmedClipboard + "\n" + originalText + "\n" + trimmedClipboard.charAt(0) + "/" + trimmedClipboard.substring(1);
   }
 }
