@@ -17,9 +17,11 @@ import java.util.List;
 public class SmartPasteAction extends AnAction {
 
   private static List<SmartInsertion> smartInsertions = List.of(
+      new YmlInsertion(),
       new BracketsAtEndInsertion(),
       new MethodTargetInsertion(),
       new MethodOriginInsertion(),
+      new HtmlInsertion(),
       new NormalPasteInsertions()
   );
 
@@ -33,7 +35,7 @@ public class SmartPasteAction extends AnAction {
     var document = editor.getDocument();
 
     var project = e.getProject();
-    var psiFile = e.getData(CommonDataKeys.PSI_FILE);
+    var psiFile = e.getRequiredData(CommonDataKeys.PSI_FILE);
     var codeStyleManager = CodeStyleManager.getInstance(project);
 
     editor.getCaretModel().runForEachCaret(caret -> {
@@ -42,13 +44,14 @@ public class SmartPasteAction extends AnAction {
       var end = caret.getSelectionEnd();
       var text = document.getText(TextRange.from(start, end - start));
 
-      var newText = smartInsertions.stream()
-          .filter(x -> x.isApplicable(text, clipBoard))
-          .findFirst()
-          .get()
-          .apply(text, clipBoard);
-
       WriteCommandAction.runWriteCommandAction(project, () -> {
+
+        var newText = smartInsertions.stream()
+            .filter(x -> x.isApplicable(text, clipBoard, e))
+            .findFirst()
+            .get()
+            .apply(text, clipBoard, e);
+
         document.replaceString(start, end, newText);
         codeStyleManager.reformatText(psiFile, start, start + newText.length());
       });

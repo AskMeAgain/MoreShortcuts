@@ -30,7 +30,7 @@ dependencies {
 intellij {
     updateSinceUntilBuild = false
     version = '2021.3.1'
-    plugins = ['com.intellij.java']
+    plugins = ['com.intellij.java', 'org.jetbrains.plugins.yaml']
 }
 
 patchPluginXml {
