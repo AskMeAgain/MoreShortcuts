@@ -17,7 +17,7 @@ import java.util.List;
 public class SmartPasteAction extends AnAction {
 
   private static List<SmartInsertion> smartInsertions = List.of(
-      new YmlInsertion(),
+      //new YmlInsertion(),
       new BracketsAtEndInsertion(),
       new MethodTargetInsertion(),
       new MethodOriginInsertion(),
