@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParameter;
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 
 import java.util.HashMap;
 import java.util.List;

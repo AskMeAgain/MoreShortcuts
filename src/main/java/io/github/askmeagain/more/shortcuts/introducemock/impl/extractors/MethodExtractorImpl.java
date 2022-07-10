@@ -1,6 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock.impl.extractors;
 
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.ClassFromTypeNotFoundException;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.MultipleIntroduceMockResultException;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.PsiTypeNotFoundException;

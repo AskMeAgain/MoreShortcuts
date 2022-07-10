@@ -1,9 +1,9 @@
 package io.github.askmeagain.more.shortcuts.introducetext.impl;
 
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.ClassFromTypeNotFoundException;
-import io.github.askmeagain.more.shortcuts.introducetext.entities.IntroduceTextMode;
+import io.github.askmeagain.more.shortcuts.introducetext.actions.entities.IntroduceTextMode;
 import io.github.askmeagain.more.shortcuts.introducetext.exceptions.CouldNotFindMethodException;
 import io.github.askmeagain.more.shortcuts.introducetext.exceptions.MultipleAddMockMethodResultException;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;

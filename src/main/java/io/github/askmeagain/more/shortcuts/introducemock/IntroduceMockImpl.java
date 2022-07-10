@@ -1,6 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExecutionTarget;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.*;

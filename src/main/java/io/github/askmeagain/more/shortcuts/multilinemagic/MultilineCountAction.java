@@ -1,6 +1,5 @@
-package io.github.askmeagain.more.shortcuts.multilinemagic.impl;
+package io.github.askmeagain.more.shortcuts.multilinemagic;
 
-import io.github.askmeagain.more.shortcuts.multilinemagic.MultilineUtils;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import com.intellij.openapi.actionSystem.AnAction;

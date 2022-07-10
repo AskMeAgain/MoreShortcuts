@@ -9,7 +9,7 @@ public class SmartPasteTest extends SimpleRefactoringTestBase {
 
   @Override
   public String getAction() {
-    return "ask.me.again.shortcut.additions.smartpaste.SmartPasteAction";
+    return "io.github.askmeagain.more.shortcuts.smartpaste.SmartPasteAction";
   }
 
   @TestFactory

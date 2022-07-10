@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixtureTestCase {
 
-  protected final static String MODULE = "/ask/me/again/shortcut/additions/introducemock";
+  protected final static String MODULE = "/io/github/askmeagain/more/shortcuts/introducemock";
 
   public Iterable<DynamicTest> dynamicTestsWithIterable(TestInfo testInfo, String... testcases) {
     var testName = testInfo.getTestMethod().get().getName();

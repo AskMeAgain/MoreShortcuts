@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.naming.impl;
+package io.github.askmeagain.more.shortcuts.naming;
 
 import io.github.askmeagain.more.shortcuts.naming.service.NamingSchemeService;
 import com.intellij.openapi.actionSystem.AnAction;

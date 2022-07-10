@@ -9,7 +9,7 @@ public class IntroduceMockVariableTest extends SimpleRefactoringTestBase {
 
   @Override
   public String getAction() {
-    return "ask.me.again.shortcut.additions.introducemock.variable";
+    return "io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable";
   }
 
   @TestFactory

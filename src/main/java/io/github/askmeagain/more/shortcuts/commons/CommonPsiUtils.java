@@ -1,6 +1,5 @@
 package io.github.askmeagain.more.shortcuts.commons;
 
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;

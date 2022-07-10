@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts;
+package io.github.askmeagain.more.shortcuts.commons;
 
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.ClassFromTypeNotFoundException;
 import com.intellij.openapi.project.Project;

@@ -5,7 +5,7 @@ import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import io.github.askmeagain.more.shortcuts.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 
 import java.util.HashMap;
 import java.util.List;

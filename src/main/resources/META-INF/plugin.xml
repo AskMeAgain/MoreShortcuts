@@ -19,15 +19,15 @@
                 parentId="tools"
                 instance="io.github.askmeagain.more.shortcuts.settings.SettingsGuiManager"
                 id="io.github.askmeagain.more.shortcuts.settings.SettingsGuiManager"
-                displayName="Macro Magic"/>
+                displayName="More Shortcuts"/>
     </extensions>
 
     <actions>
         <group id="ShortcutAdditions" text="Additional Refactorings" popup="true">
             <add-to-group group-id="RefactoringMenu"
                           anchor="after"
-                          relative-to-action="ask.me.again.shortcut.additions.introducemock.variable"/>
-            <action id="ask.me.again.shortcut.additions.introducemock.variable"
+                          relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"/>
+            <action id="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"
                     class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"
                     text="Introduce Mock To Variable"
                     description="Introduce all Mocks">
@@ -51,26 +51,26 @@
                     description="Add Mockito Verify">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl c"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.multilinemagic.impl.MultilineCountAction"
-                    class="io.github.askmeagain.more.shortcuts.multilinemagic.impl.MultilineCountAction"
+            <action id="io.github.askmeagain.more.shortcuts.multilinemagic.MultilineCountAction"
+                    class="io.github.askmeagain.more.shortcuts.multilinemagic.MultilineCountAction"
                     text="Counting from X"
-                    description="start counting from X">
+                    description="Start counting from X">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl 1"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.naming.impl.NamingSchemeAction"
-                    class="io.github.askmeagain.more.shortcuts.naming.impl.NamingSchemeAction"
-                    text="Cycle naming scheme"
+            <action id="io.github.askmeagain.more.shortcuts.naming.NamingSchemeAction"
+                    class="io.github.askmeagain.more.shortcuts.naming.NamingSchemeAction"
+                    text="Cycle Naming Scheme"
                     description="Iterates all naming schemes">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift u"/>
             </action>
             <action id="io.github.askmeagain.more.shortcuts.smartpaste.SmartPasteAction"
                     class="io.github.askmeagain.more.shortcuts.smartpaste.SmartPasteAction"
-                    text="Smart pasting"
+                    text="Smart Pasting"
                     description="Pastes text from clipboard and replaces selection smart">
                 <keyboard-shortcut keymap="$default" first-keystroke="alt v"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.mockswitchtype.impl.SwitchMockingVariantAction"
-                    class="io.github.askmeagain.more.shortcuts.mockswitchtype.impl.SwitchMockingVariantAction"
+            <action id="io.github.askmeagain.more.shortcuts.mockswitchtype.SwitchMockingVariantAction"
+                    class="io.github.askmeagain.more.shortcuts.mockswitchtype.SwitchMockingVariantAction"
                     text="Mock Switch Type"
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl s"/>
@@ -83,5 +83,4 @@
             </action>
         </group>
     </actions>
-
 </idea-plugin>

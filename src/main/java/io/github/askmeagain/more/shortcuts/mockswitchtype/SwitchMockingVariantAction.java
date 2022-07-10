@@ -1,7 +1,6 @@
-package io.github.askmeagain.more.shortcuts.mockswitchtype.impl;
+package io.github.askmeagain.more.shortcuts.mockswitchtype;
 
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
-import io.github.askmeagain.more.shortcuts.mockswitchtype.SwitchMockingVariantUtils;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import com.intellij.openapi.actionSystem.AnAction;
