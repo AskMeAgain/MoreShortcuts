@@ -1,0 +1,28 @@
+package io.github.askmeagain.more.shortcuts.smartpaste;
+
+import io.github.askmeagain.more.shortcuts.introducemock.utils.SimpleRefactoringTestBase;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInfo;
+
+public class SmartPasteTest extends SimpleRefactoringTestBase {
+
+  @Override
+  public String getAction() {
+    return "ask.me.again.shortcut.additions.smartpaste.SmartPasteAction";
+  }
+
+  @TestFactory
+  public Iterable<DynamicTest> smartPaste(TestInfo testInfo) {
+
+    return dynamicTestsWithIterable(testInfo,
+        "bracketInsertion", "\"def\"",
+        "bracketInsertion2", "if(true){",
+        "methodOrigin", "coolMethod(",
+        "methodTarget", "\"def\"",
+        "bracketInsertion3", "coolMethod(",
+        "bracketInsertion4", "otherMethod(",
+        "htmlInsertion", "<test>"
+    );
+  }
+}

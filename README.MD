@@ -1,4 +1,4 @@
-# Intellij Shortcut Additions
+# MoreShortcuts for Intellij
 
 This plugin adds some shortcuts to intellij idea
 

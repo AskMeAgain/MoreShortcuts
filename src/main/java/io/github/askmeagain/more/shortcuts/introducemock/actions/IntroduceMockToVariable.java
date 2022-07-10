@@ -1,0 +1,10 @@
+package io.github.askmeagain.more.shortcuts.introducemock.actions;
+
+import io.github.askmeagain.more.shortcuts.introducemock.IntroduceMockImpl;
+import io.github.askmeagain.more.shortcuts.introducemock.entities.ExecutionTarget;
+
+public class IntroduceMockToVariable extends IntroduceMockImpl {
+  protected IntroduceMockToVariable() {
+    super(ExecutionTarget.Variable);
+  }
+}

@@ -1,20 +1,25 @@
 <idea-plugin>
     <id>ask.me.again.shortcut.additions</id>
-    <name>Shortcut Additions</name>
-    <version>2.2</version>
+    <name>More Shortcuts</name>
+    <version>5.0</version>
     <vendor url="https://github.com/AskMeAgain/ShortcutAdditions">AskMeAgain</vendor>
 
     <description>
         <!--........................this will be replaced by the pathPluginXml gradle task...........................-->
     </description>
 
-    <idea-version since-build="203.0"/>
+    <idea-version since-build="213.0"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                parentId="tools"
+                instance="io.github.askmeagain.more.shortcuts.settings.SettingsGuiManager"
+                id="io.github.askmeagain.more.shortcuts.settings.SettingsGuiManager"
+                displayName="Macro Magic"/>
     </extensions>
 
     <actions>
@@ -23,62 +28,55 @@
                           anchor="after"
                           relative-to-action="ask.me.again.shortcut.additions.introducemock.variable"/>
             <action id="ask.me.again.shortcut.additions.introducemock.variable"
-                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToVariable"
+                    class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"
                     text="Introduce Mock To Variable"
                     description="Introduce all Mocks">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl v"/>
             </action>
             <action id="ask.me.again.shortcut.additions.introducemock.field"
-                    class="ask.me.again.shortcut.additions.introducemock.actions.IntroduceMockToField"
+                    class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToField"
                     text="Introduce Mock To Field"
                     description="Introduce all Mocks">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl f"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.introducetext.actions.AddMockMethodAction"
-                    class="ask.me.again.shortcut.additions.introducetext.actions.AddMockMethodAction"
+            <action id="io.github.askmeagain.more.shortcuts.introducetext.actions.AddMockMethodAction"
+                    class="io.github.askmeagain.more.shortcuts.introducetext.actions.AddMockMethodAction"
                     text="Add Mock Method"
                     description="Add Mock Method">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl m"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.introducetext.actions.AddVerifyAction"
-                    class="ask.me.again.shortcut.additions.introducetext.actions.AddVerifyAction"
+            <action id="io.github.askmeagain.more.shortcuts.introducetext.actions.AddVerifyAction"
+                    class="io.github.askmeagain.more.shortcuts.introducetext.actions.AddVerifyAction"
                     text="Add Mockito Verify"
                     description="Add Mockito Verify">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl c"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.multilinemagic.impl.MultilineCountAction"
-                    class="ask.me.again.shortcut.additions.multilinemagic.impl.MultilineCountAction"
+            <action id="io.github.askmeagain.more.shortcuts.multilinemagic.impl.MultilineCountAction"
+                    class="io.github.askmeagain.more.shortcuts.multilinemagic.impl.MultilineCountAction"
                     text="Counting from X"
                     description="start counting from X">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl 1"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.naming.impl.NamingSchemeAction"
-                    class="ask.me.again.shortcut.additions.naming.impl.NamingSchemeAction"
+            <action id="io.github.askmeagain.more.shortcuts.naming.impl.NamingSchemeAction"
+                    class="io.github.askmeagain.more.shortcuts.naming.impl.NamingSchemeAction"
                     text="Cycle naming scheme"
                     description="Iterates all naming schemes">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift u"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.smartpaste.SmartPasteAction"
-                    class="ask.me.again.shortcut.additions.smartpaste.SmartPasteAction"
+            <action id="io.github.askmeagain.more.shortcuts.smartpaste.SmartPasteAction"
+                    class="io.github.askmeagain.more.shortcuts.smartpaste.SmartPasteAction"
                     text="Smart pasting"
                     description="Pastes text from clipboard and replaces selection smart">
                 <keyboard-shortcut keymap="$default" first-keystroke="alt v"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.settings.OpenSettingsAction"
-                    class="ask.me.again.shortcut.additions.settings.OpenSettingsAction"
-                    text="ShortCutAdditions Settings"
-                    description="Open Settings menu">
-                <add-to-group group-id="ToolsMenu" anchor="first"/>
-                <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl shift m"/>
-            </action>
-            <action id="ask.me.again.shortcut.additions.mockswitchtype.impl.SwitchMockingVariantAction"
-                    class="ask.me.again.shortcut.additions.mockswitchtype.impl.SwitchMockingVariantAction"
+            <action id="io.github.askmeagain.more.shortcuts.mockswitchtype.impl.SwitchMockingVariantAction"
+                    class="io.github.askmeagain.more.shortcuts.mockswitchtype.impl.SwitchMockingVariantAction"
                     text="Mock Switch Type"
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl s"/>
             </action>
-            <action id="ask.me.again.shortcut.additions.mapstructbuilder.LombokToMapStructAction"
-                    class="ask.me.again.shortcut.additions.mapstructbuilder.LombokToMapStructAction"
+            <action id="io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructAction"
+                    class="io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructAction"
                     text="Lombok to MapStruct"
                     description="Generate MapStruct builder from Lombok text selection">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl g" second-keystroke="ctrl m"/>

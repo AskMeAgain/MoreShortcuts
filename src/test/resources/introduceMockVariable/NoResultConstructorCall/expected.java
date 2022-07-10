@@ -1,6 +1,6 @@
 package IntroduceMockFieldTest.Abc;
 
-import ask.me.again.shortcut.additions.introducemock.entities.TestClass;
+import io.github.askmeagain.more.shortcuts.introducemock.entities.TestClass;
 import org.mockito.Mockito;
 
 class IntroduceMockFieldExample {
