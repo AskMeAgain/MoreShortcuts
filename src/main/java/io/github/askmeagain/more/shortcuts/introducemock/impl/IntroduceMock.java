@@ -3,6 +3,7 @@ package io.github.askmeagain.more.shortcuts.introducemock.impl;
 import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExececutionExtractor;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExecutionTarget;
+import io.github.askmeagain.more.shortcuts.introducemock.entities.MockType;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.*;
 import io.github.askmeagain.more.shortcuts.introducemock.impl.extractors.ConstructorExtractorImpl;
 import io.github.askmeagain.more.shortcuts.introducemock.impl.extractors.MethodExtractorImpl;
@@ -26,6 +27,7 @@ import java.util.stream.IntStream;
 
 public class IntroduceMock {
 
+  private final MockType mockType;
   private Project project;
   private Editor editor;
   private PsiElementFactory factory;
@@ -41,15 +43,16 @@ public class IntroduceMock {
   private List<PsiElement> mockExpressions;
   private PsiExpression[] expressions;
   private PsiClass mockito;
-  private PsiClass mock;
+  private PsiClass mockTypeClass;
 
   private final AnActionEvent actionEvent;
   private PsiExpressionList expressionList;
 
   @SneakyThrows
-  public IntroduceMock(AnActionEvent e, ExecutionTarget executionTarget) {
+  public IntroduceMock(AnActionEvent e, ExecutionTarget executionTarget, MockType mockType) {
     this.executionTarget = executionTarget;
     this.actionEvent = e;
+    this.mockType = mockType;
   }
 
   public void analyze(PsiParameter[] override)
@@ -107,7 +110,7 @@ public class IntroduceMock {
       if (executionTarget == ExecutionTarget.Variable) {
         importList.add(factory.createImportStatement(mockito));
       } else if (executionTarget == ExecutionTarget.Field) {
-        importList.add(factory.createImportStatement(mock));
+        importList.add(factory.createImportStatement(mockTypeClass));
       }
     }
   }
@@ -174,12 +177,14 @@ public class IntroduceMock {
     factory = JavaPsiFacade.getElementFactory(project);
 
     mockito = PsiHelpers.getClassFromString(project, "org.mockito.Mockito");
-    mock = PsiHelpers.getClassFromString(project, "org.mockito.Mock");
+
+    var mockTypeText = this.mockType == MockType.mock ? "Mock" : "Spy";
+    mockTypeClass = PsiHelpers.getClassFromString(project, "org.mockito." + mockTypeText);
 
     selection.put(ExececutionExtractor.Constructor, new ConstructorExtractorImpl(project));
     selection.put(ExececutionExtractor.Method, new MethodExtractorImpl(project));
 
-    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(psiFile, project));
-    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project));
+    targetMap.put(ExecutionTarget.Field, new FieldTargetImpl(psiFile, project, mockType));
+    targetMap.put(ExecutionTarget.Variable, new VariableTargetImpl(psiFile, project, mockType));
   }
 }

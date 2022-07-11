@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock.impl.targets;
 
+import io.github.askmeagain.more.shortcuts.introducemock.entities.MockType;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import com.intellij.openapi.project.Project;
@@ -19,8 +20,8 @@ public class FieldTargetImpl extends TargetBase {
 
   private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
-  public FieldTargetImpl(PsiFile psiFile, Project project) {
-    super(psiFile, project);
+  public FieldTargetImpl(PsiFile psiFile, Project project, MockType mockType) {
+    super(psiFile, project, mockType);
   }
 
   public PsiElement createExpression(PsiParameter psiParameter) {
@@ -33,7 +34,7 @@ public class FieldTargetImpl extends TargetBase {
     }
 
     PsiField fieldFromText = factory.createFieldFromText(presentableText + " " + variableName + ";", null);
-    fieldFromText.getModifierList().addAnnotation("Mock");
+    fieldFromText.getModifierList().addAnnotation(mockType.toUpperName());
 
     if (state.getIntroduceMockFieldPrivateField()) {
       fieldFromText.getModifierList().add(factory.createKeyword("private"));

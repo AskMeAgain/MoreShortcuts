@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock.impl.targets;
 
+import io.github.askmeagain.more.shortcuts.introducemock.entities.MockType;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import com.intellij.openapi.project.Project;
@@ -17,8 +18,8 @@ public class VariableTargetImpl extends TargetBase {
 
   private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
-  public VariableTargetImpl(PsiFile psiFile, Project project) {
-    super(psiFile, project);
+  public VariableTargetImpl(PsiFile psiFile, Project project, MockType mockType) {
+    super(psiFile, project, mockType);
   }
 
   public PsiDeclarationStatement createExpression(PsiParameter psiParameter) {
@@ -28,7 +29,7 @@ public class VariableTargetImpl extends TargetBase {
       presentableText = presentableText.substring(0, presentableText.indexOf("<"));
     }
 
-    var codeText = String.format("Mockito.mock(%s.class)", presentableText);
+    var codeText = String.format("Mockito.%s(%s.class)", mockType.toString(), presentableText);
     if (state.getStaticImports()) {
       codeText = codeText.replaceFirst("Mockito\\.", "");
     }

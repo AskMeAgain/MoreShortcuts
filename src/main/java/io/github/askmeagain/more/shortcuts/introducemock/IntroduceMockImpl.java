@@ -3,6 +3,7 @@ package io.github.askmeagain.more.shortcuts.introducemock;
 import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExecutionTarget;
+import io.github.askmeagain.more.shortcuts.introducemock.entities.MockType;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.*;
 import io.github.askmeagain.more.shortcuts.introducemock.impl.IntroduceMock;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
@@ -26,12 +27,14 @@ import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SP
 public class IntroduceMockImpl extends AnAction {
 
   private ExecutionTarget executionTarget;
+  private MockType mockType;
   private PsiParameter[] override = new PsiParameter[0];
 
   private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
-  protected IntroduceMockImpl(ExecutionTarget executionTarget) {
+  protected IntroduceMockImpl(ExecutionTarget executionTarget, MockType mockType) {
     this.executionTarget = executionTarget;
+    this.mockType = mockType;
   }
 
   protected IntroduceMockImpl(String name, PsiParameter[] override, ExecutionTarget executionTarget) {
@@ -51,7 +54,7 @@ public class IntroduceMockImpl extends AnAction {
   public void actionPerformed(AnActionEvent actionEvent) {
 
     var project = actionEvent.getProject();
-    var introduceMock = new IntroduceMock(actionEvent, executionTarget);
+    var introduceMock = new IntroduceMock(actionEvent, executionTarget, mockType);
 
     ApplicationManager.getApplication().runReadAction(() -> {
       try {
@@ -83,7 +86,7 @@ public class IntroduceMockImpl extends AnAction {
     });
 
     if (state.getStaticImports()) {
-      CommonPsiUtils.addStaticImports(actionEvent.getData(CommonDataKeys.PSI_FILE), project, "mock");
+      CommonPsiUtils.addStaticImports(actionEvent.getData(CommonDataKeys.PSI_FILE), project, mockType.toString());
     }
   }
 
