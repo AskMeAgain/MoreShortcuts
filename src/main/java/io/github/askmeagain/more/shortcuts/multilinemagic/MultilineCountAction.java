@@ -1,5 +1,7 @@
 package io.github.askmeagain.more.shortcuts.multilinemagic;
 
+import com.intellij.ui.components.JBLabel;
+import com.intellij.util.ui.FormBuilder;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -59,29 +61,15 @@ public class MultilineCountAction extends AnAction {
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-      JPanel panel = new JPanel(new SpringLayout());
-
-      var startLabel = new JLabel("Start", JLabel.TRAILING);
-      var intervalLabel = new JLabel("Interval", JLabel.TRAILING);
 
       startField = new JTextField("" + state.getMMStartValue(), 10);
       endField = new JTextField("" + state.getMMIntervalValue(), 10);
 
-      startLabel.setLabelFor(startField);
-      startLabel.setLabelFor(endField);
-
-      panel.add(startLabel);
-      panel.add(startField);
-
-      panel.add(intervalLabel);
-      panel.add(endField);
-
-      MultilineUtils.makeCompactGrid(panel,
-          2, 2, //rows, cols
-          6, 6,        //initX, initY
-          6, 6);       //xPad, yPad
-
-      return panel;
+      return FormBuilder.createFormBuilder()
+          .addLabeledComponent(new JBLabel("Start",JLabel.TRAILING), startField, 1, false)
+          .addLabeledComponent(new JBLabel("Interval",JLabel.TRAILING), endField, 1, false)
+          .addComponentFillVertically(new JPanel(), 0)
+          .getPanel();
     }
   }
 }
