@@ -19,18 +19,18 @@ public class MultilineCountAction extends AnAction {
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
-    new ConnectServerDialog(e).show();
+    new MultilineCountDialog(e).show();
   }
 
 
-  public static class ConnectServerDialog extends DialogWrapper {
+  public static class MultilineCountDialog extends DialogWrapper {
 
     private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
     private JTextField startField;
     private JTextField endField;
     private final AnActionEvent e;
 
-    public ConnectServerDialog(AnActionEvent e) {
+    public MultilineCountDialog(AnActionEvent e) {
       super(true);
 
       this.e = e;
