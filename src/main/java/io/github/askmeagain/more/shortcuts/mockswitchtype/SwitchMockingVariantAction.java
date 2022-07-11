@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.mockswitchtype;
 
+import com.google.common.base.Strings;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
@@ -28,18 +29,30 @@ public class SwitchMockingVariantAction extends AnAction {
 
     editor.getCaretModel().runForEachCaret(caret -> {
 
-      var logicalPosition = caret.getLogicalPosition();
-      var line = logicalPosition.line;
+      var text = caret.getSelectedText();
+      var start = caret.getSelectionStart();
+      var end = caret.getSelectionEnd();
 
-      var start = document.getLineStartOffset(line);
-      var end = document.getLineEndOffset(line);
+      if(Strings.isNullOrEmpty(text)) {
+        var logicalPosition = caret.getLogicalPosition();
+        var line = logicalPosition.line;
 
-      var text = editor.getDocument().getText(TextRange.from(start, end - start));
+        start = document.getLineStartOffset(line);
+        end = document.getLineEndOffset(line);
+
+        text = editor.getDocument().getText(TextRange.from(start, end - start));
+      } else {
+        text = text.replace("\n","");
+      }
+
       var newText = SwitchMockingVariantUtils.convertLine(text, state.getStaticImports());
 
+      int finalStart = start;
+      int finalEnd = end;
+
       WriteCommandAction.runWriteCommandAction(project, () -> {
-        document.replaceString(start, end, newText);
-        codeStyleManager.reformatText(psiFile, start, start + newText.length());
+        document.replaceString(finalStart, finalEnd, newText);
+        codeStyleManager.reformatText(psiFile, finalStart, finalStart + newText.length());
       });
     });
 

@@ -79,8 +79,7 @@ public class AddMockMethodImpl extends AnAction {
 
       PsiElement expression = factory.createStatementFromText(resultText, null);
 
-      var hasParameters = !methodParameters.isBlank();
-      writeExpression(cursorPosition, expression, hasParameters);
+      writeExpression(cursorPosition, expression);
       writeImportStatements(method);
 
     } catch (CouldNotFindMethodException ex) {
@@ -163,7 +162,7 @@ public class AddMockMethodImpl extends AnAction {
     }
   }
 
-  private void writeExpression(PsiElement anchor, PsiElement expression, boolean hasParameters) {
+  private void writeExpression(PsiElement anchor, PsiElement expression) {
     WriteCommandAction.runWriteCommandAction(project, () -> {
       var whiteSpace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
 
@@ -180,9 +179,7 @@ public class AddMockMethodImpl extends AnAction {
       var offset = expressionList.getTextOffset() + 1;
       editor.getCaretModel().moveToOffset(offset);
 
-      if (hasParameters) {
-        editor.getSelectionModel().setSelection(offset, offset + 4);
-      }
+      editor.getSelectionModel().setSelection(offset, offset + 4);
     });
   }
 
