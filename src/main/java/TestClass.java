@@ -4,11 +4,6 @@ public class TestClass<G> {
   }
 
   public void abc(){
-//    var s = new TestClass();
-//    Mockito.when(s.getClass()).thenReturn(null);
-
-
+    var s = new TestClass();
   }
-
-
 }
