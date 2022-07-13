@@ -12,8 +12,8 @@ public class SettingsGuiManager implements Configurable {
   private final PersistenceManagementService persistenceManagementService = PersistenceManagementService.getInstance();
   private MoreShortcutsSettingsWindow settingsComponent;
 
-  @Nls(capitalization = Nls.Capitalization.Title)
   @Override
+  @Nls(capitalization = Nls.Capitalization.Title)
   public String getDisplayName() {
     return "More Shortcuts Settings";
   }
@@ -41,7 +41,7 @@ public class SettingsGuiManager implements Configurable {
     settingsComponent.setdotCaseImpl(state.getDotCaseImpl());
     settingsComponent.setpascalCaseImpl(state.getPascalCaseImpl());
 
-    return settingsComponent.getPanel();
+    return settingsComponent.getTabbedPane();
   }
 
   @Override

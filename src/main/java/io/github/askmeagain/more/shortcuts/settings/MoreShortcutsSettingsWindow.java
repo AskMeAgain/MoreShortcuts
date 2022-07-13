@@ -2,14 +2,17 @@ package io.github.askmeagain.more.shortcuts.settings;
 
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
+import lombok.Getter;
 
 import javax.swing.*;
 
 public class MoreShortcutsSettingsWindow {
 
-  private final JPanel settingsPanel;
+  @Getter
+  private final JBTabbedPane tabbedPane;
 
   private final JBTextField multilineMagicStartValue = new JBTextField();
   private final JBTextField multilineMagicIntervalValue = new JBTextField();
@@ -20,28 +23,43 @@ public class MoreShortcutsSettingsWindow {
   private final JBCheckBox dotCaseImpl = new JBCheckBox("Dot case");
   private final JBCheckBox doenerCaseImpl = new JBCheckBox("Doener case");
   private final JBCheckBox snakeCaseImpl = new JBCheckBox("Snake case");
-  private final JBCheckBox introduceMockFieldPrivateField = new JBCheckBox("Introduce fieldMock private field");
+  private final JBCheckBox introduceMockFieldPrivateField = new JBCheckBox("Private field when introducing field");
 
   public MoreShortcutsSettingsWindow() {
-    settingsPanel = FormBuilder.createFormBuilder()
-        .addLabeledComponent(new JBLabel("Default start value: "), multilineMagicStartValue, 1, false)
-        .addLabeledComponent(new JBLabel("Default interval value: "), multilineMagicIntervalValue, 1, false)
-        .addComponent(staticImports)
-        .addComponent(introduceMockFieldPrivateField)
-        .addComponent(new JSeparator())
-        .addComponent(pascalCaseImpl)
-        .addComponent(camelCaseImpl)
-        .addComponent(dotCaseImpl)
-        .addComponent(doenerCaseImpl)
-        .addComponent(snakeCaseImpl)
-        .addComponent(new JSeparator())
-        .addLabeledComponent(new JBLabel("CodeLense font size"), codeLenseFontSizeField, 1, false)
+
+    tabbedPane = new JBTabbedPane();
+
+    var nameCyclingTab = FormBuilder.createFormBuilder()
+        .addComponent(new JBLabel("Enabled naming schemes:"))
+        .addComponentToRightColumn(pascalCaseImpl)
+        .addComponentToRightColumn(camelCaseImpl)
+        .addComponentToRightColumn(dotCaseImpl)
+        .addComponentToRightColumn(doenerCaseImpl)
+        .addComponentToRightColumn(snakeCaseImpl)
         .addComponentFillVertically(new JPanel(), 0)
         .getPanel();
-  }
 
-  public JPanel getPanel() {
-    return settingsPanel;
+    var general = FormBuilder.createFormBuilder()
+        .addComponent(staticImports)
+        .addComponent(introduceMockFieldPrivateField)
+        .addComponentFillVertically(new JPanel(), 0)
+        .getPanel();
+
+    var multiLineMagic = FormBuilder.createFormBuilder()
+        .addLabeledComponent(new JBLabel("Default start value: "), multilineMagicStartValue, 1, false)
+        .addLabeledComponent(new JBLabel("Default interval value: "), multilineMagicIntervalValue, 1, false)
+        .addComponentFillVertically(new JPanel(), 0)
+        .getPanel();
+
+    var codeLense = FormBuilder.createFormBuilder()
+        .addLabeledComponent(new JBLabel("CodeLense font size: "), codeLenseFontSizeField, 1, false)
+        .addComponentFillVertically(new JPanel(), 0)
+        .getPanel();
+
+    tabbedPane.addTab("General", general);
+    tabbedPane.addTab("NameCycling", nameCyclingTab);
+    tabbedPane.addTab("MultiLineMagic", multiLineMagic);
+    tabbedPane.addTab("CodeLense", codeLense);
   }
 
   public JComponent getPreferredFocusedComponent() {
