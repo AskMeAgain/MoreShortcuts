@@ -13,6 +13,7 @@ public class MoreShortcutsSettingsWindow {
 
   private final JBTextField multilineMagicStartValue = new JBTextField();
   private final JBTextField multilineMagicIntervalValue = new JBTextField();
+  private final JBTextField codeLenseFontSizeField = new JBTextField();
   private final JBCheckBox staticImports = new JBCheckBox("Static imports");
   private final JBCheckBox pascalCaseImpl = new JBCheckBox("Pascal case");
   private final JBCheckBox camelCaseImpl = new JBCheckBox("Camel case");
@@ -33,6 +34,8 @@ public class MoreShortcutsSettingsWindow {
         .addComponent(dotCaseImpl)
         .addComponent(doenerCaseImpl)
         .addComponent(snakeCaseImpl)
+        .addComponent(new JSeparator())
+        .addLabeledComponent(new JBLabel("CodeLense font size"), codeLenseFontSizeField, 1, false)
         .addComponentFillVertically(new JPanel(), 0)
         .getPanel();
   }
@@ -107,6 +110,14 @@ public class MoreShortcutsSettingsWindow {
 
   public void setIntroduceMockFieldPrivateField(boolean selected) {
     introduceMockFieldPrivateField.setSelected(selected);
+  }
+
+  public Integer getCodeLenseFontSize() {
+    return Integer.parseInt(codeLenseFontSizeField.getText());
+  }
+
+  public void setCodeLenseFontSize(Integer fontSize) {
+    codeLenseFontSizeField.setText(String.valueOf(fontSize));
   }
 
   public void setMultiLineMagicStartValue(Integer newMmStartValue) {

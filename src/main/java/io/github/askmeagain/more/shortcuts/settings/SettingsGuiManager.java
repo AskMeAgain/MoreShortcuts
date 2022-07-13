@@ -33,6 +33,7 @@ public class SettingsGuiManager implements Configurable {
     settingsComponent.setMultiLineMagicIntervalValue(state.getMMIntervalValue());
     settingsComponent.setStaticImports(state.getStaticImports());
     settingsComponent.setIntroduceMockFieldPrivateField(state.getIntroduceMockFieldPrivateField());
+    settingsComponent.setCodeLenseFontSize(state.getCodeLenseFontSize());
 
     settingsComponent.setdoenerCaseImpl(state.getDoenerCaseImpl());
     settingsComponent.setsnakeCaseImpl(state.getSnakeCaseImpl());
@@ -51,6 +52,7 @@ public class SettingsGuiManager implements Configurable {
     var intervalValueChanged = !settingsComponent.getMultiLineMagicIntervalValue().equals(state.getMMIntervalValue());
     var staticImportsChanged = !settingsComponent.getStaticImports().equals(state.getStaticImports());
     var privateFieldChanged = !settingsComponent.getIntroduceMockFieldPrivateField().equals(state.getIntroduceMockFieldPrivateField());
+    var fontSizeChanged = !settingsComponent.getCodeLenseFontSize().equals(state.getCodeLenseFontSize());
 
     var doenerCaseChanged = !settingsComponent.getdoenerCaseImpl().equals(state.getDoenerCaseImpl());
     var pascalCaseChanged = !settingsComponent.getpascalCaseImpl().equals(state.getPascalCaseImpl());
@@ -66,7 +68,8 @@ public class SettingsGuiManager implements Configurable {
         || pascalCaseChanged
         || camelCaseChanged
         || snakeCasechanged
-        || dotCaseChanged;
+        || dotCaseChanged
+        || fontSizeChanged;
   }
 
   @Override
@@ -77,6 +80,7 @@ public class SettingsGuiManager implements Configurable {
     state.setMMIntervalValue(settingsComponent.getMultiLineMagicIntervalValue());
     state.setStaticImports(settingsComponent.getStaticImports());
     state.setIntroduceMockFieldPrivateField(settingsComponent.getIntroduceMockFieldPrivateField());
+    state.setCodeLenseFontSize(settingsComponent.getCodeLenseFontSize());
 
     state.setDoenerCaseImpl(settingsComponent.getdoenerCaseImpl());
     state.setPascalCaseImpl(settingsComponent.getpascalCaseImpl());
@@ -87,11 +91,7 @@ public class SettingsGuiManager implements Configurable {
 
   @Override
   public void reset() {
-//    var state = getPersistenceManagementService().getState();
-//
-//    state.setMMStartValue(1);
-//    state.setMMIntervalValue(1);
-//    state.setStaticImports(false);
+    //nothing to do. This is a bug, since this is getting executed multiple times for no reason
   }
 
   @Override
