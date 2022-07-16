@@ -4,13 +4,10 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClassOwner;
+import com.intellij.psi.impl.PsiJavaParserFacadeImpl;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class LombokToMapStructAction extends AnAction {
 
@@ -30,19 +27,11 @@ public class LombokToMapStructAction extends AnAction {
 
       var packageName = ((PsiClassOwner) psiFile).getPackageName();
 
-      var lines = text.split("\n");
+      var visitor = new Visitor(packageName, psiFile);
+      new PsiJavaParserFacadeImpl(project).createStatementFromText(text, null).accept(visitor);
+      var result = visitor.getResult().toString();
 
-      var result = LombokToMapStructUtils.buildMapper(lines, packageName);
-      var name = LombokToMapStructUtils.findOutputType(lines[0]) + "Mapper.java";
-
-      WriteCommandAction.runWriteCommandAction(project, () -> {
-        try {
-          var resultFile = data.getParent().createChildData(null, name);
-          resultFile.setBinaryContent(result.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException ex) {
-          ex.printStackTrace();
-        }
-      });
+      System.out.println(result);
     });
   }
 }
