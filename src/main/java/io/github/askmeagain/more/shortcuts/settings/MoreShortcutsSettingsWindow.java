@@ -18,11 +18,11 @@ public class MoreShortcutsSettingsWindow {
   private final JBTextField multilineMagicIntervalValue = new JBTextField();
   private final JBTextField codeLenseFontSizeField = new JBTextField();
   private final JBCheckBox staticImports = new JBCheckBox("Static imports");
-  private final JBCheckBox pascalCaseImpl = new JBCheckBox("Pascal case");
-  private final JBCheckBox camelCaseImpl = new JBCheckBox("Camel case");
-  private final JBCheckBox dotCaseImpl = new JBCheckBox("Dot case");
-  private final JBCheckBox doenerCaseImpl = new JBCheckBox("Doener case");
-  private final JBCheckBox snakeCaseImpl = new JBCheckBox("Snake case");
+  private final JBCheckBox pascalCaseCheckbox = new JBCheckBox("Pascal case");
+  private final JBCheckBox camelCaseCheckbox = new JBCheckBox("Camel case");
+  private final JBCheckBox dotCaseCheckbox = new JBCheckBox("Dot case");
+  private final JBCheckBox doenerCaseCheckbox = new JBCheckBox("Doener case");
+  private final JBCheckBox snakeCaseCheckbox = new JBCheckBox("Snake case");
   private final JBCheckBox introduceMockFieldPrivateField = new JBCheckBox("Private field when introducing field");
 
   public MoreShortcutsSettingsWindow() {
@@ -31,11 +31,11 @@ public class MoreShortcutsSettingsWindow {
 
     var nameCyclingTab = FormBuilder.createFormBuilder()
         .addComponent(new JBLabel("Enabled naming schemes:"))
-        .addComponentToRightColumn(pascalCaseImpl)
-        .addComponentToRightColumn(camelCaseImpl)
-        .addComponentToRightColumn(dotCaseImpl)
-        .addComponentToRightColumn(doenerCaseImpl)
-        .addComponentToRightColumn(snakeCaseImpl)
+        .addComponentToRightColumn(pascalCaseCheckbox)
+        .addComponentToRightColumn(camelCaseCheckbox)
+        .addComponentToRightColumn(dotCaseCheckbox)
+        .addComponentToRightColumn(doenerCaseCheckbox)
+        .addComponentToRightColumn(snakeCaseCheckbox)
         .addComponentFillVertically(new JPanel(), 0)
         .getPanel();
 
@@ -75,43 +75,43 @@ public class MoreShortcutsSettingsWindow {
   }
 
   public Boolean getpascalCaseImpl() {
-    return pascalCaseImpl.isSelected();
+    return pascalCaseCheckbox.isSelected();
   }
 
   public void setpascalCaseImpl(boolean selected) {
-    pascalCaseImpl.setSelected(selected);
+    pascalCaseCheckbox.setSelected(selected);
   }
 
   public Boolean getcamelCaseImpl() {
-    return camelCaseImpl.isSelected();
+    return camelCaseCheckbox.isSelected();
   }
 
   public void setcamelCaseImpl(boolean selected) {
-    camelCaseImpl.setSelected(selected);
+    camelCaseCheckbox.setSelected(selected);
   }
 
   public Boolean getdotCaseImpl() {
-    return dotCaseImpl.isSelected();
+    return dotCaseCheckbox.isSelected();
   }
 
   public void setdotCaseImpl(boolean selected) {
-    dotCaseImpl.setSelected(selected);
+    dotCaseCheckbox.setSelected(selected);
   }
 
   public Boolean getdoenerCaseImpl() {
-    return doenerCaseImpl.isSelected();
+    return doenerCaseCheckbox.isSelected();
   }
 
   public void setdoenerCaseImpl(boolean selected) {
-    doenerCaseImpl.setSelected(selected);
+    doenerCaseCheckbox.setSelected(selected);
   }
 
   public Boolean getsnakeCaseImpl() {
-    return snakeCaseImpl.isSelected();
+    return snakeCaseCheckbox.isSelected();
   }
 
   public void setsnakeCaseImpl(boolean selected) {
-    snakeCaseImpl.setSelected(selected);
+    snakeCaseCheckbox.setSelected(selected);
   }
 
   public Boolean getStaticImports() {

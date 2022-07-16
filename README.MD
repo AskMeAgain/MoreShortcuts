@@ -1,10 +1,10 @@
 # MoreShortcuts for Intellij
 
-This plugin adds some shortcuts to intellij idea
+This plugin adds more shortcuts to intellij idea.
 
 ## Installation
 
-Get it from the [Intellij Marketplace](https://plugins.jetbrains.com/plugin/17814-shortcut-additions)
+Get it from the [Intellij Marketplace](https://plugins.jetbrains.com/plugin/17814-more-shortcuts/)
 
 ----------------------
 
@@ -27,6 +27,8 @@ After
 
         var result = new TestClass(string1, string2);
     }
+
+PS: you can also introduce spys like this, just use **CTRL + SHIFT + M, CTRL + V** instead.
 
 ----------------------
 
@@ -56,6 +58,8 @@ After
             var result = new TestClass(string1, string2);
         }
     }
+
+PS: you can also introduce @Spy fields like this, just use **CTRL + SHIFT + M, CTRL + F** instead.
 
 ----------------------
 
@@ -101,7 +105,7 @@ Every need to rename alot of variables in a sequential way? **CTRL + M, CTRL + 1
 small popup to set a starting index and an interval. The plugin will insert the start number and then write sequential
 numbers based on the interval.
 
-PS: this does also work for characters, just insert A or a to count in uppercase and lowercase letters
+PS: this does also work for characters, just insert "A" or "a" to count in uppercase and lowercase letters
 
 ![multilinecount](multilinecount.gif)
 
@@ -121,12 +125,13 @@ naming schemes. Currently supported are: **camelCase, dot.case, PascalCase, SNAK
 Copy some code and paste it onto a selected text via **ALT + V**. Depending on the content of the clipboard and the text
 selection a different behaviour occurs (with multi cursor support!):
 
-| Selection                  | Clipboard              | Result                                                      |
-|----------------------------|------------------------|-------------------------------------------------------------|
-| "abc"                      | coolMethod(            | coolMethod("abc")                                           |
-| "abc";                     | coolMethod(            | coolMethod("abc");                                          |
-| coolMethod("abc");         | "def"                  | coolMethod("def");                                          |
-| public void coolMethod() { | var newString = "abc"; | public void coolMethod { <br/>var newString = "abc"; <br/>} |
+| Clipboard              | Selection                  | Result                                                      |
+|------------------------|----------------------------|-------------------------------------------------------------|
+| coolMethod(            | "abc"                      | coolMethod("abc")                                           |
+| coolMethod(            | "abc";                     | coolMethod("abc");                                          |
+| "def"                  | coolMethod("abc");         | coolMethod("def");                                          |
+| var newString = "abc"; | public void coolMethod() { | public void coolMethod { <br/>var newString = "abc"; <br/>} |
+| <any-html-brackets>    | any cool text              | <any-html-brackets>any cool text</any-html-brackets>        |
 
 ![smartpaste](smartinsertion.gif)
 
@@ -134,16 +139,21 @@ selection a different behaviour occurs (with multi cursor support!):
 
 ## Switch Mockito Mocking Variant
 
-Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mockito.doReturn mock method variants via **CTRL + M, CTRL + S**.
+Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mockito.doReturn 
+mock method variants via **CTRL + M, CTRL + S**. You can also just select the whole text segment to refactor
+mockings, which are longer then 1 line.
 
 ![mockvariant](mockvariant.gif)
 
+----------------------
 
 ## Lombok to MapStruct generator
 
+**Currently pretty experimental**
+
 Select any text which has (close to) the same format as the example,
 Press **CTRL + G, CTRL + M** and this plugin will generate a MapStruct mapper.
-It is _not perfect_ but will speed up the normal boring mapping pretty 
+It is _not perfect_ but will speed up the normal boring mapping pretty
 significantly. If it cannot match anything, then it will not fill in the blanks.
 It can handle any nesting.
 
@@ -188,6 +198,15 @@ It can handle any nesting.
 
 </p>
 </details>
+
+----------------------
+
+## Annotation CodeLense
+
+A small code editor opens when pressing **CTRL + I, CTRL + A**.
+The cursor is placed at the top of the current file, to enter new annotations.
+Pressing **escape** closes the window
+
 
 ----------------------
 
