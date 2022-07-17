@@ -15,5 +15,5 @@ public class LombokToMapStructTemplate {
       "\n" +
       "}";
 
-  public static String MAPPING_TEMPLATE = "  @Mapping(target = \"$OUTPUT_NAME\"$SOURCE$CONSTANT)";
+  public static String MAPPING_TEMPLATE = "  @Mapping(target = \"$TARGET\"$SOURCE$CONSTANT)";
 }
