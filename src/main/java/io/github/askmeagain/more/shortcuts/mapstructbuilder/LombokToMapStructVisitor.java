@@ -3,18 +3,15 @@ package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import com.intellij.psi.util.PsiTreeUtil;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class Visitor extends JavaRecursiveElementVisitor {
+public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
   private final String packageName;
   private PsiType outputType;
@@ -24,11 +21,20 @@ public class Visitor extends JavaRecursiveElementVisitor {
   public MappingContainer getResult() {
 
     var inputObjects = mappings.stream()
+        .filter(x -> x.getSource() != null)
+        .filter(x -> !x.getSource().isExternalMethod())
         .map(Mapping::getInputObjects)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
 
+    var overrideMethods = mappings.stream()
+        .filter(Objects::nonNull)
+        .filter(x -> x.getSource() != null)
+        .filter(x -> x.getSource().isExternalMethod())
+        .collect(Collectors.toList());
+
     return MappingContainer.builder()
+        .overrideMethods(overrideMethods)
         .mappings(mappings)
         .packageName(packageName)
         .inputObjects(new ArrayList<>(inputObjects))
@@ -38,23 +44,33 @@ public class Visitor extends JavaRecursiveElementVisitor {
 
   @Override
   public void visitExpressionList(PsiExpressionList list) {
-
     var parentName = ((PsiReferenceExpressionImpl) list.getParent().getChildren()[0]).getReferenceName();
-    var expressionText = list.getText();
+    var expression = list.getText();
+    var hasExpression = expression.length() > 2;
 
-    if (expressionText.length() > 2) {
-      if (expressionText.contains(".builder()")) {
+    if (hasExpression) {
+      if (expression.contains(".builder()")) {
         stack.add(parentName);
       } else {
 
         var inputObjects = getInputObjects(list);
 
+        String constant;
+        SourceContainer source;
+        if (list.getChildren()[1] instanceof PsiLiteralExpression) {
+          source = null;
+          constant = ", constant=\"" + StringUtils.strip(list.getChildren()[1].getText(), "\"") + "\"";
+        } else {
+          source = getSource(list);
+          constant = "";
+        }
+
         var mapping = Mapping.builder()
             .targets(stack)
             .target(parentName)
-            .constant("")
+            .constant(constant)
             .inputObjects(new ArrayList<>(inputObjects))
-            .source(getSource(list))
+            .source(source)
             .build();
 
         mappings.add(mapping);
@@ -72,8 +88,9 @@ public class Visitor extends JavaRecursiveElementVisitor {
     super.visitExpressionList(list);
   }
 
-  private String getSource(PsiExpressionList list) {
+  private SourceContainer getSource(PsiExpressionList list) {
     var result = new ArrayList<String>();
+
     list.accept(new JavaRecursiveElementVisitor() {
       @Override
       public void visitIdentifier(PsiIdentifier identifier) {
@@ -82,20 +99,28 @@ public class Visitor extends JavaRecursiveElementVisitor {
       }
     });
 
-    return result.stream()
+    var isExternalMethod = list.getText().contains("+");
+
+    var sourceString = result.stream()
         .map(this::removeGetter)
         .collect(Collectors.joining("."));
+
+    return SourceContainer.builder()
+        .originalList(list)
+        .sourceString(sourceString)
+        .externalMethod(isExternalMethod)
+        .build();
   }
 
   private String removeGetter(String identifier) {
     if (identifier.startsWith("get") && Character.isUpperCase(identifier.charAt(3))) {
-      return LombokToMapStructUtils.makeLowerCase(identifier.replace("get", ""));
+      return makeLowerCase(identifier.replace("get", ""));
     }
 
     return identifier;
   }
 
-  @NotNull
+
   private HashSet<InputObjectContainer> getInputObjects(PsiExpressionList list) {
     var inputObjects = new HashSet<InputObjectContainer>();
     list.accept(new JavaRecursiveElementVisitor() {
@@ -114,5 +139,9 @@ public class Visitor extends JavaRecursiveElementVisitor {
       }
     });
     return inputObjects;
+  }
+
+  private String makeLowerCase(String input) {
+    return String.valueOf(input.charAt(0)).toLowerCase() + input.substring(1);
   }
 }

@@ -16,6 +16,9 @@ public class MapperTest {
         .mul(Multiplication.builder()
             .nested1(input.getAnotherZero().getAnotherOne().getAnotherOneOne())
             .nested2(input.getNumber1())
+            .nested3(input.getNumber2() + input.getNumber2())
+            .nested4("what a nice constant")
+            .nested5(1)
             .build())
         .build();
   }
@@ -35,6 +38,7 @@ public class MapperTest {
   private static class InputContainer {
 
     String number1;
+    Integer number2;
     InputContainer anotherZero;
     InputContainer anotherOne;
     String anotherOneOne;
@@ -47,6 +51,9 @@ public class MapperTest {
 
     String nested1;
     String nested2;
+    Integer nested3;
+    String nested4;
+    Integer nested5;
 
   }
 }

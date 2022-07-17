@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class Mapping {
 
-  String source;
+  SourceContainer source;
   List<InputObjectContainer> inputObjects;
   @Singular
   List<String> targets;

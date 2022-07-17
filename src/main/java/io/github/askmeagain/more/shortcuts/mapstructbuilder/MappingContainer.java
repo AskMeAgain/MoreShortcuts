@@ -7,6 +7,7 @@ import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
 import lombok.Builder;
 import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -27,7 +28,7 @@ public class MappingContainer {
   public String toString() {
 
     var textMappings = mappings.stream()
-        .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE.replace("$SOURCE", ", source=\"" + getSourceMappingString(x) + "\"")
+        .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE.replace("$SOURCE", getSourceMappingString(x))
             .replace("$TARGET", String.join(".", x.getTargets()))
             .replace("$CONSTANT", x.getConstant()))
         .collect(Collectors.joining("\n"));
@@ -67,16 +68,18 @@ public class MappingContainer {
   }
 
   private String getSourceMappingString(Mapping mapping) {
-    if (mapping.getSource().isExternalMethod()) {
-      return "\", qualifiedByName=\"" + getMappingMethodName(mapping);
+    if(mapping.getSource() == null){
+      return "";
+    } else if (mapping.getSource().isExternalMethod()) {
+      return ", source = \"????????????\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
     } else {
-      return mapping.getSource().getSourceString();
+      return ", source =\"" + mapping.getSource().getSourceString() + "\"";
     }
   }
 
   private String getMappingMethodName(Mapping mapping) {
     var methodName = mapping.getTargets().get(mapping.getTargets().size() - 1);
 
-    return "get" + methodName;
+    return "get" + StringUtils.capitalize(methodName);
   }
 }
