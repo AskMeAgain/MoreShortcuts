@@ -15,10 +15,9 @@ public class LombokToMapStructTemplate {
       "  $OUTPUT_TYPE map($INPUTS);\n" +
       "\n" +
       "$OVERRIDE_METHODS" +
-      "\n" +
       "}";
 
   public static String MAPPING_TEMPLATE = "  @Mapping(target = \"$TARGET\"$SOURCE$CONSTANT)";
 
-  public static String OVERRIDE_TEMPLATE = "  @Named(\"$METHOD_NAME\")\n  default $OUTPUT_TYPE $METHOD_NAME (??????????){\n    return $CODE;\n  }";
+  public static String OVERRIDE_TEMPLATE = "  @Named(\"$METHOD_NAME\")\n  default $OUTPUT_TYPE $METHOD_NAME ($METHOD_INPUT_TYPES){\n    return $CODE;\n  }\n";
 }

@@ -10,6 +10,10 @@ public class MapperTest {
         .number1("abc")
         .build();
 
+    var input2 = InputContainer.builder()
+        .number1("abc")
+        .build();
+
     var output = ComplexOutputs.builder()
         .orig1(input.getNumber1())
         .orig2(input.getNumber1())
@@ -19,6 +23,7 @@ public class MapperTest {
             .nested3(input.getNumber2() + input.getNumber2())
             .nested4("what a nice constant")
             .nested5(1)
+            .nested6(input.getNumber2() + input2.getNumber2())
             .build())
         .build();
   }
@@ -54,6 +59,7 @@ public class MapperTest {
     Integer nested3;
     String nested4;
     Integer nested5;
+    Integer nested6;
 
   }
 }

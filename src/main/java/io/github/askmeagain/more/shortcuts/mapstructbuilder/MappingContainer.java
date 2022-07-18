@@ -34,7 +34,9 @@ public class MappingContainer {
         .collect(Collectors.joining("\n"));
 
     var textOverrideMethods = overrideMethods.stream()
-        .map(x -> LombokToMapStructTemplate.OVERRIDE_TEMPLATE.replace("$INPUT_TYPE", "abc")
+        .map(x -> LombokToMapStructTemplate.OVERRIDE_TEMPLATE.replace("$METHOD_INPUT_TYPES", String.join(",", getSpecificMappingInputs(x).stream()
+                .map(y -> y.getType().getPresentableText() + " " + y.getVarName())
+                .collect(Collectors.joining(", "))))
             .replace("$OUTPUT_TYPE", getOutputType(x.getSource().getOriginalList()))
             .replace("$METHOD_NAME", getMappingMethodName(x))
             .replace("$CODE", x.getSource().getOriginalList().getText()))
@@ -68,13 +70,27 @@ public class MappingContainer {
   }
 
   private String getSourceMappingString(Mapping mapping) {
-    if(mapping.getSource() == null){
+    if (mapping.getSource() == null) {
       return "";
     } else if (mapping.getSource().isExternalMethod()) {
-      return ", source = \"????????????\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
+      var inputObjects = getSpecificMappingInputs(mapping);
+      if (inputObjects.size() != 1) {
+        var shortInputObj = inputObjects.stream()
+            .map(InputObjectContainer::getVarName)
+            .collect(Collectors.joining(", "));
+        var methodInvocation = getMappingMethodName(mapping) + "(" + shortInputObj + ")";
+        return ", expression=\"java(" + methodInvocation + ")\"";
+      } else {
+        var sourceName = inputObjects.get(0).getVarName();
+        return ", source = \"" + sourceName + "\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
+      }
     } else {
       return ", source =\"" + mapping.getSource().getSourceString() + "\"";
     }
+  }
+
+  private List<InputObjectContainer> getSpecificMappingInputs(Mapping mapping) {
+    return new ArrayList<>(LombokToMapStructVisitor.getInputObjects(mapping.getSource().getOriginalList()));
   }
 
   private String getMappingMethodName(Mapping mapping) {

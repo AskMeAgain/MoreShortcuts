@@ -22,7 +22,6 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
     var inputObjects = mappings.stream()
         .filter(x -> x.getSource() != null)
-        .filter(x -> !x.getSource().isExternalMethod())
         .map(Mapping::getInputObjects)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
@@ -121,7 +120,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
   }
 
 
-  private HashSet<InputObjectContainer> getInputObjects(PsiExpressionList list) {
+  public static HashSet<InputObjectContainer> getInputObjects(PsiExpressionList list) {
     var inputObjects = new HashSet<InputObjectContainer>();
     list.accept(new JavaRecursiveElementVisitor() {
       @Override
