@@ -1,7 +1,6 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 public class MapperTest {
 

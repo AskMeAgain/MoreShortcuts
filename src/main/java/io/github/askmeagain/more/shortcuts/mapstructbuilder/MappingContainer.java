@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Value
 @Builder
@@ -44,16 +45,17 @@ public class MappingContainer {
                 .collect(Collectors.joining(", "))))
             .replace("$OUTPUT_TYPE", getOutputType(x.getSource().getOriginalList()))
             .replace("$METHOD_NAME", getMappingMethodName(x))
-            .replace("$CODE", StringUtils.strip(StringUtils.strip(x.getSource().getOriginalList().getText(), "("), ")")))
+            .replace("$CODE", trimBrackets(x)))
         .collect(Collectors.joining("\n"));
 
     var collect = inputObjects.stream()
         .map(InputObjectContainer::toString)
         .collect(Collectors.joining(", "));
 
-    inputObjects.stream()
-        .map(x -> x.getType().getCanonicalText())
-        .distinct()
+    Stream.concat(
+            inputObjects.stream().map(x -> x.getType().getCanonicalText()),
+            Stream.of(outputType.getCanonicalText())
+        ).distinct()
         .forEach(baseImports::add);
 
     if (!textOverrideMethods.isEmpty()) {
@@ -68,6 +70,11 @@ public class MappingContainer {
         .replace("$MAPPINGS", textMappings)
         .replace("$IMPORTS", baseImports.stream().map(x -> "import " + x + ";").collect(Collectors.joining("\n")))
         .replace("$OVERRIDE_METHODS", textOverrideMethods);
+  }
+
+  private String trimBrackets(Mapping x) {
+    var text = x.getSource().getOriginalList().getText();
+    return text.substring(1, text.length() - 1);
   }
 
   @NotNull
