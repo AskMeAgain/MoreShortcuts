@@ -27,6 +27,11 @@ public class MappingContainer {
   @Override
   public String toString() {
 
+    var baseImports = new ArrayList<String>();
+
+    baseImports.add("org.mapstruct.Mapper");
+    baseImports.add("org.mapstruct.Mapping");
+
     var textMappings = mappings.stream()
         .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE.replace("$SOURCE", getSourceMappingString(x))
             .replace("$TARGET", String.join(".", x.getTargets()))
@@ -39,12 +44,21 @@ public class MappingContainer {
                 .collect(Collectors.joining(", "))))
             .replace("$OUTPUT_TYPE", getOutputType(x.getSource().getOriginalList()))
             .replace("$METHOD_NAME", getMappingMethodName(x))
-            .replace("$CODE", StringUtils.strip(StringUtils.strip(x.getSource().getOriginalList().getText(), ")"), "(")))
+            .replace("$CODE", StringUtils.strip(StringUtils.strip(x.getSource().getOriginalList().getText(), "("), ")")))
         .collect(Collectors.joining("\n"));
 
     var collect = inputObjects.stream()
         .map(InputObjectContainer::toString)
         .collect(Collectors.joining(", "));
+
+    inputObjects.stream()
+        .map(x -> x.getType().getCanonicalText())
+        .distinct()
+        .forEach(baseImports::add);
+
+    if (!textOverrideMethods.isEmpty()) {
+      baseImports.add("org.mapstruct.Named");
+    }
 
     return LombokToMapStructTemplate.TEMPLATE
         .replace("$IN_PACKAGE", !Strings.isNullOrEmpty(packageName) ? "package $PACKAGE;" : "")
@@ -52,6 +66,7 @@ public class MappingContainer {
         .replace("$INPUTS", collect)
         .replace("$OUTPUT_TYPE", outputType.getPresentableText())
         .replace("$MAPPINGS", textMappings)
+        .replace("$IMPORTS", baseImports.stream().map(x -> "import " + x + ";").collect(Collectors.joining("\n")))
         .replace("$OVERRIDE_METHODS", textOverrideMethods);
   }
 

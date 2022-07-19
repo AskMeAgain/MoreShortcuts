@@ -5,9 +5,7 @@ public class LombokToMapStructTemplate {
   public static String TEMPLATE = "" +
       "$IN_PACKAGE\n" +
       "\n" +
-      "import org.mapstruct.Mapper;\n" +
-      "import org.mapstruct.Mapping;\n" +
-      "import org.mapstruct.Named;\n" +
+      "$IMPORTS" +
       "\n" +
       "@Mapper\n" +
       "public interface $OUTPUT_TYPEMapper {\n" +

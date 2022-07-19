@@ -30,7 +30,7 @@ public class MapperTest {
 
   @Value
   @Builder
-  private static class ComplexOutputs {
+  public static class ComplexOutputs {
 
     String orig1;
     String orig2;
@@ -40,7 +40,7 @@ public class MapperTest {
 
   @Value
   @Builder
-  private static class InputContainer {
+  public static class InputContainer {
 
     String number1;
     Integer number2;
@@ -52,7 +52,7 @@ public class MapperTest {
 
   @Value
   @Builder
-  private static class Multiplication {
+  public static class Multiplication {
 
     String nested1;
     String nested2;
