@@ -39,7 +39,7 @@ public class MappingContainer {
                 .collect(Collectors.joining(", "))))
             .replace("$OUTPUT_TYPE", getOutputType(x.getSource().getOriginalList()))
             .replace("$METHOD_NAME", getMappingMethodName(x))
-            .replace("$CODE", x.getSource().getOriginalList().getText()))
+            .replace("$CODE", StringUtils.strip(StringUtils.strip(x.getSource().getOriginalList().getText(), ")"), "(")))
         .collect(Collectors.joining("\n"));
 
     var collect = inputObjects.stream()
