@@ -1,10 +1,11 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
 
 import com.google.common.base.Strings;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructVisitor;
 import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.StringUtils;

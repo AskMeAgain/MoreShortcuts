@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
 
 
 import com.intellij.psi.PsiType;

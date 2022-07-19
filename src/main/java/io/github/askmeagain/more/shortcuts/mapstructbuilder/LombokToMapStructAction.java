@@ -38,8 +38,9 @@ public class LombokToMapStructAction extends AnAction {
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
         try {
-          var resultFile = data.getParent().createChildData(null, name);
-          resultFile.setBinaryContent(result.toString().getBytes(StandardCharsets.UTF_8));
+          data.getParent()
+              .createChildData(null, name)
+              .setBinaryContent(result.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
           ex.printStackTrace();
         }

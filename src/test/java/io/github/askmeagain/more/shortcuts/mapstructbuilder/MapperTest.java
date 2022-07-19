@@ -27,17 +27,20 @@ public class MapperTest {
         .build();
   }
 
-  @Value
+  @Data
   @Builder
   public static class ComplexOutputs {
 
     String orig1;
     String orig2;
-    Multiplication mul;
+
+    @Getter
+    @Builder.Default
+    Multiplication mul = Multiplication.builder().build();
 
   }
 
-  @Value
+  @Data
   @Builder
   public static class InputContainer {
 
@@ -49,7 +52,7 @@ public class MapperTest {
 
   }
 
-  @Value
+  @Data
   @Builder
   public static class Multiplication {
 

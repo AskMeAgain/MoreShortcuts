@@ -3,11 +3,14 @@ package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MappingContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.SourceContainer;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

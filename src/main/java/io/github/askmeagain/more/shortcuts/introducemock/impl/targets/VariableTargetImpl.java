@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock.impl.targets;
 
+import com.intellij.psi.impl.PsiParserFacadeImpl;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.MockType;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
@@ -72,7 +73,7 @@ public class VariableTargetImpl extends TargetBase {
 
   @Override
   public void writeExpressionsToCode(PsiElement targetAnchor, List<PsiElement> mockExpressions, List<Boolean> changeMap) {
-    var whitespace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n\n");
+    var whitespace = new PsiParserFacadeImpl(project).createWhiteSpaceFromText("\n\n");
 
     var realAnchor = targetAnchor.getParent();
 

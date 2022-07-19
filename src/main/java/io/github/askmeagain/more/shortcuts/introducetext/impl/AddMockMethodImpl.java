@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducetext.impl;
 
+import com.intellij.psi.impl.PsiParserFacadeImpl;
 import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
 import io.github.askmeagain.more.shortcuts.introducemock.exceptions.ClassFromTypeNotFoundException;
@@ -164,7 +165,7 @@ public class AddMockMethodImpl extends AnAction {
 
   private void writeExpression(PsiElement anchor, PsiElement expression) {
     WriteCommandAction.runWriteCommandAction(project, () -> {
-      var whiteSpace = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
+      var whiteSpace = new PsiParserFacadeImpl(project).createWhiteSpaceFromText("\n");
 
       var codeBlock = anchor.getParent();
 
