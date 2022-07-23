@@ -30,7 +30,7 @@ public class LombokToMapStructAction extends AnAction {
 
       var packageName = ((PsiClassOwner) psiFile).getPackageName();
 
-      var visitor = new LombokToMapStructVisitor(packageName);
+      var visitor = new LombokToMapStructVisitor(packageName, project);
       PsiTreeUtil.getParentOfType(element, PsiDeclarationStatement.class).accept(visitor);
       var result = visitor.getResult();
 

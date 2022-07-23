@@ -1,11 +1,12 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MappingContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.SourceContainer;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,27 +18,32 @@ import java.util.stream.Collectors;
 public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
   private final String packageName;
+  private final Project project;
   private PsiType outputType;
-  private final List<String> stack = new ArrayList<>();
-  private final List<Mapping> mappings = new ArrayList<>();
+  private final List<PsiReferenceExpressionImpl> stack = new ArrayList<>();
+  private final Map<PsiType, List<Mapping>> mappings = new HashMap<>();
 
-  public MappingContainer getResult() {
+  public MappingResultService getResult() {
 
-    var inputObjects = mappings.stream()
+    var inputObjects = mappings.values()
+        .stream()
+        .flatMap(Collection::stream)
         .filter(x -> x.getSource() != null)
         .map(Mapping::getInputObjects)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
 
-    var overrideMethods = mappings.stream()
+    var overrideMethods = mappings.values()
+        .stream()
+        .flatMap(Collection::stream)
         .filter(Objects::nonNull)
         .filter(x -> x.getSource() != null)
         .filter(x -> x.getSource().isExternalMethod())
         .collect(Collectors.toList());
 
-    return MappingContainer.builder()
+    return MappingResultService.builder()
         .overrideMethods(overrideMethods)
-        .mappings(mappings)
+        .mappingsByType(mappings)
         .packageName(packageName)
         .inputObjects(new ArrayList<>(inputObjects))
         .outputType(outputType)
@@ -46,7 +52,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
   @Override
   public void visitExpressionList(PsiExpressionList list) {
-    var parentName = ((PsiReferenceExpressionImpl) list.getParent().getChildren()[0]).getReferenceName();
+    var parentName = ((PsiReferenceExpressionImpl) list.getParent().getChildren()[0]);
     var expression = list.getText();
     var hasExpression = expression.length() > 2;
 
@@ -75,10 +81,28 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
             .source(source)
             .build();
 
-        mappings.add(mapping);
+        var type = stack.isEmpty() ? outputType : resolveBuilder(parentName.getType());
+
+        mappings.computeIfAbsent(type, x -> new ArrayList<>());
+        mappings.get(type).add(mapping);
+
+        //we also need to add the submapping
+        if (!stack.isEmpty()) {
+          var resolveBuilder = resolveBuilder(stack.get(stack.size() - 1).getType());
+          if (!mappings.containsKey(resolveBuilder)) {
+            var tempList = new ArrayList<Mapping>();
+            tempList.add(Mapping.builder()
+                .targets(new ArrayList<>(stack))
+                .constant("")
+                .inputObjects(new ArrayList<>(inputObjects))
+                .source(source)
+                .build());
+            mappings.put(resolveBuilder, tempList);
+          }
+        }
       }
     } else {
-      if ("build".equals(parentName)) {
+      if ("build".equals(parentName.getReferenceName())) {
         if (!stack.isEmpty()) {
           stack.remove(stack.size() - 1);
         } else {
@@ -88,6 +112,12 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
     }
 
     super.visitExpressionList(list);
+  }
+
+  private PsiType resolveBuilder(PsiType type) {
+    var presentableText = type.getPresentableText();
+    var replacedName = type.getCanonicalText().replaceAll("." + presentableText + "$", "");
+    return PsiType.getTypeByName(replacedName, project, GlobalSearchScope.allScope(project));
   }
 
   private SourceContainer getSource(PsiExpressionList list) {

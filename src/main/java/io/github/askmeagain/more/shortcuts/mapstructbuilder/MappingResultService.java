@@ -1,27 +1,33 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import com.google.common.base.Strings;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructVisitor;
+import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.LombokToMapStructTemplate;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
 import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.LombokToMapStructTemplate.MAPPING_METHOD_TEMPLATE;
+
 @Value
 @Builder
-public class MappingContainer {
+public class MappingResultService {
 
   List<Mapping> overrideMethods;
 
-  List<Mapping> mappings;
+  Map<PsiType, List<Mapping>> mappingsByType;
   String packageName;
   List<InputObjectContainer> inputObjects;
   PsiType outputType;
@@ -34,12 +40,6 @@ public class MappingContainer {
     baseImports.add("org.mapstruct.Mapper");
     baseImports.add("org.mapstruct.Mapping");
 
-    var textMappings = mappings.stream()
-        .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE.replace("$SOURCE", getSourceMappingString(x))
-            .replace("$TARGET", String.join(".", x.getTargets()))
-            .replace("$CONSTANT", x.getConstant()))
-        .collect(Collectors.joining("\n"));
-
     var textOverrideMethods = overrideMethods.stream()
         .map(x -> LombokToMapStructTemplate.OVERRIDE_TEMPLATE.replace("$METHOD_INPUT_TYPES", String.join(",", getSpecificMappingInputs(x).stream()
                 .map(y -> y.getType().getPresentableText() + " " + y.getVarName())
@@ -49,28 +49,68 @@ public class MappingContainer {
             .replace("$CODE", trimBrackets(x)))
         .collect(Collectors.joining("\n"));
 
-    var collect = inputObjects.stream()
+    var inputs = inputObjects.stream()
         .map(InputObjectContainer::toString)
         .collect(Collectors.joining(", "));
 
-    Stream.concat(
+    //fixing up null part
+    var removed = mappingsByType.remove(null);
+    mappingsByType.get(outputType).addAll(removed);
+
+    Stream.of(
             inputObjects.stream().map(x -> x.getType().getCanonicalText()),
-            Stream.of(outputType.getCanonicalText())
-        ).distinct()
+            Stream.of(outputType.getCanonicalText()),
+            mappingsByType.keySet().stream()
+                .map(PsiType::getCanonicalText)
+        )
+        .flatMap(Function.identity())
+        .distinct()
         .forEach(baseImports::add);
 
     if (!textOverrideMethods.isEmpty()) {
       baseImports.add("org.mapstruct.Named");
     }
 
+    var mainMapping = getMappingMethods(inputs);
+
     return LombokToMapStructTemplate.TEMPLATE
+        .replace("$MAPPING_METHODS", String.join("\n", mainMapping))
         .replace("$IN_PACKAGE", !Strings.isNullOrEmpty(packageName) ? "package $PACKAGE;" : "")
         .replace("$PACKAGE", packageName)
-        .replace("$INPUTS", collect)
         .replace("$OUTPUT_TYPE", outputType.getPresentableText())
-        .replace("$MAPPINGS", textMappings)
         .replace("$IMPORTS", baseImports.stream().map(x -> "import " + x + ";").collect(Collectors.joining("\n")))
         .replace("$OVERRIDE_METHODS", textOverrideMethods);
+  }
+
+  @NotNull
+  private String getMappingMethods(String collect) {
+
+    var result = new ArrayList<String>();
+
+    for (var method : mappingsByType.entrySet()) {
+
+      var mappingAnnotation = method.getValue().stream()
+          .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE
+              .replace("$SOURCE", getSourceMappingString(x))
+              .replace("$TARGET", x.getTargets().stream()
+                  .skip(x.getTargets().size() - 1)
+                  .map(PsiReferenceExpressionImpl::getReferenceName)
+                  .collect(Collectors.joining(".")))
+              .replace("$CONSTANT", x.getConstant()))
+          .collect(Collectors.joining("\n"));
+
+      var outputTypeReplacement = method.getKey() == null ? "$OUTPUT_TYPE" : method.getKey().getPresentableText();
+
+      var mainMapping = MAPPING_METHOD_TEMPLATE
+          .replace("$MAPPINGS", mappingAnnotation)
+          .replace("$OUTPUT_TYPE", outputTypeReplacement)
+          .replace("$INPUTS", collect);
+
+      result.add(mainMapping);
+
+    }
+
+    return String.join("\n", result);
   }
 
   private String trimBrackets(Mapping x) {
@@ -117,7 +157,10 @@ public class MappingContainer {
   }
 
   private String getMappingMethodName(Mapping mapping) {
-    var methodName = mapping.getTargets().get(mapping.getTargets().size() - 1);
+    var methodName = mapping.getTargets().stream()
+        .map(PsiReferenceExpressionImpl::getReferenceName)
+        .collect(Collectors.toList())
+        .get(mapping.getTargets().size() - 1);
 
     return "get" + StringUtils.capitalize(methodName);
   }
