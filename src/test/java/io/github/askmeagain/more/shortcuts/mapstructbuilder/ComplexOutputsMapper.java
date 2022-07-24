@@ -5,23 +5,29 @@ import org.mapstruct.Mapping;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.InputContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.ComplexOutputs;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.Multiplication;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.NestedSubtractions;
 import org.mapstruct.Named;
 
 @Mapper
 public interface ComplexOutputsMapper {
 
-  @Mapping(target = "nested1", source ="input.anotherZero.anotherOne.anotherOneOne")
-  @Mapping(target = "nested2", source ="input.number1")
-  @Mapping(target = "nested3", source = "input", qualifiedByName="getNested3")
-  @Mapping(target = "nested4", constant="what a nice constant")
+  @Mapping(target = "mul", expression="java(mapMultiplication(input2, input))")
+  @Mapping(target = "orig2", source ="input.number1")
+  @Mapping(target = "orig1", source ="input.number1")
+  ComplexOutputs mapComplexOutputs(InputContainer input2, InputContainer input);
+
   @Mapping(target = "nested5", constant="1")
+  @Mapping(target = "nested4", constant="what a nice constant")
+  @Mapping(target = "nested3", source = "input", qualifiedByName="getNested3")
+  @Mapping(target = "nested2", source ="input.number1")
+  @Mapping(target = "nested1", source ="input.anotherZero.anotherOne.anotherOneOne")
+  @Mapping(target = "nestedSubtractions", expression="java(mapNestedSubtractions(input2, input))")
   @Mapping(target = "nested6", expression="java(getNested6(input2, input))")
   Multiplication mapMultiplication(InputContainer input2, InputContainer input);
 
-  @Mapping(target = "mul", source ="input.anotherZero.anotherOne.anotherOneOne")
-  @Mapping(target = "orig1", source ="input.number1")
-  @Mapping(target = "orig2", source ="input.number1")
-  ComplexOutputs mapComplexOutputs(InputContainer input2, InputContainer input);
+  @Mapping(target = "nested1", constant="abc")
+  @Mapping(target = "nested2", source ="input.anotherOneOne")
+  NestedSubtractions mapNestedSubtractions(InputContainer input2, InputContainer input);
 
   @Named("getNested3")
   default int getNested3 (InputContainer input){

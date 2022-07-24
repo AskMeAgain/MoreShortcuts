@@ -4,7 +4,7 @@ import lombok.*;
 
 public class MapperTest {
 
-  public void test(){
+  public void test() {
     var input = InputContainer.builder()
         .number1("abc")
         .build();
@@ -23,6 +23,10 @@ public class MapperTest {
             .nested4("what a nice constant")
             .nested5(1)
             .nested6(input.getNumber2() + input2.getNumber2())
+            .nestedSubtractions(NestedSubtractions.builder()
+                .nested1("abc")
+                .nested2(input.getAnotherOneOne())
+                .build())
             .build())
         .build();
   }
@@ -62,6 +66,16 @@ public class MapperTest {
     String nested4;
     Integer nested5;
     Integer nested6;
+    NestedSubtractions nestedSubtractions;
+
+  }
+
+  @Data
+  @Builder
+  public static class NestedSubtractions {
+
+    String nested1;
+    String nested2;
 
   }
 }

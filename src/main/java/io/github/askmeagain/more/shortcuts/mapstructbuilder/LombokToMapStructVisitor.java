@@ -21,12 +21,13 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
   private final Project project;
   private PsiType outputType;
   private final List<PsiReferenceExpressionImpl> stack = new ArrayList<>();
-  private final Map<PsiType, List<Mapping>> mappings = new HashMap<>();
+  private final Map<PsiType, Map<Mapping, Mapping>> mappings = new HashMap<>();
 
   public MappingResultService getResult() {
 
     var inputObjects = mappings.values()
         .stream()
+        .map(Map::values)
         .flatMap(Collection::stream)
         .filter(x -> x.getSource() != null)
         .map(Mapping::getInputObjects)
@@ -35,6 +36,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
     var overrideMethods = mappings.values()
         .stream()
+        .map(Map::values)
         .flatMap(Collection::stream)
         .filter(Objects::nonNull)
         .filter(x -> x.getSource() != null)
@@ -42,6 +44,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
         .collect(Collectors.toList());
 
     return MappingResultService.builder()
+        .project(project)
         .overrideMethods(overrideMethods)
         .mappingsByType(mappings)
         .packageName(packageName)
@@ -81,23 +84,36 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
             .source(source)
             .build();
 
-        var type = stack.isEmpty() ? outputType : resolveBuilder(parentName.getType());
+        var psiType = resolveBuilder(parentName.getType());
+        var type = stack.isEmpty() ? outputType : psiType;
 
-        mappings.computeIfAbsent(type, x -> new ArrayList<>());
-        mappings.get(type).add(mapping);
+        mappings.computeIfAbsent(type, x -> new HashMap<>());
+        mappings.get(type).put(mapping, mapping);
 
         //we also need to add the submapping
         if (!stack.isEmpty()) {
           var resolveBuilder = resolveBuilder(stack.get(stack.size() - 1).getType());
-          if (!mappings.containsKey(resolveBuilder)) {
-            var tempList = new ArrayList<Mapping>();
-            tempList.add(Mapping.builder()
+
+          mappings.computeIfAbsent(resolveBuilder, x -> new HashMap<>());
+          var result = mappings.get(resolveBuilder);
+
+          var key = Mapping.builder().targets(new ArrayList<>(stack)).build();
+          if (!result.containsKey(key)) {
+            mappings.get(resolveBuilder).put(key, Mapping.builder()
                 .targets(new ArrayList<>(stack))
                 .constant("")
-                .inputObjects(new ArrayList<>(inputObjects))
-                .source(source)
+                .inputObjects(inputObjects)
+                .source(SourceContainer.builder()
+                    .nestedMethodCall(true)
+                    .nestedMethodType(psiType.getPresentableText())
+                    .originalList(list)
+                    .build())
                 .build());
-            mappings.put(resolveBuilder, tempList);
+          } else {
+            var newMapping = result.get(key).toBuilder()
+                .inputObjects(inputObjects)
+                .build();
+            result.put(newMapping, newMapping);
           }
         }
       }

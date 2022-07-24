@@ -1,11 +1,14 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import com.google.common.base.Strings;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.LombokToMapStructTemplate;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
@@ -25,9 +28,10 @@ import static io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Lomb
 @Builder
 public class MappingResultService {
 
+  Project project;
   List<Mapping> overrideMethods;
 
-  Map<PsiType, List<Mapping>> mappingsByType;
+  Map<PsiType, Map<Mapping, Mapping>> mappingsByType;
   String packageName;
   List<InputObjectContainer> inputObjects;
   PsiType outputType;
@@ -55,7 +59,9 @@ public class MappingResultService {
 
     //fixing up null part
     var removed = mappingsByType.remove(null);
-    mappingsByType.get(outputType).addAll(removed);
+    for (var mapping : removed.values()) {
+      mappingsByType.get(outputType).put(mapping, mapping);
+    }
 
     Stream.of(
             inputObjects.stream().map(x -> x.getType().getCanonicalText()),
@@ -89,7 +95,7 @@ public class MappingResultService {
 
     for (var method : mappingsByType.entrySet()) {
 
-      var mappingAnnotation = method.getValue().stream()
+      var mappingAnnotation = method.getValue().values().stream()
           .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE
               .replace("$SOURCE", getSourceMappingString(x))
               .replace("$TARGET", x.getTargets().stream()
@@ -147,6 +153,13 @@ public class MappingResultService {
         var sourceName = inputObjects.get(0).getVarName();
         return ", source = \"" + sourceName + "\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
       }
+    } else if (mapping.getSource().isNestedMethodCall()) {
+      var shortInputObj = inputObjects.stream()
+          .map(InputObjectContainer::getVarName)
+          .distinct()
+          .collect(Collectors.joining(", "));
+      var methodInvocation = "map" + mapping.getSource().getNestedMethodType() + "(" + shortInputObj + ")";
+      return ", expression=\"java(" + methodInvocation + ")\"";
     } else {
       return ", source =\"" + mapping.getSource().getSourceString() + "\"";
     }
@@ -163,5 +176,15 @@ public class MappingResultService {
         .get(mapping.getTargets().size() - 1);
 
     return "get" + StringUtils.capitalize(methodName);
+  }
+
+  private String getMappingMethodNameNestedMapping(Mapping mapping) {
+    var methodName = mapping.getTargets().stream()
+        .map(PsiReferenceExpressionImpl::getType)
+        .map(x -> x.getPresentableText())
+        .collect(Collectors.toList())
+        .get(mapping.getTargets().size() - 1);
+
+    return "map" + StringUtils.capitalize(methodName);
   }
 }
