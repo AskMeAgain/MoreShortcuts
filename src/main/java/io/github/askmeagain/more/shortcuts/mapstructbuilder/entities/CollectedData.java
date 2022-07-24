@@ -15,6 +15,6 @@ public class CollectedData {
   String packageName;
   Set<InputObjectContainer> inputObjects;
   List<MapStructOverrideMethod> overrideMethods;
-  List<MapStructMethod> mapStructMethodList;
+  Set<MapStructMethod> mapStructMethodList;
   PsiType outputType;
 }

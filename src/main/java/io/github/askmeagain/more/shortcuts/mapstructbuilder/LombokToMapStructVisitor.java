@@ -4,8 +4,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.*;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.CollectedData;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.SourceContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructAnnotation;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructMethod;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructOverrideMethod;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -46,9 +49,11 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
             .build())
         .collect(Collectors.toList());
 
+    var mapStructMethodList = transformToMapstructMethodList();
+
     return CollectedData.builder()
         .overrideMethods(overrideMethods)
-        .mapStructMethodList(LombokToMapstructUtils.transformToMapstructMethodList(mappings, outputType))
+        .mapStructMethodList(mapStructMethodList)
         .packageName(packageName)
         .inputObjects(inputObjects)
         .outputType(outputType)
@@ -187,5 +192,35 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
   private String makeLowerCase(String input) {
     return String.valueOf(input.charAt(0)).toLowerCase() + input.substring(1);
+  }
+
+  private Set<MapStructMethod> transformToMapstructMethodList() {
+    var result = new HashMap<MapStructMethod, MapStructMethod>();
+    for (var kv : mappings.entrySet()) {
+
+      var inputs = kv.getValue().values()
+          .stream()
+          .map(MapStructAnnotation::getInputObjects)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
+
+      var output = kv.getKey() == null ? outputType : kv.getKey();
+
+      var method = MapStructMethod.builder()
+          .outputType(output)
+          .mapStructAnnotations(new ArrayList<>(kv.getValue().values()))
+          .inputs(inputs)
+          .build();
+
+      if (result.containsKey(method)) {
+        var existing = result.get(method);
+        var newMethod = existing.merge(method);
+        result.put(newMethod, newMethod);
+      } else {
+        result.put(method, method);
+      }
+    }
+
+    return new HashSet<>(result.values());
   }
 }
