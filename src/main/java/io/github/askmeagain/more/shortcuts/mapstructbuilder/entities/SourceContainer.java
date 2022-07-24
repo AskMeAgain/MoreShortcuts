@@ -1,12 +1,10 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
 
-import com.esotericsoftware.kryo.io.Input;
 import com.intellij.psi.PsiExpressionList;
+import com.intellij.psi.PsiType;
 import lombok.Builder;
 import lombok.Value;
-import lombok.With;
 
-import java.util.List;
 import java.util.Set;
 
 @Value
@@ -18,7 +16,7 @@ public class SourceContainer {
 
   boolean externalMethod;
   boolean nestedMethodCall;
-  String nestedMethodType;
+  PsiType nestedMethodType;
   Set<InputObjectContainer> nestedMethodInputs;
 
 }

@@ -2,11 +2,12 @@ package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
 
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructVisitor;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapstructUtils;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Singular;
+import lombok.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,15 +26,8 @@ public class MapStructMethod {
   List<Mapping> mappings;
 
   public String toString(PsiType alternativeOutput) {
-
     var mappingAnnotation = mappings.stream()
-        .map(x -> LombokToMapStructTemplate.MAPPING_TEMPLATE
-            .replace("$SOURCE", LombokToMapstructUtils.getSourceMappingString(x, inputs))
-            .replace("$TARGET", x.getTargets().stream()
-                .skip(x.getTargets().size() - 1)
-                .map(PsiReferenceExpressionImpl::getReferenceName)
-                .collect(Collectors.joining(".")))
-            .replace("$CONSTANT", x.getConstant()))
+        .map(Mapping::toString)
         .collect(Collectors.joining("\n"));
 
     var inputMappings = inputs.stream()

@@ -46,7 +46,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
     return MappingResultService.builder()
         .project(project)
         .overrideMethods(overrideMethods)
-        .mapStructMethodList(LombokToMapstructUtils.transformToMapstructMethodList(mappings,outputType))
+        .mapStructMethodList(LombokToMapstructUtils.transformToMapstructMethodList(mappings, outputType))
         .packageName(packageName)
         .inputObjects(inputObjects)
         .outputType(outputType)
@@ -84,7 +84,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
             .source(source)
             .build();
 
-        var psiType = resolveBuilder(parentName.getType());
+        var psiType = LombokToMapstructUtils.resolveBuilder(parentName.getType(), project);
         var type = stack.isEmpty() ? outputType : psiType;
 
         mappings.computeIfAbsent(type, x -> new HashMap<>());
@@ -92,20 +92,20 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
 
         //we also need to add the submapping
         if (!stack.isEmpty()) {
-          var resolveBuilder = resolveBuilder(stack.get(stack.size() - 1).getType());
+          var resolveBuilder = LombokToMapstructUtils.resolveBuilder(stack.get(stack.size() - 1).getType(), project);
 
           mappings.computeIfAbsent(resolveBuilder, x -> new HashMap<>());
           var result = mappings.get(resolveBuilder);
 
-          var key = Mapping.builder().targets(new ArrayList<>(stack)).build();
+          var key = Mapping.builder().targets(stack).build();
           if (!result.containsKey(key)) {
             mappings.get(resolveBuilder).put(key, Mapping.builder()
-                .targets(new ArrayList<>(stack))
+                .targets(stack)
                 .constant("")
                 .inputObjects(inputObjects)
                 .source(SourceContainer.builder()
                     .nestedMethodCall(true)
-                    .nestedMethodType(psiType.getPresentableText())
+                    .nestedMethodType(psiType)
                     .originalList(list)
                     .build())
                 .build());
@@ -128,12 +128,6 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
     }
 
     super.visitExpressionList(list);
-  }
-
-  private PsiType resolveBuilder(PsiType type) {
-    var presentableText = type.getPresentableText();
-    var replacedName = type.getCanonicalText().replaceAll("." + presentableText + "$", "");
-    return PsiType.getTypeByName(replacedName, project, GlobalSearchScope.allScope(project));
   }
 
   private SourceContainer getSource(PsiExpressionList list) {
