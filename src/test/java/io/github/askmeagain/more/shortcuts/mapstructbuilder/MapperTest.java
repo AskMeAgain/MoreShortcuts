@@ -4,7 +4,7 @@ import lombok.*;
 
 public class MapperTest {
 
-  public void test() {
+  public Object test() {
     var input = InputContainer.builder()
         .number1("abc")
         .build();
@@ -13,7 +13,7 @@ public class MapperTest {
         .number1("abc")
         .build();
 
-    var output = ComplexOutputs.builder()
+    return ComplexOutputs.builder()
         .orig1(input.getNumber1())
         .orig2(input.getNumber1())
         .mul(Multiplication.builder()

@@ -4,10 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import com.intellij.psi.search.GlobalSearchScope;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.SourceContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,16 +18,16 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
   private final Project project;
   private PsiType outputType;
   private final List<PsiReferenceExpressionImpl> stack = new ArrayList<>();
-  private final Map<PsiType, Map<Mapping, Mapping>> mappings = new HashMap<>();
+  private final Map<PsiType, Map<MapStructAnnotation, MapStructAnnotation>> mappings = new HashMap<>();
 
-  public MappingResultService getResult() {
+  public CollectedData collectResults() {
 
     var inputObjects = mappings.values()
         .stream()
         .map(Map::values)
         .flatMap(Collection::stream)
         .filter(x -> x.getSource() != null)
-        .map(Mapping::getInputObjects)
+        .map(MapStructAnnotation::getInputObjects)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
 
@@ -41,10 +38,13 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
         .filter(Objects::nonNull)
         .filter(x -> x.getSource() != null)
         .filter(x -> x.getSource().isExternalMethod())
+        .map(x -> MapStructOverrideMethod.builder()
+            .targets(x.getTargets())
+            .originalList(x.getSource().getOriginalList())
+            .build())
         .collect(Collectors.toList());
 
-    return MappingResultService.builder()
-        .project(project)
+    return CollectedData.builder()
         .overrideMethods(overrideMethods)
         .mapStructMethodList(LombokToMapstructUtils.transformToMapstructMethodList(mappings, outputType))
         .packageName(packageName)
@@ -76,7 +76,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
           constant = "";
         }
 
-        var mapping = Mapping.builder()
+        var mapping = MapStructAnnotation.builder()
             .targets(stack)
             .target(parentName)
             .constant(constant)
@@ -97,9 +97,9 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
           mappings.computeIfAbsent(resolveBuilder, x -> new HashMap<>());
           var result = mappings.get(resolveBuilder);
 
-          var key = Mapping.builder().targets(stack).build();
+          var key = MapStructAnnotation.builder().targets(stack).build();
           if (!result.containsKey(key)) {
-            mappings.get(resolveBuilder).put(key, Mapping.builder()
+            mappings.get(resolveBuilder).put(key, MapStructAnnotation.builder()
                 .targets(stack)
                 .constant("")
                 .inputObjects(inputObjects)

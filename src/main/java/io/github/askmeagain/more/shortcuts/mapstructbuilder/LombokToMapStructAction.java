@@ -7,7 +7,10 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiClassOwner;
 import com.intellij.psi.PsiDeclarationStatement;
+import com.intellij.psi.PsiReturnStatement;
 import com.intellij.psi.util.PsiTreeUtil;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.CollectedData;
+import io.netty.util.Mapping;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -26,21 +29,35 @@ public class LombokToMapStructAction extends AnAction {
     editor.getCaretModel().runForEachCaret(caret -> {
 
       int offset = caret.getOffset();
-      var element = psiFile.findElementAt(offset);
+      var parent = psiFile.findElementAt(offset);
 
       var packageName = ((PsiClassOwner) psiFile).getPackageName();
 
       var visitor = new LombokToMapStructVisitor(packageName, project);
-      PsiTreeUtil.getParentOfType(element, PsiDeclarationStatement.class).accept(visitor);
-      var result = visitor.getResult();
 
-      var name = result.getOutputType().getPresentableText() + "Mapper.java";
+      while (true) {
+        parent = parent.getParent();
+
+        if (parent == null) {
+          return;
+        }
+
+        if (parent instanceof PsiDeclarationStatement || parent instanceof PsiReturnStatement) {
+          parent.accept(visitor);
+          break;
+        }
+      }
+
+      var service = MappingResultService.builder()
+          .project(project)
+          .collectedData(visitor.collectResults())
+          .build();
 
       WriteCommandAction.runWriteCommandAction(project, () -> {
         try {
           data.getParent()
-              .createChildData(null, name)
-              .setBinaryContent(result.toString().getBytes(StandardCharsets.UTF_8));
+              .createChildData(null, service.getMapperName())
+              .setBinaryContent(service.printResult().getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
           ex.printStackTrace();
         }

@@ -1,12 +1,15 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiExpressionList;
+import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MapStructAnnotation;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MapStructMethod;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -20,53 +23,53 @@ public class LombokToMapstructUtils {
     return PsiType.getTypeByName(replacedName, project, GlobalSearchScope.allScope(project));
   }
 
-  public static String getMappingMethodName(Mapping mapping) {
-    var methodName = mapping.getTargets().stream()
+  public static String getMappingMethodName(MapStructAnnotation mapStructAnnotation) {
+    var methodName = mapStructAnnotation.getTargets().stream()
         .map(PsiReferenceExpressionImpl::getReferenceName)
         .collect(Collectors.toList())
-        .get(mapping.getTargets().size() - 1);
+        .get(mapStructAnnotation.getTargets().size() - 1);
 
     return "get" + StringUtils.capitalize(methodName);
   }
 
-  public static List<InputObjectContainer> getSpecificMappingInputs(Mapping mapping) {
-    return new ArrayList<>(LombokToMapStructVisitor.getInputObjects(mapping.getSource().getOriginalList()));
+  public static List<InputObjectContainer> getSpecificMappingInputs(PsiExpressionList mapStructAnnotation) {
+    return new ArrayList<>(LombokToMapStructVisitor.getInputObjects(mapStructAnnotation));
   }
 
-  public static String getSourceMappingString(Mapping mapping) {
-    if (mapping.getSource() == null) {
+  public static String getSourceMappingString(MapStructAnnotation mapStructAnnotation) {
+    if (mapStructAnnotation.getSource() == null) {
       return "";
-    } else if (mapping.getSource().isExternalMethod()) {
-      var inputObjects = getSpecificMappingInputs(mapping);
+    } else if (mapStructAnnotation.getSource().isExternalMethod()) {
+      var inputObjects = getSpecificMappingInputs(mapStructAnnotation.getSource().getOriginalList());
       if (inputObjects.size() != 1) {
         var shortInputObj = inputObjects.stream()
             .map(InputObjectContainer::getVarName)
             .collect(Collectors.joining(", "));
-        var methodInvocation = getMappingMethodName(mapping) + "(" + shortInputObj + ")";
+        var methodInvocation = getMappingMethodName(mapStructAnnotation) + "(" + shortInputObj + ")";
         return ", expression=\"java(" + methodInvocation + ")\"";
       } else {
         var sourceName = inputObjects.get(0).getVarName();
-        return ", source = \"" + sourceName + "\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
+        return ", source = \"" + sourceName + "\", qualifiedByName=\"" + getMappingMethodName(mapStructAnnotation) + "\"";
       }
-    } else if (mapping.getSource().isNestedMethodCall()) {
-      var shortInputObj = mapping.getInputObjects()
+    } else if (mapStructAnnotation.getSource().isNestedMethodCall()) {
+      var shortInputObj = mapStructAnnotation.getInputObjects()
           .stream()
           .map(InputObjectContainer::getVarName)
           .distinct()
           .collect(Collectors.joining(", "));
-      if (mapping.getInputObjects().size() != 1) {
-        var methodInvocation = "map" + mapping.getSource().getNestedMethodType().getPresentableText() + "(" + shortInputObj + ")";
+      if (mapStructAnnotation.getInputObjects().size() != 1) {
+        var methodInvocation = "map" + mapStructAnnotation.getSource().getNestedMethodType().getPresentableText() + "(" + shortInputObj + ")";
         return ", expression=\"java(" + methodInvocation + ")\"";
       } else {
         return ", source = \"" + shortInputObj + "\"";
       }
     } else {
-      return ", source =\"" + mapping.getSource().getSourceString() + "\"";
+      return ", source =\"" + mapStructAnnotation.getSource().getSourceString() + "\"";
     }
   }
 
   public static List<MapStructMethod> transformToMapstructMethodList(
-      Map<PsiType, Map<Mapping, Mapping>> mappings,
+      Map<PsiType, Map<MapStructAnnotation, MapStructAnnotation>> mappings,
       PsiType alternativeOutputType
   ) {
     var result = new HashMap<MapStructMethod, MapStructMethod>();
@@ -74,7 +77,7 @@ public class LombokToMapstructUtils {
 
       var inputs = kv.getValue().values()
           .stream()
-          .map(Mapping::getInputObjects)
+          .map(MapStructAnnotation::getInputObjects)
           .flatMap(Collection::stream)
           .collect(Collectors.toSet());
 
@@ -82,7 +85,7 @@ public class LombokToMapstructUtils {
 
       var method = MapStructMethod.builder()
           .outputType(output)
-          .mappings(new ArrayList<>(kv.getValue().values()))
+          .mapStructAnnotations(new ArrayList<>(kv.getValue().values()))
           .inputs(inputs)
           .build();
 
@@ -96,5 +99,18 @@ public class LombokToMapstructUtils {
     }
 
     return new ArrayList<>(result.values());
+  }
+
+  public static String getOutputType(PsiExpressionList expressionList) {
+    var result = new ArrayList<String>();
+    expressionList.accept(new JavaRecursiveElementVisitor() {
+      @Override
+      public void visitPolyadicExpression(PsiPolyadicExpression expression) {
+        super.visitPolyadicExpression(expression);
+        result.add(expression.getType().getPresentableText());
+      }
+    });
+
+    return result.get(0);
   }
 }

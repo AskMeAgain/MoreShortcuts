@@ -1,8 +1,6 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
 
 import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapstructUtils;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;
@@ -23,11 +21,11 @@ public class MapStructMethod {
   @Singular
   Set<InputObjectContainer> inputs;
   @Singular
-  List<Mapping> mappings;
+  List<MapStructAnnotation> mapStructAnnotations;
 
-  public String toString(PsiType alternativeOutput) {
-    var mappingAnnotation = mappings.stream()
-        .map(Mapping::toString)
+  public String printMethod(PsiType alternativeOutput) {
+    var mappingAnnotation = mapStructAnnotations.stream()
+        .map(MapStructAnnotation::printAnnotation)
         .collect(Collectors.joining("\n"));
 
     var inputMappings = inputs.stream()
@@ -38,7 +36,7 @@ public class MapStructMethod {
         .map(PsiType::getPresentableText)
         .orElse(alternativeOutput.getPresentableText());
 
-    return LombokToMapStructTemplate.MAPPING_METHOD_TEMPLATE
+    return MAPPING_METHOD_TEMPLATE
         .replace("$MAPPINGS", mappingAnnotation)
         .replace("$OUTPUT_TYPE", replacement)
         .replace("$INPUTS", inputMappings);
@@ -46,8 +44,10 @@ public class MapStructMethod {
 
   public MapStructMethod merge(MapStructMethod other) {
     return this.toBuilder()
-        .mappings(other.getMappings())
+        .mapStructAnnotations(other.getMapStructAnnotations())
         .inputs(other.getInputs())
         .build();
   }
+
+  private static String MAPPING_METHOD_TEMPLATE = "$MAPPINGS\n  $OUTPUT_TYPE map$OUTPUT_TYPE($INPUTS);\n";
 }

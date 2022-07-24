@@ -13,20 +13,19 @@ import java.util.stream.Collectors;
 @Value
 @Builder(toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Mapping {
-
-  SourceContainer source;
-  @Singular
-  List<InputObjectContainer> inputObjects;
+public class MapStructAnnotation {
 
   @Singular
   @EqualsAndHashCode.Include
   List<PsiReferenceExpressionImpl> targets;
+  @Singular
+  List<InputObjectContainer> inputObjects;
+
+  SourceContainer source;
   String constant;
 
-  @Override
-  public String toString() {
-    return LombokToMapStructTemplate.MAPPING_TEMPLATE
+  public String printAnnotation() {
+    return MAPPING_TEMPLATE
         .replace("$SOURCE", LombokToMapstructUtils.getSourceMappingString(this))
         .replace("$TARGET", this.getTargets().stream()
             .skip(this.getTargets().size() - 1)
@@ -34,5 +33,7 @@ public class Mapping {
             .collect(Collectors.joining(".")))
         .replace("$CONSTANT", this.getConstant());
   }
+
+  private static String MAPPING_TEMPLATE = "  @Mapping(target = \"$TARGET\"$SOURCE$CONSTANT)";
 
 }

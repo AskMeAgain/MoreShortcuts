@@ -2,14 +2,8 @@ package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import com.google.common.base.Strings;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiExpressionList;
-import com.intellij.psi.PsiPolyadicExpression;
 import com.intellij.psi.PsiType;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.LombokToMapStructTemplate;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MapStructMethod;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.Mapping;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.*;
 import lombok.Builder;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -24,37 +18,28 @@ import java.util.stream.Stream;
 public class MappingResultService {
 
   Project project;
-  List<Mapping> overrideMethods;
+  CollectedData collectedData;
 
-  List<MapStructMethod> mapStructMethodList;
-  String packageName;
-  Set<InputObjectContainer> inputObjects;
-  PsiType outputType;
+  public String printResult() {
 
-  @Override
-  public String toString() {
-
+    var packageName = collectedData.getPackageName();
+    var outputType = collectedData.getOutputType();
     var baseImports = new ArrayList<String>();
 
     baseImports.add("org.mapstruct.Mapper");
     baseImports.add("org.mapstruct.Mapping");
 
-    var textOverrideMethods = overrideMethods.stream()
-        .map(x -> LombokToMapStructTemplate.OVERRIDE_TEMPLATE.replace("$METHOD_INPUT_TYPES", String.join(",", LombokToMapstructUtils.getSpecificMappingInputs(x).stream()
-                .map(y -> y.getType().getPresentableText() + " " + y.getVarName())
-                .collect(Collectors.joining(", "))))
-            .replace("$OUTPUT_TYPE", getOutputType(x.getSource().getOriginalList()))
-            .replace("$METHOD_NAME", LombokToMapstructUtils.getMappingMethodName(x))
-            .replace("$CODE", trimBrackets(x)))
+    var textOverrideMethods = collectedData.getOverrideMethods().stream()
+        .map(MapStructOverrideMethod::printOverrideMethods)
         .collect(Collectors.joining("\n"));
 
     Stream.of(
-            inputObjects.stream()
+            collectedData.getInputObjects().stream()
                 .map(InputObjectContainer::getType),
             Stream.of(outputType),
-            mapStructMethodList.stream()
+            collectedData.getMapStructMethodList().stream()
                 .map(MapStructMethod::getOutputType),
-            mapStructMethodList.stream()
+            collectedData.getMapStructMethodList().stream()
                 .map(MapStructMethod::getInputs)
                 .flatMap(Collection::stream)
                 .map(InputObjectContainer::getType)
@@ -81,27 +66,12 @@ public class MappingResultService {
 
   @NotNull
   private String getMappingMethods() {
-    return mapStructMethodList.stream()
-        .map(x -> x.toString(outputType))
+    return collectedData.getMapStructMethodList().stream()
+        .map(x -> x.printMethod(collectedData.getOutputType()))
         .collect(Collectors.joining("\n"));
   }
 
-  private String trimBrackets(Mapping x) {
-    var text = x.getSource().getOriginalList().getText();
-    return text.substring(1, text.length() - 1);
-  }
-
-  @NotNull
-  private String getOutputType(PsiExpressionList expressionList) {
-    var result = new ArrayList<String>();
-    expressionList.accept(new JavaRecursiveElementVisitor() {
-      @Override
-      public void visitPolyadicExpression(PsiPolyadicExpression expression) {
-        super.visitPolyadicExpression(expression);
-        result.add(expression.getType().getPresentableText());
-      }
-    });
-
-    return result.get(0);
+  public String getMapperName() {
+    return collectedData.getOutputType().getPresentableText() + "Mapper.java";
   }
 }
