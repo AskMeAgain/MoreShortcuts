@@ -21,16 +21,6 @@ public class LombokToMapstructUtils {
     return "get" + StringUtils.capitalize(methodName);
   }
 
-  public static String getMappingMethodNameNestedMapping(Mapping mapping) {
-    var methodName = mapping.getTargets().stream()
-        .map(PsiReferenceExpressionImpl::getType)
-        .map(x -> x.getPresentableText())
-        .collect(Collectors.toList())
-        .get(mapping.getTargets().size() - 1);
-
-    return "map" + StringUtils.capitalize(methodName);
-  }
-
   public static List<InputObjectContainer> getSpecificMappingInputs(Mapping mapping) {
     return new ArrayList<>(LombokToMapStructVisitor.getInputObjects(mapping.getSource().getOriginalList()));
   }
@@ -51,7 +41,8 @@ public class LombokToMapstructUtils {
         return ", source = \"" + sourceName + "\", qualifiedByName=\"" + getMappingMethodName(mapping) + "\"";
       }
     } else if (mapping.getSource().isNestedMethodCall()) {
-      var shortInputObj = inputObjects2.stream()
+      var shortInputObj = mapping.getInputObjects()
+          .stream()
           .map(InputObjectContainer::getVarName)
           .distinct()
           .collect(Collectors.joining(", "));
