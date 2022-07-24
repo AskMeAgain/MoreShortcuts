@@ -11,11 +11,6 @@ import org.mapstruct.Named;
 @Mapper
 public interface ComplexOutputsMapper {
 
-  @Mapping(target = "mul", expression="java(mapMultiplication(input2, input))")
-  @Mapping(target = "orig2", source ="input.number1")
-  @Mapping(target = "orig1", source ="input.number1")
-  ComplexOutputs mapComplexOutputs(InputContainer input2, InputContainer input);
-
   @Mapping(target = "nested5", constant="1")
   @Mapping(target = "nested4", constant="what a nice constant")
   @Mapping(target = "nested3", source = "input", qualifiedByName="getNested3")
@@ -27,7 +22,12 @@ public interface ComplexOutputsMapper {
 
   @Mapping(target = "nested1", constant="abc")
   @Mapping(target = "nested2", source ="input.anotherOneOne")
-  NestedSubtractions mapNestedSubtractions(InputContainer input2, InputContainer input);
+  NestedSubtractions mapNestedSubtractions(InputContainer input);
+
+  @Mapping(target = "orig2", source ="input.number1")
+  @Mapping(target = "orig1", source ="input.number1")
+  @Mapping(target = "mul", expression="java(mapMultiplication(input, input2))")
+  ComplexOutputs mapComplexOutputs(InputContainer input, InputContainer input2);
 
   @Named("getNested3")
   default int getNested3 (InputContainer input){

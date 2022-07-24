@@ -46,9 +46,9 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
     return MappingResultService.builder()
         .project(project)
         .overrideMethods(overrideMethods)
-        .mappingsByType(mappings)
+        .mapStructMethodList(LombokToMapstructUtils.transformToMapstructMethodList(mappings,outputType))
         .packageName(packageName)
-        .inputObjects(new ArrayList<>(inputObjects))
+        .inputObjects(inputObjects)
         .outputType(outputType)
         .build();
   }
