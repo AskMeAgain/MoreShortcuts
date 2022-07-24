@@ -29,6 +29,10 @@ jobs:
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: Run tests
       run: gradle test
+      with:
+        name: reports
+        path: |
+          home/runner/work/MoreShortcuts/MoreShortcuts/build/reports/tests/test/index.html
     - name: Build with Gradle
       run: gradle publishPlugin
       env:
