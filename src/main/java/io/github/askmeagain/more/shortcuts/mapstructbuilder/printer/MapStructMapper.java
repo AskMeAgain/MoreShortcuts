@@ -6,7 +6,6 @@ import com.intellij.psi.PsiType;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.*;
 import lombok.Builder;
 import lombok.Value;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Function;
@@ -28,15 +27,16 @@ public class MapStructMapper {
 
     baseImports.add("org.mapstruct.Mapper");
     baseImports.add("org.mapstruct.Mapping");
+    baseImports.add("org.mapstruct.factory.Mappers");
 
     var textOverrideMethods = collectedData.getOverrideMethods().stream()
         .map(MapStructOverrideMethod::printOverrideMethods)
         .collect(Collectors.joining("\n"));
 
     Stream.of(
+            Stream.of(outputType),
             collectedData.getInputObjects().stream()
                 .map(InputObjectContainer::getType),
-            Stream.of(outputType),
             collectedData.getMapStructMethodList().stream()
                 .map(MapStructMethod::getOutputType),
             collectedData.getMapStructMethodList().stream()
@@ -53,22 +53,19 @@ public class MapStructMapper {
       baseImports.add("org.mapstruct.Named");
     }
 
-    var mainMapping = getMappingMethods();
+    var mappingMethods = collectedData.getMapStructMethodList().stream()
+        .map(x1 -> x1.printMethod(collectedData.getOutputType()))
+        .collect(Collectors.joining("\n"));
 
     return MAPPER_TEMPLATE
-        .replace("$MAPPING_METHODS", String.join("\n", mainMapping))
+        .replace("$MAPPING_METHODS", String.join("\n", mappingMethods))
         .replace("$IN_PACKAGE", !Strings.isNullOrEmpty(packageName) ? "package $PACKAGE;" : "")
         .replace("$PACKAGE", packageName)
         .replace("$OUTPUT_TYPE", outputType.getPresentableText())
-        .replace("$IMPORTS", baseImports.stream().map(x -> "import " + x + ";").collect(Collectors.joining("\n")))
+        .replace("$IMPORTS", baseImports.stream()
+            .map(x -> "import " + x + ";")
+            .collect(Collectors.joining("\n")))
         .replace("$OVERRIDE_METHODS", textOverrideMethods);
-  }
-
-  @NotNull
-  private String getMappingMethods() {
-    return collectedData.getMapStructMethodList().stream()
-        .map(x -> x.printMethod(collectedData.getOutputType()))
-        .collect(Collectors.joining("\n"));
   }
 
   public String getMapperName() {
@@ -83,6 +80,8 @@ public class MapStructMapper {
       "\n" +
       "@Mapper\n" +
       "public interface $OUTPUT_TYPEMapper {\n" +
+      "\n" +
+      "  $OUTPUT_TYPEMapper INSTANCE = Mappers.getMapper($OUTPUT_TYPEMapper.class);\n" +
       "\n" +
       "$MAPPING_METHODS" +
       "\n" +
