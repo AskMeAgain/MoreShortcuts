@@ -2,17 +2,17 @@ package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.InputContainer;
+import org.mapstruct.factory.Mappers;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.ComplexOutputs;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.InputContainer;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.Multiplication;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.MapperTest.NestedSubtractions;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface ComplexOutputsMapper {
 
-ComplexOutputsMapper INSTANCE = Mappers.getMapper(ComplexOutputsMapper.class);
+  ComplexOutputsMapper INSTANCE = Mappers.getMapper(ComplexOutputsMapper.class);
 
   @Mapping(target = "nested5", constant="1")
   @Mapping(target = "nested4", constant="what a nice constant")
