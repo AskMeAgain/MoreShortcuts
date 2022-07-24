@@ -8,8 +8,8 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MapStructAnnotation;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.MapStructMethod;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructAnnotation;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructMethod;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

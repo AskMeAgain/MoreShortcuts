@@ -1,7 +1,9 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder.printer;
 
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapstructUtils;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.SourceContainer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;

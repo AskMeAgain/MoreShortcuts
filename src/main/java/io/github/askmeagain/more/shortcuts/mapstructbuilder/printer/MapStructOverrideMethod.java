@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder.printer;
 
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
@@ -17,12 +17,14 @@ public class MapStructOverrideMethod {
   PsiExpressionList originalList;
   List<PsiReferenceExpressionImpl> targets;
 
+  private static String OVERRIDE_TEMPLATE = "  @Named(\"$METHOD_NAME\")\n  default $OUTPUT_TYPE $METHOD_NAME ($METHOD_INPUT_TYPES){\n    return $CODE;\n  }\n";
+
   public String printOverrideMethods() {
     var inputTypes = String.join(",", LombokToMapstructUtils.getSpecificMappingInputs(originalList).stream()
         .map(y -> y.getType().getPresentableText() + " " + y.getVarName())
         .collect(Collectors.joining(", ")));
 
-    return LombokToMapStructTemplate.OVERRIDE_TEMPLATE.replace("$METHOD_INPUT_TYPES", inputTypes)
+    return OVERRIDE_TEMPLATE.replace("$METHOD_INPUT_TYPES", inputTypes)
         .replace("$OUTPUT_TYPE", LombokToMapstructUtils.getOutputType(this.getOriginalList()))
         .replace("$METHOD_NAME", getMappingMethodName())
         .replace("$CODE", trimBrackets());

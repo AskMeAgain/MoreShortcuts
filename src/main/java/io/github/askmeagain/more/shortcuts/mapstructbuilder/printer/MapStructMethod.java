@@ -1,6 +1,7 @@
-package io.github.askmeagain.more.shortcuts.mapstructbuilder.entities;
+package io.github.askmeagain.more.shortcuts.mapstructbuilder.printer;
 
 import com.intellij.psi.PsiType;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;

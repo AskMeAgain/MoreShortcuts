@@ -8,9 +8,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiClassOwner;
 import com.intellij.psi.PsiDeclarationStatement;
 import com.intellij.psi.PsiReturnStatement;
-import com.intellij.psi.util.PsiTreeUtil;
-import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.CollectedData;
-import io.netty.util.Mapping;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructMapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -48,7 +46,7 @@ public class LombokToMapStructAction extends AnAction {
         }
       }
 
-      var service = MappingResultService.builder()
+      var service = MapStructMapper.builder()
           .project(project)
           .collectedData(visitor.collectResults())
           .build();

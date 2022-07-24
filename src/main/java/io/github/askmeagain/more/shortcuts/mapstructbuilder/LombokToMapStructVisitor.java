@@ -5,6 +5,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.*;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructAnnotation;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructOverrideMethod;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
