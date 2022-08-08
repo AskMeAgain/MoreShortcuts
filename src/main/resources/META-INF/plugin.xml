@@ -15,7 +15,6 @@
     <depends>org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <editorActionHandler action="EditorEscape" implementationClass="io.github.askmeagain.more.shortcuts.insertionpopup.InsertionPopupEscapeHandler" id="test"/>
         <applicationConfigurable
                 parentId="tools"
                 instance="io.github.askmeagain.more.shortcuts.settings.SettingsGuiManager"
@@ -94,11 +93,17 @@
                     description="Generate MapStruct builder from Lombok text selection">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl g" second-keystroke="ctrl m"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.InsertionPopupAction"
-                    class="io.github.askmeagain.more.shortcuts.insertionpopup.InsertionPopupAction"
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
                     text="Insert Annotation"
                     description="Insert Annotation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl a"/>
+            </action>
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.field.FieldInsertionAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.field.FieldInsertionAction"
+                    text="Insert Field"
+                    description="Insert Field">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl f"/>
             </action>
         </group>
     </actions>

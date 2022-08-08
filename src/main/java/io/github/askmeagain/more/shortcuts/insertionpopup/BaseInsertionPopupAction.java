@@ -4,10 +4,10 @@ import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.IdeActions;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
 import com.intellij.ui.EditorTextField;
 import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
@@ -17,20 +17,35 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 
-public class InsertionPopupAction extends AnAction {
-  @Override
-  public void actionPerformed(@NotNull AnActionEvent e) {
-    InsertionPopupEscapeHandler.editorTextField = new MultilineCountDialog(e);
-    InsertionPopupEscapeHandler.editorTextField.show();
+public class BaseInsertionPopupAction extends AnAction {
+
+  private final EditorActionManager editorActionManager = EditorActionManager.getInstance();
+
+  protected void openDialog(AnActionEvent e, int offset, int lineOffset) {
+
+    var editorTextField = new CodeLenseWindow(e, offset, lineOffset);
+    editorTextField.show();
+
+    var oldHandler = editorActionManager.getActionHandler(IdeActions.ACTION_EDITOR_ESCAPE);
+
+    editorActionManager.setActionHandler(
+        IdeActions.ACTION_EDITOR_ESCAPE,
+        new InsertionPopupEscapeHandler(
+            editorTextField,
+            () -> editorActionManager.setActionHandler(IdeActions.ACTION_EDITOR_ESCAPE, oldHandler))
+    );
   }
 
-  public static class MultilineCountDialog extends DialogWrapper {
+  public void actionPerformed(@NotNull AnActionEvent e) {
+  }
+
+  public static class CodeLenseWindow extends DialogWrapper {
 
     public final EditorTextField editorTextField;
 
     private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
-    public MultilineCountDialog(AnActionEvent e) {
+    public CodeLenseWindow(AnActionEvent e, int cursorOffset, int lineOffset) {
       super(null, null, true, IdeModalityType.IDE, false);
 
       setTitle("CodeLense");
@@ -42,24 +57,17 @@ public class InsertionPopupAction extends AnAction {
       var document = editor.getDocument();
       var project = e.getProject();
 
+      var logicalPosition = editor.offsetToLogicalPosition(cursorOffset);
+      var newLine = logicalPosition.line + lineOffset;
+      var newLogicalPosition = new LogicalPosition(newLine, 0);
+
       editorTextField = new EditorTextField(document, project, JavaFileType.INSTANCE);
-
-      e.getRequiredData(CommonDataKeys.PSI_FILE).accept(new JavaRecursiveElementVisitor() {
-        @Override
-        public void visitClass(PsiClass clazz) {
-          var logicalPosition = editor.offsetToLogicalPosition(clazz.getTextOffset());
-          var newLine = logicalPosition.line - 1;
-          var newLogicalPosition = new LogicalPosition(newLine, 0);
-
-          editorTextField.setCaretPosition(editor.logicalPositionToOffset(newLogicalPosition));
-        }
-      });
-
+      editorTextField.setCaretPosition(editor.logicalPositionToOffset(newLogicalPosition));
       init();
     }
 
     @Override
-    protected @NotNull DialogStyle getStyle(){
+    protected @NotNull DialogStyle getStyle() {
       return DialogStyle.COMPACT;
     }
 
