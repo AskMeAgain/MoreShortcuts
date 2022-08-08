@@ -201,12 +201,13 @@ It can handle any nesting.
 
 ----------------------
 
-## Annotation CodeLense
+## Insertion CodeLense
 
 A small code editor opens when pressing **CTRL + I, CTRL + A**.
 The cursor is placed at the top of the current file, to enter new annotations.
 Pressing **escape** closes the window
 
+Press **CTRL + I, CTRL + F** to put the cursor on the next field;
 
 ----------------------
 
