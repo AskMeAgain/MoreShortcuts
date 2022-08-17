@@ -162,11 +162,14 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
   }
 
   private String removeGetter(String identifier) {
-    if (identifier.startsWith("get") && Character.isUpperCase(identifier.charAt(3))) {
-      return makeLowerCase(identifier.replace("get", ""));
+    try {
+      if (identifier.startsWith("get") && Character.isUpperCase(identifier.charAt(3))) {
+        return makeLowerCase(identifier.replace("get", ""));
+      }
+      return identifier;
+    } catch (Exception ignored) {
+      return identifier;
     }
-
-    return identifier;
   }
 
 
@@ -187,6 +190,7 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
         }
       }
     });
+
     return inputObjects;
   }
 

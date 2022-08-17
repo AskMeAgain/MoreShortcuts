@@ -69,7 +69,11 @@ public class MapStructMapper {
   }
 
   public String getMapperName() {
-    return collectedData.getOutputType().getPresentableText() + "Mapper.java";
+    try {
+      return collectedData.getOutputType().getPresentableText() + "Mapper.java";
+    } catch (Exception e) {
+      return "DefaultMapper.java";
+    }
   }
 
   private static String MAPPER_TEMPLATE = "" +

@@ -12,9 +12,13 @@ import java.util.List;
 public class LombokToMapstructUtils {
 
   public static PsiType resolveBuilder(PsiType type, Project project) {
-    var presentableText = type.getPresentableText();
-    var replacedName = type.getCanonicalText().replaceAll("." + presentableText + "$", "");
-    return PsiType.getTypeByName(replacedName, project, GlobalSearchScope.allScope(project));
+    try {
+      var presentableText = type.getPresentableText();
+      var replacedName = type.getCanonicalText().replaceAll("." + presentableText + "$", "");
+      return PsiType.getTypeByName(replacedName, project, GlobalSearchScope.allScope(project));
+    } catch (Exception e) {
+      throw new RuntimeException(String.format("Cannot resolve builder because %s cannot be found", type), e);
+    }
   }
 
   public static List<InputObjectContainer> getSpecificMappingInputs(PsiExpressionList mapStructAnnotation) {
