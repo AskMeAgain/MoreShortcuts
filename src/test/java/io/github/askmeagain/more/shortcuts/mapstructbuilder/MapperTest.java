@@ -1,6 +1,7 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 public class MapperTest {
 
@@ -13,7 +14,7 @@ public class MapperTest {
         .number1("abc")
         .build();
 
-    return ComplexOutputs.builder()
+    ComplexOutputs def = ComplexOutputs.builder()
         .orig1(input.getNumber1())
         .orig2(input.getNumber1())
         .mul(Multiplication.builder()
@@ -29,11 +30,18 @@ public class MapperTest {
                 .build())
             .build())
         .build();
+
+    return def;
+  }
+
+  @SuperBuilder
+  public static class Base {
+    String superbuilderBase;
   }
 
   @Data
-  @Builder
-  public static class ComplexOutputs {
+  @SuperBuilder
+  public static class ComplexOutputs extends Base {
 
     String orig1;
     String orig2;

@@ -1,6 +1,8 @@
 package io.github.askmeagain.more.shortcuts.mapstructbuilder.printer;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiType;
+import io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapstructUtils;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.entities.InputObjectContainer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,7 +18,6 @@ import java.util.stream.Collectors;
 @Builder(toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MapStructMethod {
-
   @EqualsAndHashCode.Include
   PsiType outputType;
   @Singular
@@ -34,6 +35,7 @@ public class MapStructMethod {
         .collect(Collectors.joining(", "));
 
     var replacement = Optional.ofNullable(outputType)
+        .map(LombokToMapstructUtils::resolveCapture)
         .map(PsiType::getPresentableText)
         .orElse(alternativeOutput.getPresentableText());
 

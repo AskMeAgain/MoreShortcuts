@@ -11,6 +11,7 @@ import com.intellij.psi.PsiReturnStatement;
 import io.github.askmeagain.more.shortcuts.mapstructbuilder.printer.MapStructMapper;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -37,6 +38,10 @@ public class LombokToMapStructAction extends AnAction {
         parent = parent.getParent();
 
         if (parent == null) {
+          JOptionPane.showMessageDialog(
+              editor.getComponent(),
+              "Cannot find PsiDeclarationStatement or PsiReturnStatement. Please put your cursor on the mapping."
+          );
           return;
         }
 
@@ -57,7 +62,7 @@ public class LombokToMapStructAction extends AnAction {
               .createChildData(null, service.getMapperName())
               .setBinaryContent(service.printResult().getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
-          ex.printStackTrace();
+          throw new RuntimeException("Cannot create mapper.", ex);
         }
       });
     });

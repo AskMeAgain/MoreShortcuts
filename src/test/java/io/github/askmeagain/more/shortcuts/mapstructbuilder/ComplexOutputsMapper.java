@@ -23,8 +23,8 @@ public interface ComplexOutputsMapper {
   @Mapping(target = "nested6", expression="java(getNested6(input2, input))")
   Multiplication mapMultiplication(InputContainer input2, InputContainer input);
 
-  @Mapping(target = "nested1", constant="abc")
   @Mapping(target = "nested2", source ="input.anotherOneOne")
+  @Mapping(target = "nested1", constant="abc")
   NestedSubtractions mapNestedSubtractions(InputContainer input);
 
   @Mapping(target = "orig2", source ="input.number1")

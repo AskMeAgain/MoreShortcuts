@@ -129,7 +129,8 @@ public class LombokToMapStructVisitor extends JavaRecursiveElementVisitor {
         if (!stack.isEmpty()) {
           stack.remove(stack.size() - 1);
         } else {
-          outputType = ((PsiMethodCallExpressionImpl) list.getParent()).getType();
+          var temp = ((PsiMethodCallExpressionImpl) list.getParent()).getType();
+          outputType = LombokToMapstructUtils.resolveCapture(temp);
         }
       }
     }
