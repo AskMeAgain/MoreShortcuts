@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.bookmarks;
+package io.github.askmeagain.more.shortcuts.bookmarkkeeper;
 
 import com.intellij.ide.bookmark.Bookmark;
 import com.intellij.ide.bookmark.BookmarkType;

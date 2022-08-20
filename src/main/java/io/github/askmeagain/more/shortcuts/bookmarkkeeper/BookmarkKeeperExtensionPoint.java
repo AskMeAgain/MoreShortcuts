@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.bookmarks;
+package io.github.askmeagain.more.shortcuts.bookmarkkeeper;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.LocalTask;
@@ -12,12 +12,6 @@ public class BookmarkKeeperExtensionPoint extends VcsTaskDialogPanelProvider {
   @Nullable
   @Override
   public TaskDialogPanel getOpenTaskPanel(@NotNull Project project, @NotNull LocalTask task) {
-    return new BookmarkKeeperPanel(project);
-  }
-
-  @Nullable
-  @Override
-  public TaskDialogPanel getCloseTaskPanel(@NotNull Project project, @NotNull LocalTask task) {
     return new BookmarkKeeperPanel(project);
   }
 }

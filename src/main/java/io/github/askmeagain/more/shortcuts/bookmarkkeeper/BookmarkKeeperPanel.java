@@ -1,10 +1,9 @@
-package io.github.askmeagain.more.shortcuts.bookmarks;
+package io.github.askmeagain.more.shortcuts.bookmarkkeeper;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.ui.TaskDialogPanel;
 import com.intellij.ui.IdeBorderFactory;
-import com.intellij.ui.border.IdeaTitledBorder;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
 

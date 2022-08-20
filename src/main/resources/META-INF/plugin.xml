@@ -16,7 +16,7 @@
     <depends>org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij.tasks">
-        <dialogPanelProvider order="first" implementation="io.github.askmeagain.more.shortcuts.bookmarks.BookmarkKeeperExtensionPoint"/>
+        <dialogPanelProvider order="first" implementation="io.github.askmeagain.more.shortcuts.bookmarkkeeper.BookmarkKeeperExtensionPoint"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
