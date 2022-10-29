@@ -151,53 +151,7 @@ mockings, which are longer then 1 line.
 
 **Currently pretty experimental**
 
-Select any text which has (close to) the same format as the example,
-Press **CTRL + G, CTRL + M** and this plugin will generate a MapStruct mapper.
-It is _not perfect_ but will speed up the normal boring mapping pretty
-significantly. If it cannot match anything, then it will not fill in the blanks.
-It can handle any nesting.
-
-<details><summary>Before</summary>
-<p>
-
-    var result = ComplexOutputs.builder()
-        .multiplications(Multiplications.builder()
-            .number1mul8(123)
-            .number1mul4(input.getNumber1())
-            .number1mul2(input.getNumber1())
-            .build())
-        .summations(Summations.builder()
-            .a("a")
-            .aa(input.getNumber1().toString())
-            .aaaa("abc")
-            .build())
-        .build();
-
-</p>
-</details>
-<details><summary>After</summary>
-<p>
-
-    package ask.me.again.mapstruct.builder;
-    
-    import org.mapstruct.Mapper;
-    import org.mapstruct.Mapping;
-    
-    @Mapper
-    public interface ComplexOutputsMapper {
-
-        @Mapping(target = "multiplications.number1mul8", source = "")
-        @Mapping(target = "multiplications.number1mul4", source = "number1")
-        @Mapping(target = "multiplications.number1mul2", source = "number1")
-        @Mapping(target = "summations.a", source = "")
-        @Mapping(target = "summations.aa", source = "number1")
-        @Mapping(target = "summations.aaaa", source = "")
-        ComplexOutputs map(Object input);
-    
-    }
-
-</p>
-</details>
+NEW: Moved to a new plugin called [MapStructor](https://github.com/AskMeAgain/MapStructor) with more features.
 
 ----------------------
 

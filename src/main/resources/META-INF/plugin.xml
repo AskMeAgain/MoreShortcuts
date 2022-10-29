@@ -88,12 +88,6 @@
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl i"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructAction"
-                    class="io.github.askmeagain.more.shortcuts.mapstructbuilder.LombokToMapStructAction"
-                    text="Lombok to MapStruct"
-                    description="Generate MapStruct builder from Lombok text selection">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl g" second-keystroke="ctrl m"/>
-            </action>
             <action id="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
                     class="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
                     text="Insert Annotation"
