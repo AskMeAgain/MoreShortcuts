@@ -98,7 +98,7 @@
                     class="io.github.askmeagain.more.shortcuts.insertionpopup.field.FieldInsertionAction"
                     text="Insert Field"
                     description="Insert Field">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl f"/>
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl v"/>
             </action>
         </group>
     </actions>
