@@ -12,6 +12,10 @@ public class Abc {
     @Mock
     Optional<Integer> abc33;
 
+    void ignoreThisMethod() {
+        //yes
+    }
+
     void test() {
         var test = 1;
         new SmartIntroduceTestClass().method(<caret>abc, def, abc33);

@@ -6,6 +6,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.impl.source.PsiClassImpl;
+import com.intellij.psi.impl.source.PsiMethodImpl;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils;
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +27,10 @@ public class SmartIntroduceParameterAction extends SmartIntroduceBaseClass {
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
-    var psiClass = SmartIntroduceUtils.findRecursivelyInParent(e.getRequiredData(CommonDataKeys.PSI_FILE).findElementAt(textOffset), PsiClassImpl.class);
+    var psiMethod = SmartIntroduceUtils.findRecursivelyInParent(e.getRequiredData(CommonDataKeys.PSI_FILE).findElementAt(textOffset), PsiMethodImpl.class);
 
     var finalString = Arrays.stream(parameterList).map(p -> p.getType().getPresentableText() + " " + p.getName()).collect(Collectors.joining(", "));
-    int realTextOffset = PsiTreeUtil.findChildOfType(psiClass, PsiParameterList.class).getTextOffset() + 1;
+    int realTextOffset = PsiTreeUtil.findChildOfType(psiMethod, PsiParameterList.class).getTextOffset() + 1;
 
     var document = e.getRequiredData(CommonDataKeys.EDITOR).getDocument();
 

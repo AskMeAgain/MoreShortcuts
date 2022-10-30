@@ -6,6 +6,10 @@ import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduce
 
 public class Abc {
 
+    void ignoreThisMethod() {
+        //yes
+    }
+
     void test() {
         var test = 1;
 
