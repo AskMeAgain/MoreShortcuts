@@ -17,15 +17,17 @@ import java.util.stream.Collectors;
 
 import static io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceUtils.toCamelCase;
 
-public class SmartIntroduceMockVariableAction extends AnAction {
+public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
   private final PsiParameter[] parameterList;
+  private Boolean isMock;
   private final Integer textOffset;
 
-  private static final String TEMPLATE = "var $NAME = Mockito.mock($CLAZZ.class);";
+  private static final String TEMPLATE = "var $NAME = Mockito.$TYPE($CLAZZ.class);";
 
-  public SmartIntroduceMockVariableAction(PsiParameter[] parameterList, Integer textOffset) {
-    super("Mock to Variable");
+  public SmartIntroduceMockVariableAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
+    super(isMock ? "Mock to Variable" : "Spy to Variable");
+    this.isMock = isMock;
     this.textOffset = textOffset;
     this.parameterList = parameterList;
   }
@@ -36,7 +38,8 @@ public class SmartIntroduceMockVariableAction extends AnAction {
 
     for (var param : parameterList) {
       var s = TEMPLATE.replace("$NAME", param.getName())
-          .replace("$CLAZZ", param.getType().getPresentableText());
+          .replace("$CLAZZ", param.getType().getPresentableText())
+          .replace("$TYPE", isMock ? "mock" : "spy");
       result.add(s);
     }
 
@@ -51,13 +54,10 @@ public class SmartIntroduceMockVariableAction extends AnAction {
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
       //the variables
-      document.insertString(textOffset, Arrays.stream(parameterList)
-          .map(x -> toCamelCase(x.getName()))
-          .collect(Collectors.joining(", ")));
+      addParameterToParameterList(document, textOffset, parameterList);
       document.insertString(realTextOffset, finalString);
 
-      PsiDocumentManager.getInstance(e.getProject()).commitDocument(document);
-      new ReformatCodeProcessor(e.getRequiredData(CommonDataKeys.PSI_FILE), false).run();
+      reformatCode(e);
     });
   }
 }

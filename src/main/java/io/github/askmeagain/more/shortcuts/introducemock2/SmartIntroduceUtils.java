@@ -55,6 +55,19 @@ public class SmartIntroduceUtils {
     return false;
   }
 
+  public static <T extends PsiElement> T findRecursivelyInParent(PsiElement element, Class<T> seachFor) {
+    while (true) {
+      element = element.getParent();
+      if(element == null){
+        break;
+      }
+      if (element.getClass().isAssignableFrom(seachFor)) {
+        return (T) element;
+      }
+    }
+    throw new RuntimeException("could not find " + seachFor.getName());
+  }
+
   public static List<PsiParameter[]> getPsiParametersFromConstructor(PsiExpressionList expressionList) {
     var newExpression = PsiTreeUtil.getParentOfType(expressionList, PsiNewExpression.class);
     var psiClass = ((PsiClassReferenceType) newExpression.getType()).resolve();

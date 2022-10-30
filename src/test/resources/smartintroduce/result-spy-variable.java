@@ -1,19 +1,16 @@
 package io.github.askmeagain.more.shortcuts.introducemock2;
 
-import org.mockito.Mock;
 import io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceTestClass;
 
 public class Abc {
 
-    @Mock
-    private String abc;
-    @Mock
-    private String def;
-    @Mock
-    private Integer abc33;
-
     void test() {
         var test = 1;
+
+        var abc = Mockito.spy(String.class);
+        var def = Mockito.spy(String.class);
+        var abc33 = Mockito.spy(Integer.class);
+
         new SmartIntroduceTestClass(<caret>abc, def, abc33);
     }
 }

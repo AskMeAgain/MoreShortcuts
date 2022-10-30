@@ -1,17 +1,13 @@
 package io.github.askmeagain.more.shortcuts.introducemock2.impl;
 
-import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaToken;
-import com.intellij.psi.PsiParameter;
+import com.intellij.openapi.editor.Document;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtil;
-import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
+import io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,15 +16,17 @@ import java.util.stream.Collectors;
 
 import static io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceUtils.toCamelCase;
 
-public class SmartIntroduceMockFieldAction extends AnAction {
+public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
 
+  private final Boolean isMock;
   private final PsiParameter[] parameterList;
-  private static final String TEMPLATE = "@Mock\nprivate $CLAZZ $NAME;";
+  private static final String TEMPLATE = "@TYPE\nprivate $CLAZZ $NAME;";
 
   private final Integer textOffset;
 
-  public SmartIntroduceMockFieldAction(PsiParameter[] parameterList, Integer textOffset) {
-    super("Mock to Field");
+  public SmartIntroduceMockFieldAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
+    super(isMock ? "Mock to Field" : "Spy to Field");
+    this.isMock = isMock;
     this.parameterList = parameterList;
     this.textOffset = textOffset;
   }
@@ -39,24 +37,21 @@ public class SmartIntroduceMockFieldAction extends AnAction {
 
     for (var param : parameterList) {
       var s = TEMPLATE.replace("$NAME", param.getName())
-          .replace("$CLAZZ", param.getType().getPresentableText());
+          .replace("$CLAZZ", param.getType().getPresentableText())
+          .replace("TYPE", isMock ? "Mock" : "Spy");
       result.add(s);
     }
 
     var finalString = "\n\n" + String.join("\n", result);
 
-    var psiClass = e.getRequiredData(CommonDataKeys.PSI_FILE)
-        .findElementAt(textOffset)
-        .getParent()
-        .getParent()
-        .getParent()
-        .getParent()
-        .getParent()
-        .getParent();
+    var psiFile = e.getRequiredData(CommonDataKeys.PSI_FILE);
+
+    var elementAt = psiFile.findElementAt(textOffset);
+    var psiClass = SmartIntroduceUtils.findRecursivelyInParent(elementAt, PsiClassImpl.class);
 
     var realTextOffset = PsiTreeUtil.findChildrenOfType(psiClass, PsiJavaToken.class)
         .stream()
-        .filter(x -> x.getTokenType().getIndex() == 288)
+        .filter(x -> x.getTokenType().getIndex() == 288) //Left bracket
         .findFirst()
         .get()
         .getTextOffset() + 1;
@@ -64,14 +59,11 @@ public class SmartIntroduceMockFieldAction extends AnAction {
     var document = e.getRequiredData(CommonDataKeys.EDITOR).getDocument();
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
-      //the variables
-      document.insertString(textOffset, Arrays.stream(parameterList)
-          .map(x -> toCamelCase(x.getName()))
-          .collect(Collectors.joining(", ")));
+      addParameterToParameterList(document, textOffset, parameterList);
       document.insertString(realTextOffset, finalString);
+      addImport(document, elementAt, "import org.mockito." + (isMock ? "Mock" : "Spy") + ";");
 
-      PsiDocumentManager.getInstance(e.getProject()).commitDocument(document);
-      new ReformatCodeProcessor(e.getRequiredData(CommonDataKeys.PSI_FILE), false).run();
+      reformatCode(e);
     });
   }
 }

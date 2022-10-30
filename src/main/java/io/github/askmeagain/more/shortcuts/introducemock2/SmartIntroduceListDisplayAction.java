@@ -35,11 +35,11 @@ public class SmartIntroduceListDisplayAction extends AnAction {
     var actionGroup = new DefaultActionGroup();
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
 
-    actionGroup.add(new SmartIntroduceMockFieldAction(selection, textOffset));
-    actionGroup.add(new SmartIntroduceMockVariableAction(selection, textOffset));
+    actionGroup.add(new SmartIntroduceMockFieldAction(true, selection, textOffset));
+    actionGroup.add(new SmartIntroduceMockVariableAction(true, selection, textOffset));
     actionGroup.add(new SmartIntroduceParameterAction(selection, textOffset));
-    actionGroup.add(new SmartIntroduceSpyFieldAction(selection));
-    actionGroup.add(new SmartIntroduceSpyVariableAction(selection));
+    actionGroup.add(new SmartIntroduceMockFieldAction(false, selection, textOffset));
+    actionGroup.add(new SmartIntroduceMockVariableAction(false, selection, textOffset));
 
     if (!ApplicationManager.getApplication().isUnitTestMode()) {
       JBPopupFactory.getInstance()
