@@ -3,7 +3,6 @@ package io.github.askmeagain.more.shortcuts.introducetext.impl;
 import com.intellij.psi.impl.PsiParserFacadeImpl;
 import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.commons.CommonPsiUtils;
-import io.github.askmeagain.more.shortcuts.introducemock.exceptions.ClassFromTypeNotFoundException;
 import io.github.askmeagain.more.shortcuts.introducetext.actions.entities.IntroduceTextMode;
 import io.github.askmeagain.more.shortcuts.introducetext.exceptions.CouldNotFindMethodException;
 import io.github.askmeagain.more.shortcuts.introducetext.exceptions.MultipleAddMockMethodResultException;
@@ -85,7 +84,7 @@ public class AddMockMethodImpl extends AnAction {
 
     } catch (CouldNotFindMethodException ex) {
       createContextMenuForVariable(e, ex);
-    } catch (ClassFromTypeNotFoundException ex) {
+    } catch (RuntimeException ex) {
       PsiHelpers.print(project, "ClassFromTypeNotFoundException!");
     } catch (MultipleAddMockMethodResultException ex) {
       createContextMenu(e, ex);
@@ -118,7 +117,7 @@ public class AddMockMethodImpl extends AnAction {
     throw new NotImplementedException("TODO");
   }
 
-  private void writeImportStatements(PsiMethod method) throws ClassFromTypeNotFoundException {
+  private void writeImportStatements(PsiMethod method) {
     var imports = List.of(PsiHelpers.getClassFromString(project, "org.mockito.Mockito"));
 
     var set = Arrays.stream(method.getParameterList().getParameters())
@@ -209,7 +208,7 @@ public class AddMockMethodImpl extends AnAction {
     popup.showInBestPositionFor(editor);
   }
 
-  private PsiMethod findMethod(PsiElement element) throws CouldNotFindMethodException, ClassFromTypeNotFoundException, MultipleAddMockMethodResultException {
+  private PsiMethod findMethod(PsiElement element) throws CouldNotFindMethodException, MultipleAddMockMethodResultException {
 
     var parent = PsiTreeUtil.getParentOfType(element, PsiReferenceExpression.class);
     var typeString = "";

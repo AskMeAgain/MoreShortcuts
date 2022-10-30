@@ -1,6 +1,6 @@
-package io.github.askmeagain.more.shortcuts.introducemock2;
+package io.github.askmeagain.more.shortcuts.introducemock;
 
-import io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceTestClass;
+import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceTestClass;
 
 public class Abc {
 

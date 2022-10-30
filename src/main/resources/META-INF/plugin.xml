@@ -28,8 +28,8 @@
             <add-to-group group-id="RefactoringMenu"
                           anchor="after"
                           relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"/>
-            <action id="io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceVariableAction"
-                    class="io.github.askmeagain.more.shortcuts.introducemock2.SmartIntroduceVariableAction"
+            <action id="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceVariableAction"
+                    class="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceVariableAction"
                     text="Introduce Mock To Variable"
                     description="Introduce all Mocks">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl v"/>
