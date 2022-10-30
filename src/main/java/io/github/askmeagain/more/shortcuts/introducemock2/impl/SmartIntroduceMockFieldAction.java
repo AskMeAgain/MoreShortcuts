@@ -43,7 +43,7 @@ public class SmartIntroduceMockFieldAction extends AnAction {
       result.add(s);
     }
 
-    var finalString = "\n\n" + String.join("\n", result) + "\n";
+    var finalString = "\n\n" + String.join("\n", result);
 
     var psiClass = e.getRequiredData(CommonDataKeys.PSI_FILE)
         .findElementAt(textOffset)

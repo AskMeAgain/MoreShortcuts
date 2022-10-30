@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.smartintroduce;
+package io.github.askmeagain.more.shortcuts.introducemock2;
 
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import lombok.SneakyThrows;

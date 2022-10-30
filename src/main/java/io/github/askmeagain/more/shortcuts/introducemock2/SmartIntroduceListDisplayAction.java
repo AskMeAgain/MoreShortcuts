@@ -18,6 +18,7 @@ import static com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SP
 
 public class SmartIntroduceListDisplayAction extends AnAction {
 
+  static int testIndex = 0;
   private final ExececutionExtractor execution;
   private final PsiParameter[] selection;
   private final Integer textOffset;
@@ -36,7 +37,7 @@ public class SmartIntroduceListDisplayAction extends AnAction {
 
     actionGroup.add(new SmartIntroduceMockFieldAction(selection, textOffset));
     actionGroup.add(new SmartIntroduceMockVariableAction(selection, textOffset));
-    actionGroup.add(new SmartIntroduceParameterAction(selection));
+    actionGroup.add(new SmartIntroduceParameterAction(selection, textOffset));
     actionGroup.add(new SmartIntroduceSpyFieldAction(selection));
     actionGroup.add(new SmartIntroduceSpyVariableAction(selection));
 
@@ -45,7 +46,7 @@ public class SmartIntroduceListDisplayAction extends AnAction {
           .createActionGroupPopup(null, actionGroup, e.getDataContext(), SPEEDSEARCH, false)
           .showInBestPositionFor(editor);
     } else {
-      actionGroup.getChildActionsOrStubs()[0].actionPerformed(e);
+      actionGroup.getChildActionsOrStubs()[testIndex].actionPerformed(e);
     }
   }
 }

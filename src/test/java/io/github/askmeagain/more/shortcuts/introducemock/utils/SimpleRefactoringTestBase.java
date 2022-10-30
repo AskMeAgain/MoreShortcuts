@@ -32,7 +32,7 @@ public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixt
     return DynamicTest.dynamicTest(caseName, () ->
     {
       myFixture.configureByFiles(
-          String.format("/src/test/resources/%s/%s/input.java", testClassName, caseName),
+          String.format("/src/test/resources/%s/%s/input-constructor.java", testClassName, caseName),
           "/src/test/java" + MODULE + "/entities/TestClass.java",
           "/src/test/resources/defaults/mockito.java",
           "/src/test/resources/defaults/mock.java"

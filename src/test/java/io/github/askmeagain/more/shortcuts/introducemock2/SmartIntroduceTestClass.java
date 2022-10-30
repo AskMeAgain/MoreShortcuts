@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.smartintroduce;
+package io.github.askmeagain.more.shortcuts.introducemock2;
 
 public class SmartIntroduceTestClass {
 
