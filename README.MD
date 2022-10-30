@@ -139,7 +139,7 @@ selection a different behaviour occurs (with multi cursor support!):
 
 ## Switch Mockito Mocking Variant
 
-Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mockito.doReturn 
+Put cursor (or multi cursor!) on a line and switch between Mockito.when and Mockito.doReturn
 mock method variants via **CTRL + M, CTRL + S**. You can also just select the whole text segment to refactor
 mockings, which are longer then 1 line.
 
@@ -148,8 +148,6 @@ mockings, which are longer then 1 line.
 ----------------------
 
 ## Lombok to MapStruct generator
-
-**Currently pretty experimental**
 
 NEW: Moved to a new plugin called [MapStructor](https://github.com/AskMeAgain/MapStructor) with more features.
 
@@ -161,7 +159,8 @@ A small code editor opens when pressing **CTRL + I, CTRL + A**.
 The cursor is placed at the top of the current file, to enter new annotations.
 Pressing **escape** closes the window
 
-Press **CTRL + I, CTRL + V** to put the cursor on the next field;
+Press **CTRL + I, CTRL + V** to open a window on the next field;
+Press **CTRL + L, CTRL + F** to open a window on the selected class;
 
 ----------------------
 
