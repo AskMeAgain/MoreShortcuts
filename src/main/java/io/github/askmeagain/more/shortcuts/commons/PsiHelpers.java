@@ -12,10 +12,6 @@ import java.util.List;
 
 public class PsiHelpers {
 
-  public static String decapitalizeString(String string) {
-    return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
-  }
-
   public static void print(Project project, String message) {
     Messages.showMessageDialog(project, message, "Error x(", null);
   }

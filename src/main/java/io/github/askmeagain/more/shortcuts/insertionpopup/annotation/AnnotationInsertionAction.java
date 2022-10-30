@@ -14,7 +14,7 @@ public class AnnotationInsertionAction extends BaseInsertionPopupAction {
     e.getRequiredData(CommonDataKeys.PSI_FILE).accept(new JavaRecursiveElementVisitor() {
       @Override
       public void visitClass(PsiClass clazz) {
-        openDialog(e, clazz.getTextOffset(), - 1);
+        openDialog(e, clazz.getTextOffset(), - 1, e.getRequiredData(CommonDataKeys.EDITOR).getDocument());
       }
     });
   }

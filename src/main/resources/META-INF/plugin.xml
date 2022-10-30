@@ -100,6 +100,12 @@
                     description="Insert Field">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl v"/>
             </action>
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.file.ShowFileAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.file.ShowFileAction"
+                    text="Show File"
+                    description="Show File">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl l" second-keystroke="ctrl f"/>
+            </action>
         </group>
     </actions>
 </idea-plugin>

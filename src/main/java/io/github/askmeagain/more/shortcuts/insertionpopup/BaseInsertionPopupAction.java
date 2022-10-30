@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.IdeActions;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -21,9 +22,9 @@ public class BaseInsertionPopupAction extends AnAction {
 
   private final EditorActionManager editorActionManager = EditorActionManager.getInstance();
 
-  protected void openDialog(AnActionEvent e, int offset, int lineOffset) {
+  protected void openDialog(AnActionEvent e, int offset, int lineOffset, Document document) {
 
-    var editorTextField = new CodeLenseWindow(e, offset, lineOffset);
+    var editorTextField = new CodeLenseWindow(e, offset, lineOffset, document);
     editorTextField.show();
 
     var oldHandler = editorActionManager.getActionHandler(IdeActions.ACTION_EDITOR_ESCAPE);
@@ -45,7 +46,7 @@ public class BaseInsertionPopupAction extends AnAction {
 
     private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
-    public CodeLenseWindow(AnActionEvent e, int cursorOffset, int lineOffset) {
+    public CodeLenseWindow(AnActionEvent e, int cursorOffset, int lineOffset, Document document) {
       super(null, null, true, IdeModalityType.IDE, false);
 
       setTitle("CodeLense");
@@ -53,8 +54,6 @@ public class BaseInsertionPopupAction extends AnAction {
       setModal(false);
 
       var editor = e.getRequiredData(CommonDataKeys.EDITOR);
-
-      var document = editor.getDocument();
       var project = e.getProject();
 
       var logicalPosition = editor.offsetToLogicalPosition(cursorOffset);

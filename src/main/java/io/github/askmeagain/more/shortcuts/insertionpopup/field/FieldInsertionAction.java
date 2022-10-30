@@ -15,7 +15,7 @@ public class FieldInsertionAction extends BaseInsertionPopupAction {
     e.getRequiredData(CommonDataKeys.PSI_FILE).accept(new JavaRecursiveElementVisitor() {
       @Override
       public void visitField(PsiField field) {
-        openDialog(e, field.getTextOffset(), 1);
+        openDialog(e, field.getTextOffset(), 1, e.getRequiredData(CommonDataKeys.EDITOR).getDocument());
       }
     });
   }
