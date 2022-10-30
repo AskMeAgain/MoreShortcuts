@@ -19,6 +19,9 @@ public class MoreShortcutState {
   Boolean dotCaseImpl = true;
   Boolean doenerCaseImpl = true;
   Boolean snakeCaseImpl = true;
+
+  Boolean preferVar = true;
+
   Integer codeLenseFontSize = 15;
 
 }

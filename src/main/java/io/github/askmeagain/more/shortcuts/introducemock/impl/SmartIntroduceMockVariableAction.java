@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiParameter;
+import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
   private Boolean isMock;
   private final Integer textOffset;
 
-  private static final String TEMPLATE = "var $NAME = $IMPORT$TYPE($CLAZZ.class);";
+  private static final String TEMPLATE = "$FULLCLAZZ $NAME = $IMPORT$TYPE($CLAZZ.class);";
 
   public SmartIntroduceMockVariableAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
     super(isMock ? "Mock to Variable" : "Spy to Variable");
@@ -28,11 +29,14 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
   public void actionPerformed(AnActionEvent e) {
     var result = new ArrayList<String>();
 
+    var state = PersistenceManagementService.getInstance().getState();
+
     for (var param : parameterList) {
       var s = TEMPLATE.replace("$NAME", param.getName())
+          .replace("$FULLCLAZZ", state.getPreferVar() ? "var " : param.getType().getPresentableText() + " ")
           .replace("$CLAZZ", extractClass(param))
           .replace("$TYPE", isMock ? "mock" : "spy")
-          .replace("$IMPORT", PersistenceManagementService.getInstance().getState().getStaticImports() ? "" : "Mockito.");
+          .replace("$IMPORT", state.getStaticImports() ? "" : "Mockito.");
       result.add(s);
     }
 
@@ -50,7 +54,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
       addParameterToParameterList(document, textOffset, parameterList);
       document.insertString(realTextOffset, finalString);
 
-      if (PersistenceManagementService.getInstance().getState().getStaticImports()) {
+      if (state.getStaticImports()) {
         addImport(document, "import static org.mockito." + (isMock ? "mock" : "spy") + ";");
       }
 

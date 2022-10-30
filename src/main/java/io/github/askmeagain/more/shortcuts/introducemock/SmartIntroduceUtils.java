@@ -7,7 +7,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.util.PsiTreeUtil;
+import io.github.askmeagain.more.shortcuts.commons.PsiHelpers;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExececutionExtractor;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +59,7 @@ public class SmartIntroduceUtils {
   public static <T extends PsiElement> T findRecursivelyInParent(PsiElement element, Class<T> seachFor) {
     while (true) {
       element = element.getParent();
-      if(element == null){
+      if (element == null) {
         break;
       }
       if (element.getClass().isAssignableFrom(seachFor)) {
@@ -65,6 +67,24 @@ public class SmartIntroduceUtils {
       }
     }
     throw new RuntimeException("could not find " + seachFor.getName());
+  }
+
+  public static List<PsiParameter[]> getPsiParametersFromMethod(PsiExpressionList expressionList) {
+
+    var method = ((PsiMethodCallExpressionImpl) expressionList.getParent()).resolveMethod();
+
+    var psiClass = method.getContainingClass();
+
+    return Arrays.stream(psiClass.getMethods())
+        .filter(x -> x.getName().equals(method.getName()))
+        .filter(x -> {
+          if (!expressionList.isEmpty()) {
+            return x.getParameterList().getParametersCount() == expressionList.getExpressionCount();
+          }
+          return true;
+        })
+        .map(x -> x.getParameterList().getParameters())
+        .collect(Collectors.toList());
   }
 
   public static List<PsiParameter[]> getPsiParametersFromConstructor(PsiExpressionList expressionList) {

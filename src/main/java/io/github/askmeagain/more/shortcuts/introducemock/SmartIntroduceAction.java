@@ -8,7 +8,7 @@ import io.github.askmeagain.more.shortcuts.introducemock.entities.ExececutionExt
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
-public class SmartIntroduceVariableAction extends AnAction {
+public class SmartIntroduceAction extends AnAction {
 
   @Override
   @SneakyThrows
@@ -16,18 +16,16 @@ public class SmartIntroduceVariableAction extends AnAction {
 
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
     var psiFile = e.getRequiredData(CommonDataKeys.PSI_FILE);
-    var project = e.getRequiredData(CommonDataKeys.PROJECT);
     var dataContext = e.getDataContext();
 
     int offset = editor.getCaretModel().getOffset();
     var element = psiFile.findElementAt(offset);
 
-    //find list
     var expressionList = findPsiExpressionList(element);
 
-    //find possible implementations
     if (SmartIntroduceUtils.isMethod(expressionList)) {
-      int i = 0;
+      var paramsFromMethod = SmartIntroduceUtils.getPsiParametersFromMethod(expressionList);
+      SmartIntroduceUtils.createContextMenu(ExececutionExtractor.Method, paramsFromMethod, editor, dataContext, e, offset);
     } else if (SmartIntroduceUtils.isConstructor(expressionList)) {
       var paramsFromConstructor = SmartIntroduceUtils.getPsiParametersFromConstructor(expressionList);
       SmartIntroduceUtils.createContextMenu(ExececutionExtractor.Constructor, paramsFromConstructor, editor, dataContext, e, offset);

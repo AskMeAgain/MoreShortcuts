@@ -7,4 +7,8 @@ public class SmartIntroduceTestClass {
   public SmartIntroduceTestClass(String abc, String def, Optional<Integer> abc33){
 
   }
+
+  public void method(String abc, String def, Optional<Integer> abc33){
+
+  }
 }
