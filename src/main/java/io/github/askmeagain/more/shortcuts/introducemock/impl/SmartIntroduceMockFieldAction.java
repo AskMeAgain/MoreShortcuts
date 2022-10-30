@@ -16,7 +16,7 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
 
   private final Boolean isMock;
   private final PsiParameter[] parameterList;
-  private static final String TEMPLATE = "@TYPE\nprivate $CLAZZ $NAME;";
+  private static final String TEMPLATE = "@TYPE\n$PRIVATE_FIELD$CLAZZ $NAME;";
 
   private final Integer textOffset;
 
@@ -34,7 +34,8 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
     for (var param : parameterList) {
       var s = TEMPLATE.replace("$NAME", param.getName())
           .replace("$CLAZZ", param.getType().getPresentableText())
-          .replace("TYPE", isMock ? "Mock" : "Spy");
+          .replace("TYPE", isMock ? "Mock" : "Spy")
+          .replace("$PRIVATE_FIELD", PersistenceManagementService.getInstance().getState().getIntroduceMockFieldPrivateField() ? "private " : "");
       result.add(s);
     }
 

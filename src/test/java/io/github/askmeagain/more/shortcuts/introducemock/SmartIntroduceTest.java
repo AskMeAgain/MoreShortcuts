@@ -2,6 +2,7 @@ package io.github.askmeagain.more.shortcuts.introducemock;
 
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceListDisplayAction;
+import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
@@ -32,20 +33,25 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
 
   @ParameterizedTest
   @CsvSource({
-      "result-mock-field,0,false",
-      "result-mock-var,1,false",
-      "result-mock-var-static,1,true",
-      "result-parameter,2,false",
-      "result-spy-field,3,false",
-      "result-spy-variable,4,false",
+      "result-mock-field,0,false,false",
+      "result-mock-field-private,0,false,true",
+      "result-mock-var,1,false,false",
+      "result-mock-var-static,1,true,false",
+      "result-parameter,2,false,false",
+      "result-spy-field,3,false,false",
+      "result-spy-field-private,3,false,true",
+      "result-spy-variable,4,false,false",
   })
-  void testConstructorAction(String resultFile, Integer actionIndex, boolean staticImport) {
+  void testConstructorAction(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField) {
     myFixture.configureByFiles(
         "src/test/resources/smartintroduce/input-constructor.java",
         "src/test/java/io/github/askmeagain/more/shortcuts/introducemock/entities/SmartIntroduceTestClass.java"
     );
 
-    PersistenceManagementService.getInstance().getState().setStaticImports(staticImport);
+    var state = PersistenceManagementService.getInstance().getState();
+
+    state.setStaticImports(staticImport);
+    state.setIntroduceMockFieldPrivateField(privateField);
 
     SmartIntroduceListDisplayAction.testIndex = actionIndex;
 

@@ -6,11 +6,11 @@ import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduce
 public class Abc {
 
     @Mock
-    String abc;
+    private String abc;
     @Mock
-    String def;
+    private String def;
     @Mock
-    Optional<Integer> abc33;
+    private Optional<Integer> abc33;
 
     void test() {
         var test = 1;

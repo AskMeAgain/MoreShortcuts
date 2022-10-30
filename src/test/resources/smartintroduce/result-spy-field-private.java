@@ -1,16 +1,16 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
-import org.mockito.Mock;
+import org.mockito.Spy;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduceTestClass;
 
 public class Abc {
 
-    @Mock
-    String abc;
-    @Mock
-    String def;
-    @Mock
-    Optional<Integer> abc33;
+    @Spy
+    private String abc;
+    @Spy
+    private String def;
+    @Spy
+    private Optional<Integer> abc33;
 
     void test() {
         var test = 1;
