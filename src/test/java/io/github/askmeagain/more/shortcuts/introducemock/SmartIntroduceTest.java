@@ -1,6 +1,8 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceListDisplayAction;
+import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,17 +32,20 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
 
   @ParameterizedTest
   @CsvSource({
-      "result-mock-field,0",
-      "result-mock-var,1",
-      "result-parameter,2",
-      "result-spy-field,3",
-      "result-spy-variable,4",
+      "result-mock-field,0,false",
+      "result-mock-var,1,false",
+      "result-mock-var-static,1,true",
+      "result-parameter,2,false",
+      "result-spy-field,3,false",
+      "result-spy-variable,4,false",
   })
-  void testConstructorAction(String resultFile, Integer actionIndex) {
+  void testConstructorAction(String resultFile, Integer actionIndex, boolean staticImport) {
     myFixture.configureByFiles(
         "src/test/resources/smartintroduce/input-constructor.java",
-        "src/test/java/io/github/askmeagain/more/shortcuts/introducemock/SmartIntroduceTestClass.java"
+        "src/test/java/io/github/askmeagain/more/shortcuts/introducemock/entities/SmartIntroduceTestClass.java"
     );
+
+    PersistenceManagementService.getInstance().getState().setStaticImports(staticImport);
 
     SmartIntroduceListDisplayAction.testIndex = actionIndex;
 

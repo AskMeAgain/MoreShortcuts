@@ -1,6 +1,5 @@
 package io.github.askmeagain.more.shortcuts.smartpaste;
 
-import io.github.askmeagain.more.shortcuts.introducemock.SimpleRefactoringTestBase;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInfo;

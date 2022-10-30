@@ -1,4 +1,4 @@
-package io.github.askmeagain.more.shortcuts.introducemock;
+package io.github.askmeagain.more.shortcuts.smartpaste;
 
 import com.intellij.ide.CopyPasteManagerEx;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;

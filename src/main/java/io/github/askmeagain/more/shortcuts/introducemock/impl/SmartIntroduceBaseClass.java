@@ -36,10 +36,7 @@ public abstract class SmartIntroduceBaseClass extends AnAction {
         .collect(Collectors.joining(", ")));
   }
 
-  protected void addImport(Document document, PsiElement element, String text) {
-
-    var psiClass = SmartIntroduceUtils.findRecursivelyInParent(element, PsiClassImpl.class);
-
+  protected void addImport(Document document,String text) {
     document.insertString(document.getLineEndOffset(1), text);
   }
 

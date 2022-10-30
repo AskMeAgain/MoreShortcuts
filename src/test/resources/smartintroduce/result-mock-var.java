@@ -1,6 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
-import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceTestClass;
+import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduceTestClass;
 
 public class Abc {
 
@@ -9,7 +9,7 @@ public class Abc {
 
         var abc = Mockito.mock(String.class);
         var def = Mockito.mock(String.class);
-        var abc33 = Mockito.mock(Integer.class);
+        var abc33 = Mockito.mock(Optional.class);
 
         new SmartIntroduceTestClass(<caret>abc, def, abc33);
     }

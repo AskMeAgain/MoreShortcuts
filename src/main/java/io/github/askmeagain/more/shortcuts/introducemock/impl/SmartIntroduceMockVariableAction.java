@@ -4,6 +4,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiParameter;
+import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -13,7 +15,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
   private Boolean isMock;
   private final Integer textOffset;
 
-  private static final String TEMPLATE = "var $NAME = Mockito.$TYPE($CLAZZ.class);";
+  private static final String TEMPLATE = "var $NAME = $IMPORT$TYPE($CLAZZ.class);";
 
   public SmartIntroduceMockVariableAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
     super(isMock ? "Mock to Variable" : "Spy to Variable");
@@ -28,8 +30,9 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
     for (var param : parameterList) {
       var s = TEMPLATE.replace("$NAME", param.getName())
-          .replace("$CLAZZ", param.getType().getPresentableText())
-          .replace("$TYPE", isMock ? "mock" : "spy");
+          .replace("$CLAZZ", extractClass(param))
+          .replace("$TYPE", isMock ? "mock" : "spy")
+          .replace("$IMPORT", PersistenceManagementService.getInstance().getState().getStaticImports() ? "" : "Mockito.");
       result.add(s);
     }
 
@@ -47,7 +50,21 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
       addParameterToParameterList(document, textOffset, parameterList);
       document.insertString(realTextOffset, finalString);
 
+      if (PersistenceManagementService.getInstance().getState().getStaticImports()) {
+        addImport(document, "import static org.mockito." + (isMock ? "mock" : "spy") + ";");
+      }
+
       reformatCode(e);
     });
+  }
+
+  private static String extractClass(PsiParameter param) {
+    var text = param.getType().getPresentableText();
+
+    if (text.contains("<")) {
+      return text.substring(0, text.indexOf("<"));
+    }
+
+    return text;
   }
 }

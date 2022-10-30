@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils;
+import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
       addParameterToParameterList(document, textOffset, parameterList);
       document.insertString(realTextOffset, finalString);
-      addImport(document, elementAt, "import org.mockito." + (isMock ? "Mock" : "Spy") + ";");
+      addImport(document, "import org.mockito." + (isMock ? "Mock" : "Spy") + ";");
 
       reformatCode(e);
     });
