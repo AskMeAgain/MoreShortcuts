@@ -16,7 +16,7 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
 
   private final Boolean isMock;
   private final PsiParameter[] parameterList;
-  private static final String TEMPLATE = "@TYPE\n$PRIVATE_FIELD$CLAZZ $NAME;";
+  private static final String TEMPLATE = "  @TYPE\n$PRIVATE_FIELD$CLAZZ $NAME;";
 
   private final Integer textOffset;
 
@@ -48,7 +48,7 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
 
     var realTextOffset = PsiTreeUtil.findChildrenOfType(psiClass, PsiJavaToken.class)
         .stream()
-        .filter(x -> x.getTokenType().getIndex() == 288) //Left bracket
+        .filter(x -> x.getTokenType().getDebugName().equals("LBRACE")) //Left bracket
         .findFirst()
         .get()
         .getTextOffset() + 1;
