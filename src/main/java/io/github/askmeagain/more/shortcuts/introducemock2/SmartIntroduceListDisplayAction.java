@@ -34,7 +34,7 @@ public class SmartIntroduceListDisplayAction extends AnAction {
     var actionGroup = new DefaultActionGroup();
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
 
-    actionGroup.add(new SmartIntroduceMockFieldAction(selection));
+    actionGroup.add(new SmartIntroduceMockFieldAction(selection, textOffset));
     actionGroup.add(new SmartIntroduceMockVariableAction(selection, textOffset));
     actionGroup.add(new SmartIntroduceParameterAction(selection));
     actionGroup.add(new SmartIntroduceSpyFieldAction(selection));
@@ -45,7 +45,7 @@ public class SmartIntroduceListDisplayAction extends AnAction {
           .createActionGroupPopup(null, actionGroup, e.getDataContext(), SPEEDSEARCH, false)
           .showInBestPositionFor(editor);
     } else {
-      actionGroup.getChildActionsOrStubs()[1].actionPerformed(e);
+      actionGroup.getChildActionsOrStubs()[0].actionPerformed(e);
     }
   }
 }
