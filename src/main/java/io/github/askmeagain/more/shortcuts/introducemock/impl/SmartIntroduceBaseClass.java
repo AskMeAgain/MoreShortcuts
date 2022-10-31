@@ -56,9 +56,9 @@ public abstract class SmartIntroduceBaseClass extends AnAction {
         }
       }
 
-      var resultString = "(" + String.join(", ", result) + ")";
+      var resultString = String.join(", ", result);
       var textRange = oldExpressionList.getTextRange();
-      document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), resultString);
+      document.replaceString(textRange.getStartOffset() + 1, textRange.getEndOffset() - 1, resultString);
     }
   }
 

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
-  private final PsiParameter[] parameterList;
+  private final PsiParameter[] newParameters;
   private final Boolean isMock;
   private final Integer textOffset;
   private final PsiExpressionList oldExpressionList;
@@ -21,13 +21,13 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
   public SmartIntroduceMockVariableAction(
       PsiExpressionList oldExpressionList,
       Boolean isMock,
-      PsiParameter[] parameterList,
+      PsiParameter[] newParameters,
       Integer textOffset
   ) {
     super(isMock ? "Mock to Variable" : "Spy to Variable");
     this.isMock = isMock;
     this.textOffset = textOffset;
-    this.parameterList = parameterList;
+    this.newParameters = newParameters;
     this.oldExpressionList = oldExpressionList;
   }
 
@@ -37,18 +37,22 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
     var state = PersistenceManagementService.getInstance().getState();
 
-    for (var param : parameterList) {
-      var s = TEMPLATE.replace("$NAME", param.getName())
-          .replace("$FULLCLAZZ", state.getPreferVar() ? "var " : param.getType().getPresentableText() + " ")
-          .replace("$CLAZZ", extractClass(param))
-          .replace("$TYPE", isMock ? "mock" : "spy")
-          .replace("$IMPORT", state.getStaticImports() ? "" : "Mockito.");
-      result.add(s);
+    for (int i = 0; i < newParameters.length; i++) {
+      if (oldExpressionList.getExpressionCount() == 0 || oldExpressionList.getExpressionTypes()[i].equalsToText("null")) {
+        var param = newParameters[i];
+        var s = TEMPLATE.replace("$NAME", param.getName())
+            .replace("$FULLCLAZZ", state.getPreferVar() ? "var " : param.getType().getPresentableText() + " ")
+            .replace("$CLAZZ", extractClass(param))
+            .replace("$TYPE", isMock ? "mock" : "spy")
+            .replace("$IMPORT", state.getStaticImports() ? "" : "Mockito.");
+        result.add(s);
+      }
     }
 
     var finalString = "\n" + String.join("\n", result) + "\n\n";
     var realTextOffset = e.getRequiredData(CommonDataKeys.PSI_FILE)
         .findElementAt(textOffset)
+        .getParent()
         .getParent()
         .getParent()
         .getTextOffset() - 2;
@@ -57,7 +61,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
       //the variables
-      addParameterToParameterList(document, textOffset, parameterList, oldExpressionList);
+      addParameterToParameterList(document, textOffset, newParameters, oldExpressionList);
       document.insertString(realTextOffset, finalString);
 
       if (state.getStaticImports()) {

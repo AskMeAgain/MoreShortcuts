@@ -16,6 +16,10 @@ public class Abc {
         var abc = mock(String.class);
         var abc33 = mock(Optional.class);
 
-        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
+        new SmartIntroduceTestClass(<caret>abc, method22("KEEP THIS"), abc33);
+    }
+
+    private String method22(String asddasd) {
+        return null;
     }
 }

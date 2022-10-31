@@ -13,9 +13,8 @@ public class Abc {
         var test = 1;
 
         var abc = Mockito.mock(String.class);
-        var def = Mockito.mock(String.class);
         var abc33 = Mockito.mock(Optional.class);
 
-        new SmartIntroduceTestClass(<caret>abc, def, abc33);
+        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
     }
 }

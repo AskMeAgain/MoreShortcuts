@@ -64,6 +64,23 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
     runTestCase("method", resultFile, actionIndex, staticImport, privateField, preferVar);
   }
 
+  @ParameterizedTest
+  @MethodSource("testCases")
+  void testSmartIntroduceMethod2(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
+    runTestCase("method2", resultFile, actionIndex, staticImport, privateField, preferVar);
+  }
+  @ParameterizedTest
+  @MethodSource("testCases")
+  void testSmartIntroduceMethod3(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
+    runTestCase("method3", resultFile, actionIndex, staticImport, privateField, preferVar);
+  }
+
+  @ParameterizedTest
+  @MethodSource("testCases")
+  void testSmartIntroduceConstructor3(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
+    runTestCase("constructor3", resultFile, actionIndex, staticImport, privateField, preferVar);
+  }
+
   private void runTestCase(String testCase, String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
     myFixture.configureByFiles(
         String.format("src/test/resources/smartintroduce/%s/input.java", testCase),

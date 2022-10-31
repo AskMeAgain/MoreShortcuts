@@ -14,8 +14,8 @@ public class Abc {
         var test = 1;
 
         var abc = mock(String.class);
-        var abc33 = mock(Optional.class);
+        var def = mock(String.class);
 
-        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
+        new SmartIntroduceTestClass().method(<caret>abc, def, "KEEP THIS");
     }
 }

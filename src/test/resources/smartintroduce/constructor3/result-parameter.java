@@ -1,7 +1,5 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
-import static org.mockito.mock;
-
 import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduceTestClass;
 
 public class Abc {
@@ -10,12 +8,12 @@ public class Abc {
         //yes
     }
 
-    void test() {
+    void test(String abc, String def, Optional<Integer> abc33) {
         var test = 1;
+        new SmartIntroduceTestClass(<caret>abc, method22("KEEP THIS"), abc33);
+    }
 
-        var abc = mock(String.class);
-        var abc33 = mock(Optional.class);
-
-        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
+    private String method22(String asddasd) {
+        return null;
     }
 }

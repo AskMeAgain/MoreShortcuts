@@ -13,9 +13,8 @@ public class Abc {
         var test = 1;
 
         var abc = Mockito.spy(String.class);
-        var def = Mockito.spy(String.class);
         var abc33 = Mockito.spy(Optional.class);
 
-        new SmartIntroduceTestClass(<caret>abc, def, abc33);
+        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
     }
 }
