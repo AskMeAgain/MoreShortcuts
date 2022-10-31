@@ -16,6 +16,6 @@ public class Abc {
 
     void test() {
         var test = 1;
-        new SmartIntroduceTestClass(<caret>abc, def, abc33);
+        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
     }
 }

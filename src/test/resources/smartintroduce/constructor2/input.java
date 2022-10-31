@@ -10,6 +10,6 @@ public class Abc {
 
   void test() {
     var test = 1;
-    new SmartIntroduceTestClass(<caret>null, "abc", null);
+    new SmartIntroduceTestClass(<caret>null, "KEEP THIS", null);
   }
 }

@@ -10,6 +10,6 @@ public class Abc {
 
     void test(String abc, String def, Optional<Integer> abc33) {
         var test = 1;
-        new SmartIntroduceTestClass(<caret>abc, def, abc33);
+        new SmartIntroduceTestClass(<caret>abc, "KEEP THIS", abc33);
     }
 }

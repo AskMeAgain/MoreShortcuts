@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiParameter;
@@ -44,16 +45,20 @@ public abstract class SmartIntroduceBaseClass extends AnAction {
 
       document.insertString(textOffset, result);
     } else {
-      var expressionTypes = new ArrayList<>(List.of(oldExpressionList.getExpressionTypes()));
+      var expressionTypes = oldExpressionList.getExpressionTypes();
       var result = new ArrayList<String>();
-      for(int i = 0; i < parameterList.length; i++){
-        if(expressionTypes[i].equalsToText("null")){
-          result.add()
+
+      for (int i = 0; i < parameterList.length; i++) {
+        if (expressionTypes[i].equalsToText("null")) {
+          result.add(parameterList[i].getName());
+        } else {
+          result.add(oldExpressionList.getExpressions()[i].getText());
         }
       }
 
-      oldExpressionList.delete();
-
+      var resultString = "(" + String.join(", ", result) + ")";
+      var textRange = oldExpressionList.getTextRange();
+      document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), resultString);
     }
   }
 
