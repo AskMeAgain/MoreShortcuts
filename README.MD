@@ -8,58 +8,34 @@ Get it from the [Intellij Marketplace](https://plugins.jetbrains.com/plugin/1781
 
 ----------------------
 
-## Introduce Mock To Variable
+## Smart Introduce
 
-Introduces Mockito mocks for every "null" value of the class. Place cursor inside the brackets and run the "Introduce
-Mock To Variable" action (**CTRL + M, CTRL + V**). In case of a conflict a context menu pops up to resolve it.
+Put your cursor on any method/constructor call and this action will open
+up a short context menu for further actions:
 
-Before
+![smartintroducemenu](smart-introduce-menu.png)
 
-    void example() {
-        var result = new TestClass(null, null);
-    }
+PS: You can even add the behaviour to prefilled methods/constructors, by using "null" as a marker.
 
-After
+### Mock to Field
 
-    void example() {
-        var string1 = Mockito.mock(String.class);
-        var string2 = Mockito.mock(String.class);
+![smartintroducemenu](mock-field.png)
 
-        var result = new TestClass(string1, string2);
-    }
+### Mock to Variable
 
-PS: you can also introduce spys like this, just use **CTRL + SHIFT + M, CTRL + V** instead.
+![smartintroducemenu](mock-variable.png)
 
-----------------------
+### Parameter
 
-## Introduce Mock To Field
+![smartintroducemenu](parameter.png)
 
-Introduces Mockito mock fields for every "null" value of the class. Place cursor inside the brackets and run the "
-Introduce Mock To Field" action (**CTRL + M, CTRL + F**). Its also smart enough, that if a conflict arises it asks for
-the correct implementation via context menu
+### Spy to Field
 
-Before
+![smartintroducemenu](spy-field.png)
 
-    class IntroduceMockFieldExample {
-        void example() {
-            var result = new TestClass([cursor]null,null);
-        }
-    }
+### Spy to Variable
 
-After
-
-    class IntroduceMockFieldExample {
-        @Mock
-        String string1;
-        @Mock
-        String string2;
-    
-        void example() {
-            var result = new TestClass(string1, string2);
-        }
-    }
-
-PS: you can also introduce @Spy fields like this, just use **CTRL + SHIFT + M, CTRL + F** instead.
+![smartintroducemenu](spy-variable.png)
 
 ----------------------
 
