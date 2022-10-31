@@ -19,25 +19,60 @@ PS: You can even add the behaviour to prefilled methods/constructors, by using "
 
 ### Mock to Field
 
-![smartintroducemenu](mock-field.png)
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
 ### Mock to Variable
 
-![smartintroducemenu](mock-variable.png)
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
 ### Parameter
 
-![smartintroducemenu](parameter.png)
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
 ### Spy to Field
 
-![smartintroducemenu](spy-field.png)
+Before
+
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
 
 ### Spy to Variable
 
-![smartintroducemenu](spy-variable.png)
+Before
 
-----------------------
+    var string[cursor] = Mockito.mock(String.class);
+
+After
+
+    var string = Mockito.mock(String.class);
+    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);`
+
+`----------------------
 
 ## Add Mock Method (implements [VariableFinder](#variablefinder))
 
