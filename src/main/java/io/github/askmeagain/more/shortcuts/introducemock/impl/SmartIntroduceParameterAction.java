@@ -3,9 +3,9 @@ package io.github.askmeagain.more.shortcuts.introducemock.impl;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
-import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.impl.source.PsiMethodImpl;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils;
@@ -18,11 +18,17 @@ public class SmartIntroduceParameterAction extends SmartIntroduceBaseClass {
 
   private final PsiParameter[] parameterList;
   private final Integer textOffset;
+  private final PsiExpressionList oldExpressionList;
 
-  public SmartIntroduceParameterAction(PsiParameter[] parameterList, Integer textOffset) {
+  public SmartIntroduceParameterAction(
+      PsiExpressionList oldExpressionList,
+      PsiParameter[] parameterList,
+      Integer textOffset
+  ) {
     super("Parameter");
     this.parameterList = parameterList;
     this.textOffset = textOffset;
+    this.oldExpressionList = oldExpressionList;
   }
 
   @Override
@@ -35,7 +41,7 @@ public class SmartIntroduceParameterAction extends SmartIntroduceBaseClass {
     var document = e.getRequiredData(CommonDataKeys.EDITOR).getDocument();
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
-      addParameterToParameterList(document, textOffset, parameterList);
+      addParameterToParameterList(document, textOffset, parameterList, oldExpressionList);
 
       document.insertString(realTextOffset, finalString);
 

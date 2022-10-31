@@ -15,28 +15,38 @@ import java.util.ArrayList;
 public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
 
   private final Boolean isMock;
-  private final PsiParameter[] parameterList;
+  private final PsiParameter[] newParameters;
   private static final String TEMPLATE = "  @TYPE\n$PRIVATE_FIELD$CLAZZ $NAME;";
+  private final PsiExpressionList oldExpressionList;
 
   private final Integer textOffset;
 
-  public SmartIntroduceMockFieldAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
+  public SmartIntroduceMockFieldAction(
+      PsiExpressionList oldExpressionList,
+      Boolean isMock,
+      PsiParameter[] newParameters,
+      Integer textOffset
+  ) {
     super(isMock ? "Mock to Field" : "Spy to Field");
     this.isMock = isMock;
-    this.parameterList = parameterList;
+    this.newParameters = newParameters;
     this.textOffset = textOffset;
+    this.oldExpressionList = oldExpressionList;
   }
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
     var result = new ArrayList<String>();
 
-    for (var param : parameterList) {
-      var s = TEMPLATE.replace("$NAME", param.getName())
-          .replace("$CLAZZ", param.getType().getPresentableText())
-          .replace("TYPE", isMock ? "Mock" : "Spy")
-          .replace("$PRIVATE_FIELD", PersistenceManagementService.getInstance().getState().getIntroduceMockFieldPrivateField() ? "private " : "");
-      result.add(s);
+    for (int i = 0; i < newParameters.length; i++) {
+      if (oldExpressionList.getExpressionCount() == 0 || oldExpressionList.getExpressionTypes()[i].equalsToText("null")) {
+        var param = newParameters[i];
+        var s = TEMPLATE.replace("$NAME", param.getName())
+            .replace("$CLAZZ", param.getType().getPresentableText())
+            .replace("TYPE", isMock ? "Mock" : "Spy")
+            .replace("$PRIVATE_FIELD", PersistenceManagementService.getInstance().getState().getIntroduceMockFieldPrivateField() ? "private " : "");
+        result.add(s);
+      }
     }
 
     var finalString = "\n\n" + String.join("\n", result);
@@ -56,7 +66,7 @@ public class SmartIntroduceMockFieldAction extends SmartIntroduceBaseClass {
     var document = e.getRequiredData(CommonDataKeys.EDITOR).getDocument();
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
-      addParameterToParameterList(document, textOffset, parameterList);
+      addParameterToParameterList(document, textOffset, newParameters, oldExpressionList);
       document.insertString(realTextOffset, finalString);
       addImport(document, "import org.mockito." + (isMock ? "Mock" : "Spy") + ";");
 

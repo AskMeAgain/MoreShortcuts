@@ -6,13 +6,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiParameter;
-import com.intellij.psi.impl.source.PsiClassImpl;
-import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils;
+import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils.toCamelCase;
@@ -30,13 +31,33 @@ public abstract class SmartIntroduceBaseClass extends AnAction {
     new ReformatCodeProcessor(requiredData, false).run();
   }
 
-  protected void addParameterToParameterList(Document document, Integer textOffset, PsiParameter[] parameterList) {
-    document.insertString(textOffset, Arrays.stream(parameterList)
-        .map(x -> toCamelCase(x.getName()))
-        .collect(Collectors.joining(", ")));
+  protected void addParameterToParameterList(
+      Document document,
+      Integer textOffset,
+      PsiParameter[] parameterList,
+      PsiExpressionList oldExpressionList
+  ) {
+    if (oldExpressionList.isEmpty()) {
+      var result = Arrays.stream(parameterList)
+          .map(x -> toCamelCase(x.getName()))
+          .collect(Collectors.joining(", "));
+
+      document.insertString(textOffset, result);
+    } else {
+      var expressionTypes = new ArrayList<>(List.of(oldExpressionList.getExpressionTypes()));
+      var result = new ArrayList<String>();
+      for(int i = 0; i < parameterList.length; i++){
+        if(expressionTypes[i].equalsToText("null")){
+          result.add()
+        }
+      }
+
+      oldExpressionList.delete();
+
+    }
   }
 
-  protected void addImport(Document document,String text) {
+  protected void addImport(Document document, String text) {
     document.insertString(document.getLineEndOffset(1), text);
   }
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiParameter;
 import io.github.askmeagain.more.shortcuts.introducemock.entities.ExececutionExtractor;
 import io.github.askmeagain.more.shortcuts.introducemock.impl.*;
@@ -20,13 +21,23 @@ public class SmartIntroduceListDisplayAction extends AnAction {
 
   static int testIndex = 0;
   private final ExececutionExtractor execution;
-  private final PsiParameter[] selection;
+  private final PsiParameter[] newParameters;
   private final Integer textOffset;
+  private final PsiExpressionList oldExpressionList;
 
-  public SmartIntroduceListDisplayAction(ExececutionExtractor execution, PsiParameter[] selection, Integer textOffset) {
-    super(Arrays.stream(selection).map(PsiParameter::getName).collect(Collectors.joining(", ")));
+  public SmartIntroduceListDisplayAction(
+      PsiExpressionList oldExpressionList,
+      ExececutionExtractor execution,
+      PsiParameter[] newParameters,
+      Integer textOffset
+  ) {
+    super(Arrays.stream(newParameters)
+        .map(PsiParameter::getName)
+        .collect(Collectors.joining(", ")));
+
+    this.oldExpressionList = oldExpressionList;
     this.execution = execution;
-    this.selection = selection;
+    this.newParameters = newParameters;
     this.textOffset = textOffset;
   }
 
@@ -35,11 +46,11 @@ public class SmartIntroduceListDisplayAction extends AnAction {
     var actionGroup = new DefaultActionGroup();
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
 
-    actionGroup.add(new SmartIntroduceMockFieldAction(true, selection, textOffset));
-    actionGroup.add(new SmartIntroduceMockVariableAction(true, selection, textOffset));
-    actionGroup.add(new SmartIntroduceParameterAction(selection, textOffset));
-    actionGroup.add(new SmartIntroduceMockFieldAction(false, selection, textOffset));
-    actionGroup.add(new SmartIntroduceMockVariableAction(false, selection, textOffset));
+    actionGroup.add(new SmartIntroduceMockFieldAction(oldExpressionList,true, newParameters, textOffset));
+    actionGroup.add(new SmartIntroduceMockVariableAction(oldExpressionList,true, newParameters, textOffset));
+    actionGroup.add(new SmartIntroduceParameterAction(oldExpressionList,newParameters, textOffset));
+    actionGroup.add(new SmartIntroduceMockFieldAction(oldExpressionList,false, newParameters, textOffset));
+    actionGroup.add(new SmartIntroduceMockVariableAction(oldExpressionList,false, newParameters, textOffset));
 
     if (!ApplicationManager.getApplication().isUnitTestMode()) {
       JBPopupFactory.getInstance()

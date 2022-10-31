@@ -3,26 +3,32 @@ package io.github.askmeagain.more.shortcuts.introducemock.impl;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.psi.PsiExpressionList;
 import com.intellij.psi.PsiParameter;
-import io.github.askmeagain.more.shortcuts.settings.MoreShortcutState;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
   private final PsiParameter[] parameterList;
-  private Boolean isMock;
+  private final Boolean isMock;
   private final Integer textOffset;
+  private final PsiExpressionList oldExpressionList;
 
   private static final String TEMPLATE = "$FULLCLAZZ $NAME = $IMPORT$TYPE($CLAZZ.class);";
 
-  public SmartIntroduceMockVariableAction(Boolean isMock, PsiParameter[] parameterList, Integer textOffset) {
+  public SmartIntroduceMockVariableAction(
+      PsiExpressionList oldExpressionList,
+      Boolean isMock,
+      PsiParameter[] parameterList,
+      Integer textOffset
+  ) {
     super(isMock ? "Mock to Variable" : "Spy to Variable");
     this.isMock = isMock;
     this.textOffset = textOffset;
     this.parameterList = parameterList;
+    this.oldExpressionList = oldExpressionList;
   }
 
   @Override
@@ -51,7 +57,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
       //the variables
-      addParameterToParameterList(document, textOffset, parameterList);
+      addParameterToParameterList(document, textOffset, parameterList, oldExpressionList);
       document.insertString(realTextOffset, finalString);
 
       if (state.getStaticImports()) {

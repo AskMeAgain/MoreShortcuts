@@ -25,10 +25,10 @@ public class SmartIntroduceAction extends AnAction {
 
     if (SmartIntroduceUtils.isMethod(expressionList)) {
       var paramsFromMethod = SmartIntroduceUtils.getPsiParametersFromMethod(expressionList);
-      SmartIntroduceUtils.createContextMenu(ExececutionExtractor.Method, paramsFromMethod, editor, dataContext, e, offset);
+      SmartIntroduceUtils.createContextMenu(expressionList, ExececutionExtractor.Method, paramsFromMethod, editor, dataContext, e, offset);
     } else if (SmartIntroduceUtils.isConstructor(expressionList)) {
       var paramsFromConstructor = SmartIntroduceUtils.getPsiParametersFromConstructor(expressionList);
-      SmartIntroduceUtils.createContextMenu(ExececutionExtractor.Constructor, paramsFromConstructor, editor, dataContext, e, offset);
+      SmartIntroduceUtils.createContextMenu(expressionList, ExececutionExtractor.Constructor, paramsFromConstructor, editor, dataContext, e, offset);
     } else {
       throw new RuntimeException("Could not determine if Constructor or Method.");
     }

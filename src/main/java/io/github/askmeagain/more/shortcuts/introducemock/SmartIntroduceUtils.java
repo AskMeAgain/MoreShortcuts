@@ -104,18 +104,20 @@ public class SmartIntroduceUtils {
   }
 
   public static void createContextMenu(
-      ExececutionExtractor execution, List<PsiParameter[]> parameterList,
+      PsiExpressionList oldExpressionList,
+      ExececutionExtractor execution,
+      List<PsiParameter[]> parameterList,
       Editor editor,
       DataContext dataContext,
       @NotNull AnActionEvent e,
       Integer textOffset
   ) {
     if (parameterList.size() == 1) {
-      new SmartIntroduceListDisplayAction(execution, parameterList.get(0), textOffset).actionPerformed(e);
+      new SmartIntroduceListDisplayAction(oldExpressionList, execution, parameterList.get(0), textOffset).actionPerformed(e);
     } else {
       var actionGroup = new DefaultActionGroup();
 
-      parameterList.forEach(x -> actionGroup.add(new SmartIntroduceListDisplayAction(execution, x, textOffset)));
+      parameterList.forEach(x -> actionGroup.add(new SmartIntroduceListDisplayAction(oldExpressionList, execution, x, textOffset)));
 
       var popup = JBPopupFactory.getInstance()
           .createActionGroupPopup(null, actionGroup, dataContext, SPEEDSEARCH, false);
