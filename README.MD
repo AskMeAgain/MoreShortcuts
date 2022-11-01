@@ -209,11 +209,13 @@ NEW: Moved to a new plugin called [MapStructor](https://github.com/AskMeAgain/Ma
 
 ## Insertion CodeLense
 
-A small code editor opens when pressing **CTRL + I, CTRL + A**.
+A fully functional small code editor opens when pressing **CTRL + I, CTRL + A**.
 The cursor is placed at the top of the current file, to enter new annotations.
-Pressing **escape** closes the window
+Pressing **escape** closes the window.
 
-Press **CTRL + I, CTRL + V** to open a window on the next field;
+![code lense file](code-lense-file.png)
+
+Press **CTRL + I, CTRL + V** to open a window, ready to add a field to a class;
 Press **CTRL + L, CTRL + F** to open a window on the selected class;
 
 ----------------------
