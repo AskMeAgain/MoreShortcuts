@@ -65,7 +65,7 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
       document.insertString(realTextOffset, finalString);
 
       if (state.getStaticImports()) {
-        addImport(document, "import static org.mockito." + (isMock ? "mock" : "spy") + ";");
+        addImport(document, "import static org.mockito.Mockito." + (isMock ? "mock" : "spy") + ";");
       } else {
         addImport(document, "import org.mockito.Mockito;");
       }

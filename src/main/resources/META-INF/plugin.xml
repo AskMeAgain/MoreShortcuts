@@ -27,30 +27,12 @@
         <group id="ShortcutAdditions" text="Additional Refactorings" popup="true">
             <add-to-group group-id="RefactoringMenu"
                           anchor="after"
-                          relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToVariable"/>
+                          relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction"/>
             <action id="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction"
                     class="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction"
-                    text="Introduce Mock To Variable"
-                    description="Introduce all Mocks">
+                    text="Smart Introduce"
+                    description="Smartly introduce values">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl v"/>
-            </action>
-            <action id="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceSpyToVariable"
-                    class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceSpyToVariable"
-                    text="Introduce Spy To Variable"
-                    description="Introduce all Spys">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl shift v"/>
-            </action>
-            <action id="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceSpyToField"
-                    class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceSpyToField"
-                    text="Introduce Spy To Field"
-                    description="Introduce all Spys">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl shift f"/>
-            </action>
-            <action id="ask.me.again.shortcut.additions.introducemock.field"
-                    class="io.github.askmeagain.more.shortcuts.introducemock.actions.IntroduceMockToField"
-                    text="Introduce Mock To Field"
-                    description="Introduce all Mocks">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl f"/>
             </action>
             <action id="io.github.askmeagain.more.shortcuts.introducetext.actions.AddMockMethodAction"
                     class="io.github.askmeagain.more.shortcuts.introducetext.actions.AddMockMethodAction"

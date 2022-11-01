@@ -1,6 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
-import static org.mockito.mock;
+import static org.mockito.Mockito.mock;
 
 import io.github.askmeagain.more.shortcuts.introducemock.entities.SmartIntroduceTestClass;
 
