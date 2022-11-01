@@ -21,56 +21,99 @@ PS: You can even add the behaviour to prefilled methods/constructors, by using "
 
 Before
 
-    var string[cursor] = Mockito.mock(String.class);
+    void abc() {
+        new TestClass();
+    }
 
 After
 
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
+    @Mock
+    String a;
+    @Mock
+    String b;
+    @Mock
+    Integer abc;
+    @Mock
+    Integer hhjk;
+
+    void abc() {
+        new TestClass(a, b, abc, hhjk);
+    }
 
 ### Mock to Variable
 
 Before
 
-    var string[cursor] = Mockito.mock(String.class);
+    void abc() {
+        new TestClass();
+    }
 
 After
 
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
+    void abc() {
+        var a = Mockito.mock(String.class);
+        var b = Mockito.mock(String.class);
+        var abc = Mockito.mock(Integer.class);
+        var hhjk = Mockito.mock(Integer.class);
+
+        new TestClass(a, b, abc, hhjk);
+    }
 
 ### Parameter
 
 Before
 
-    var string[cursor] = Mockito.mock(String.class);
+    void abc() {
+        new TestClass();
+    }
 
 After
 
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
+    void abc(String a, String b, Integer abc, Integer hhjk) {
+        new TestClass(a, b, abc, hhjk);
+    }
 
 ### Spy to Field
 
 Before
 
-    var string[cursor] = Mockito.mock(String.class);
+    void abc() {
+        new TestClass();
+    }
 
 After
 
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);
+    @Spy
+    String a;
+    @Spy
+    String b;
+    @Spy
+    Integer abc;
+    @Spy
+    Integer hhjk;
+
+    void abc() {
+        new TestClass(a, b, abc, hhjk);
+    }
 
 ### Spy to Variable
 
 Before
 
-    var string[cursor] = Mockito.mock(String.class);
+    void abc() {
+        new TestClass();
+    }
 
 After
 
-    var string = Mockito.mock(String.class);
-    Mockito.when(string.compareTo(any())).thenReturn([cursor]null);`
+    void abc() {
+        var a = Mockito.spy(String.class);
+        var b = Mockito.spy(String.class);
+        var abc = Mockito.spy(Integer.class);
+        var hhjk = Mockito.spy(Integer.class);
+
+        new TestClass(a, b, abc, hhjk);
+    }
 
 `----------------------
 
@@ -93,7 +136,7 @@ After
 
 ## Add Verify Method (implements [VariableFinder](#variablefinder))
 
-Similiar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut (**CTRL + M, CTRL + C**)
+Similar to the [Add Mock Method](#add-mock-method) shortcut, this shortcut (**CTRL + M, CTRL + C**)
 will introduce a correctly implemented Mockito.verify of the chosen method.
 
 Also the [Variable finder](#new-feature-variable-finder) can search the current method for variables, to create the
