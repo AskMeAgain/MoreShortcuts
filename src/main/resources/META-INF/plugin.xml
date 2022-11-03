@@ -70,20 +70,30 @@
                     description="Switch mockito mock method implementation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl m" second-keystroke="ctrl i"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
-                    class="io.github.askmeagain.more.shortcuts.insertionpopup.annotation.AnnotationInsertionAction"
+        </group>
+        <group id="CodeLense" text="Code Lense" popup="true">
+            <add-to-group group-id="CodeLense"
+                          anchor="after"
+                          relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction"/>
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.annotation.AnnotationInsertionAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.annotation.AnnotationInsertionAction"
                     text="Insert Annotation"
                     description="Insert Annotation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl a"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.field.FieldInsertionAction"
-                    class="io.github.askmeagain.more.shortcuts.insertionpopup.field.FieldInsertionAction"
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
+                    text="Test"
+                    description="TestTestTestTest">
+            </action>
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.field.FieldInsertionAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.field.FieldInsertionAction"
                     text="Insert Field"
                     description="Insert Field">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl v"/>
             </action>
-            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.file.ShowFileAction"
-                    class="io.github.askmeagain.more.shortcuts.insertionpopup.file.ShowFileAction"
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.file.ShowFileAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.file.ShowFileAction"
                     text="Show File"
                     description="Show File">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl l" second-keystroke="ctrl f"/>
