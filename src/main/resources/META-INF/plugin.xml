@@ -72,19 +72,11 @@
             </action>
         </group>
         <group id="CodeLense" text="Code Lense" popup="true">
-            <add-to-group group-id="CodeLense"
-                          anchor="after"
-                          relative-to-action="io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction"/>
             <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.annotation.AnnotationInsertionAction"
                     class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.annotation.AnnotationInsertionAction"
                     text="Insert Annotation"
                     description="Insert Annotation">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl i" second-keystroke="ctrl a"/>
-            </action>
-            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
-                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
-                    text="Test"
-                    description="TestTestTestTest">
             </action>
             <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.field.FieldInsertionAction"
                     class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.field.FieldInsertionAction"
@@ -97,6 +89,20 @@
                     text="Show File"
                     description="Show File">
                 <keyboard-shortcut keymap="$default" first-keystroke="ctrl l" second-keystroke="ctrl f"/>
+            </action>
+        </group>
+        <group id="CodeLenseToolWindow" text="Code Lense" popup="true">
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLenseNextEntityAction"
+                    text="Next Occurence"
+                    icon="AllIcons.Actions.MoveDown"
+                    description="Next occurence">
+            </action>
+            <action id="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLensePreviousEntityAction"
+                    class="io.github.askmeagain.more.shortcuts.insertionpopup.actions.CodeLensePreviousEntityAction"
+                    text="Previous Occurence"
+                    icon="AllIcons.Actions.MoveUp"
+                    description="Previous occurence">
             </action>
         </group>
     </actions>

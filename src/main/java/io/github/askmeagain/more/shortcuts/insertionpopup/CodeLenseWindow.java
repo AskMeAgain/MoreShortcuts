@@ -25,6 +25,8 @@ public class CodeLenseWindow extends DialogWrapper {
   private final Integer cursorLineOffset;
   private final AtomicInteger currentCursorIndex = new AtomicInteger();
 
+  private final Editor editor;
+
   @Getter(lazy = true)
   private final MoreShortcutState state = PersistenceManagementService.getInstance().getState();
 
@@ -37,17 +39,17 @@ public class CodeLenseWindow extends DialogWrapper {
     setSize(700, 200);
     setModal(false);
 
-    var editor = e.getRequiredData(CommonDataKeys.EDITOR);
+    editor = e.getRequiredData(CommonDataKeys.EDITOR);
     var project = e.getProject();
 
     editorTextField = new EditorTextField(document, project, JavaFileType.INSTANCE);
 
-    updateCursor(editor);
+    updateCursor();
 
     init();
   }
 
-  private void updateCursor(Editor editor) {
+  private void updateCursor() {
     var logicalPosition = editor.offsetToLogicalPosition(cursorOffsets.get(currentCursorIndex.get() % cursorOffsets.size()));
     var newLine = logicalPosition.line + cursorLineOffset;
     var newLogicalPosition = new LogicalPosition(newLine, 0);
@@ -55,9 +57,9 @@ public class CodeLenseWindow extends DialogWrapper {
     editorTextField.setCaretPosition(editor.logicalPositionToOffset(newLogicalPosition));
   }
 
-  public void setCursorToNextEntity(AnActionEvent e) {
-    currentCursorIndex.incrementAndGet();
-    updateCursor(e.getRequiredData(CommonDataKeys.EDITOR));
+  public void setCursorToNextEntity(int offset) {
+    currentCursorIndex.addAndGet(offset);
+    updateCursor();
   }
 
   @Override
@@ -72,9 +74,6 @@ public class CodeLenseWindow extends DialogWrapper {
 
   @Override
   protected @Nullable JComponent createCenterPanel() {
-    var textEditor = CodeLenseUtils.setupTextEditor(editorTextField, getState());
-    var actionGroup = CodeLenseUtils.createButtonToolBar();
-
-    return CodeLenseUtils.createPanel(actionGroup, textEditor);
+    return CodeLenseUtils.createPanel(getState(), editorTextField);
   }
 }

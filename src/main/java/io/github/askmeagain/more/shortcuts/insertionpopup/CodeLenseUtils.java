@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class CodeLenseUtils {
 
-  public static JPanel createPanel(JComponent buttonToolBar, JComponent textEditor) {
+  public static JPanel createPanel(MoreShortcutState state, EditorTextField editorTextField) {
     var panel = new JPanel(new GridBagLayout());
     var gbc = new GridBagConstraints();
 
@@ -20,23 +20,25 @@ public class CodeLenseUtils {
 
     gbc.gridx = 0;
     gbc.gridy = 0;
+
     gbc.gridwidth = 1;
     gbc.gridheight = 1;
-    panel.add(buttonToolBar, gbc);
+    panel.add(createButtonToolBar(panel), gbc);
 
     gbc.weighty = 1;
-    gbc.gridx = 0;
-    gbc.gridy = 1;
+    gbc.gridx = 1;
+    gbc.gridy = 0;
     gbc.gridheight = 100;
     gbc.fill = GridBagConstraints.BOTH;
-    panel.add(textEditor, gbc);
+
+    panel.add(setupTextEditor(editorTextField, state), gbc);
 
     panel.setPreferredSize(new Dimension(0, 200));
 
     return panel;
   }
 
-  public static JComponent setupTextEditor(EditorTextField editorTextField, MoreShortcutState state) {
+  private static JComponent setupTextEditor(EditorTextField editorTextField, MoreShortcutState state) {
     editorTextField.setOneLineMode(false);
     editorTextField.setSize(1000, 1000);
 
@@ -49,12 +51,10 @@ public class CodeLenseUtils {
     return editorTextField;
   }
 
-  public static JComponent createButtonToolBar() {
-    var parent = new JPanel();
-
+  private static JComponent createButtonToolBar(JPanel parent) {
     var instance = ActionManager.getInstance();
-    var actionGroup = (ActionGroup) instance.getAction("CodeLense");
-    var toolbar = instance.createActionToolbar("abc", actionGroup, true);
+    var actionGroup = (ActionGroup) instance.getAction("CodeLenseToolWindow");
+    var toolbar = instance.createActionToolbar("abc", actionGroup, false);
     toolbar.setTargetComponent(parent);
     return toolbar.getComponent();
   }

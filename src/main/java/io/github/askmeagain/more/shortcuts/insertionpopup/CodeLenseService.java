@@ -22,8 +22,12 @@ public final class CodeLenseService {
 
   private CodeLenseWindow codeLensePopupDialog;
 
-  public void moveCursorToNextEntity(AnActionEvent e) {
-    codeLensePopupDialog.setCursorToNextEntity(e);
+  public void moveCursorToNextEntity() {
+    codeLensePopupDialog.setCursorToNextEntity(1);
+  }
+
+  public void moveCursorToPreviousEntity() {
+    codeLensePopupDialog.setCursorToNextEntity(-1);
   }
 
   public void openDialog(AnActionEvent e, List<Integer> offsets, int lineOffset, Document document) {
