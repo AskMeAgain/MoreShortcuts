@@ -1,16 +1,14 @@
 package io.github.askmeagain.more.shortcuts.insertionpopup;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.IdeActions;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import com.intellij.openapi.editor.actionSystem.EditorActionManager;
+import io.github.askmeagain.more.shortcuts.insertionpopup.handler.EscapeHandler;
+import io.github.askmeagain.more.shortcuts.insertionpopup.handler.PageDownHandler;
+import io.github.askmeagain.more.shortcuts.insertionpopup.handler.PageUpHandler;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -34,27 +32,25 @@ public final class CodeLenseService {
     codeLensePopupDialog = new CodeLenseWindow(e, offsets, lineOffset, document);
     codeLensePopupDialog.show();
 
-    var oldHandler = getEditorActionManager().getActionHandler(IdeActions.ACTION_EDITOR_ESCAPE);
+    var actionManager = getEditorActionManager();
 
-    getEditorActionManager().setActionHandler(
+    var escapeHandler = actionManager.getActionHandler(IdeActions.ACTION_EDITOR_ESCAPE);
+    var pageDownHandler = actionManager.getActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_DOWN);
+    var pageUpHandler = actionManager.getActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_UP);
+
+    actionManager.setActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_DOWN, new PageDownHandler(codeLensePopupDialog));
+    actionManager.setActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_UP, new PageUpHandler(codeLensePopupDialog));
+
+    actionManager.setActionHandler(
         IdeActions.ACTION_EDITOR_ESCAPE,
-        new InsertionPopupEscapeHandler(
+        new EscapeHandler(
             codeLensePopupDialog,
-            () -> getEditorActionManager().setActionHandler(IdeActions.ACTION_EDITOR_ESCAPE, oldHandler)
+            () -> {
+              actionManager.setActionHandler(IdeActions.ACTION_EDITOR_ESCAPE, escapeHandler);
+              actionManager.setActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_DOWN, pageDownHandler);
+              actionManager.setActionHandler(IdeActions.ACTION_EDITOR_MOVE_CARET_PAGE_UP, pageUpHandler);
+            }
         )
     );
-  }
-
-  @RequiredArgsConstructor
-  public static class InsertionPopupEscapeHandler extends EditorActionHandler {
-
-    public final CodeLenseWindow codeLenseWindow;
-    private final Runnable action;
-
-    @Override
-    public void doExecute(Editor editor, Caret caret, DataContext dataContext) {
-      codeLenseWindow.close(0);
-      action.run();
-    }
   }
 }
