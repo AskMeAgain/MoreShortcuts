@@ -69,6 +69,7 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
   void testSmartIntroduceMethod2(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
     runTestCase("method2", resultFile, actionIndex, staticImport, privateField, preferVar);
   }
+
   @ParameterizedTest
   @MethodSource("testCases")
   void testSmartIntroduceMethod3(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
@@ -77,8 +78,20 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
 
   @ParameterizedTest
   @MethodSource("testCases")
+  void testSmartIntroduceMethod4(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
+    runTestCase("method4", resultFile, actionIndex, staticImport, privateField, preferVar);
+  }
+
+  @ParameterizedTest
+  @MethodSource("testCases")
   void testSmartIntroduceConstructor3(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
     runTestCase("constructor3", resultFile, actionIndex, staticImport, privateField, preferVar);
+  }
+
+  @ParameterizedTest
+  @MethodSource("testCases")
+  void testSmartIntroduceConstructor4(String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {
+    runTestCase("constructor4", resultFile, actionIndex, staticImport, privateField, preferVar);
   }
 
   private void runTestCase(String testCase, String resultFile, Integer actionIndex, boolean staticImport, boolean privateField, boolean preferVar) {

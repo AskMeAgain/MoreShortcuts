@@ -3,8 +3,12 @@ package io.github.askmeagain.more.shortcuts.introducemock.impl;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.psi.PsiExpressionList;
-import com.intellij.psi.PsiParameter;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
+import com.intellij.psi.impl.source.tree.java.PsiNewExpressionImpl;
+import io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceUtils;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 
 import java.util.ArrayList;
@@ -50,19 +54,17 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
     }
 
     var finalString = "\n" + String.join("\n", result) + "\n\n";
-    var realTextOffset = e.getRequiredData(CommonDataKeys.PSI_FILE)
-        .findElementAt(textOffset)
-        .getParent()
-        .getParent()
-        .getParent()
-        .getTextOffset() - 2;
+    var requiredData = e.getRequiredData(CommonDataKeys.EDITOR);
+    var logicalPosition = requiredData.offsetToLogicalPosition(getObj(e).getTextOffset());
+    var fixedLine = new LogicalPosition(logicalPosition.line, 0);
 
-    var document = e.getRequiredData(CommonDataKeys.EDITOR).getDocument();
+    var anotherThing = requiredData.logicalPositionToOffset(fixedLine);
+    var document = requiredData.getDocument();
 
     WriteCommandAction.runWriteCommandAction(e.getProject(), () -> {
       //the variables
       addParameterToParameterList(document, textOffset, newParameters, oldExpressionList);
-      document.insertString(realTextOffset, finalString);
+      document.insertString(anotherThing, finalString);
 
       if (state.getStaticImports()) {
         addImport(document, "import static org.mockito.Mockito." + (isMock ? "mock" : "spy") + ";");
@@ -72,6 +74,44 @@ public class SmartIntroduceMockVariableAction extends SmartIntroduceBaseClass {
 
       reformatCode(e);
     });
+  }
+
+  private PsiElement getObj(AnActionEvent e) {
+    var elementAt = e.getRequiredData(CommonDataKeys.PSI_FILE)
+        .findElementAt(textOffset);
+
+    var localVar = SmartIntroduceUtils.findRecursivelyInParent(
+        elementAt,
+        PsiLocalVariable.class
+    );
+    if (localVar != null) {
+      return localVar;
+    }
+
+    var psiExpression = SmartIntroduceUtils.findRecursivelyInParent(
+        elementAt,
+        PsiExpression.class
+    );
+    if (psiExpression != null) {
+      return psiExpression;
+    }
+
+    var psiMethodCall = SmartIntroduceUtils.findRecursivelyInParent(
+        elementAt,
+        PsiMethodCallExpressionImpl.class
+    );
+    if (psiMethodCall != null) {
+      return psiMethodCall;
+    }
+
+    var psiNewExpression = SmartIntroduceUtils.findRecursivelyInParent(
+        elementAt,
+        PsiNewExpressionImpl.class
+    );
+    if (psiNewExpression != null) {
+      return psiNewExpression;
+    }
+    throw new RuntimeException("asd");
   }
 
   private static String extractClass(PsiParameter param) {

@@ -60,13 +60,13 @@ public class SmartIntroduceUtils {
     while (true) {
       element = element.getParent();
       if (element == null) {
-        break;
+        return null;
       }
       if (element.getClass().isAssignableFrom(seachFor)) {
         return (T) element;
       }
     }
-    throw new RuntimeException("could not find " + seachFor.getName());
+
   }
 
   public static List<PsiParameter[]> getPsiParametersFromMethod(PsiExpressionList expressionList) {
