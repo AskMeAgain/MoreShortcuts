@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SmartPasteTest extends SimpleRefactoringTestBase {
+public class SmartPasteTest extends AbstractSmartBaseTestBase {
 
   @Override
   public String getAction() {
@@ -18,11 +18,13 @@ public class SmartPasteTest extends SimpleRefactoringTestBase {
     return dynamicTestsWithIterable(testInfo,
         "bracketInsertion", "\"def\"",
         "bracketInsertion2", "if(true){",
-        "methodOrigin", "coolMethod(",
-        "methodTarget", "\"def\"",
         "bracketInsertion3", "coolMethod(",
         "bracketInsertion4", "otherMethod(",
-        "htmlInsertion", "<test>"
+        "bracketInsertion5", "Optional<",
+        "methodOrigin", "coolMethod(",
+        "methodTarget", "\"def\"",
+        "htmlInsertion", "<test>",
+        "htmlInsertion2", "<test abc=\"attribute\">"
     );
   }
 }

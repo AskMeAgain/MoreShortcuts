@@ -13,6 +13,13 @@ public class HtmlInsertion implements SmartInsertion {
   @Override
   public String apply(String originalText, String clipboard, AnActionEvent e) {
     var trimmedClipboard = clipboard.trim();
-    return trimmedClipboard + "\n" + originalText + "\n" + trimmedClipboard.charAt(0) + "/" + trimmedClipboard.substring(1);
+
+    var space = trimmedClipboard.indexOf(" ");
+
+    if(space == -1){
+      space = trimmedClipboard.length() - 1;
+    }
+
+    return trimmedClipboard + "\n" + originalText + "\n" + trimmedClipboard.charAt(0) + "/" + trimmedClipboard.substring(1, space) + ">";
   }
 }

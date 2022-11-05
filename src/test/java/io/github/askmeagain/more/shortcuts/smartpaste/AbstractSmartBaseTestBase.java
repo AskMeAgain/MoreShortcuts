@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestInfo;
 
 import java.util.ArrayList;
 
-public abstract class SimpleRefactoringTestBase extends LightJavaCodeInsightFixtureTestCase {
+public abstract class AbstractSmartBaseTestBase extends LightJavaCodeInsightFixtureTestCase {
 
   protected final static String MODULE = "/io/github/askmeagain/more/shortcuts/introducemock";
 

@@ -9,12 +9,13 @@ public class BracketsAtEndInsertion implements SmartInsertion {
 
   private final Map<Character, Character> bracketMap = Map.of(
       '{', '}',
+      '<', '>',
       '(', ')'
   );
 
   @Override
   public boolean isApplicable(String originalText, String clipboardText, AnActionEvent e) {
-    return clipboardText.endsWith("{") || clipboardText.endsWith("(");
+    return clipboardText.endsWith("{") || clipboardText.endsWith("(") || clipboardText.endsWith("<");
   }
 
   @Override
@@ -24,6 +25,10 @@ public class BracketsAtEndInsertion implements SmartInsertion {
     if (bracketEnd == '(') {
       var newText = clipboard + originalText + bracketMap.get(bracketEnd);
       return SmartInsertionUtils.normalizeSemicolon(newText);
+    }
+
+    if(bracketEnd == '<'){
+      return clipboard + originalText + bracketMap.get(bracketEnd);
     }
 
     return clipboard + "\n" + originalText + "\n" + bracketMap.get(bracketEnd);

@@ -1,0 +1,1 @@
+public void testMethod(<selection>Object</selection> obj){
