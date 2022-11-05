@@ -179,13 +179,15 @@ naming schemes. Currently supported are: **camelCase, dot.case, PascalCase, SNAK
 Copy some code and paste it onto a selected text via **ALT + V**. Depending on the content of the clipboard and the text
 selection a different behaviour occurs (with multi cursor support!):
 
-| Clipboard              | Selection                  | Result                                                      |
-|------------------------|----------------------------|-------------------------------------------------------------|
-| coolMethod(            | "abc"                      | coolMethod("abc")                                           |
-| coolMethod(            | "abc";                     | coolMethod("abc");                                          |
-| "def"                  | coolMethod("abc");         | coolMethod("def");                                          |
-| var newString = "abc"; | public void coolMethod() { | public void coolMethod { <br/>var newString = "abc"; <br/>} |
-| <any-html-brackets>    | any cool text              | <any-html-brackets>any cool text</any-html-brackets>        |
+| Clipboard                       | Selection                  | Result                                                           |
+|---------------------------------|----------------------------|------------------------------------------------------------------|
+| coolMethod(                     | "abc"                      | coolMethod("abc")                                                |
+| coolMethod(                     | "abc";                     | coolMethod("abc");                                               |
+| "def"                           | coolMethod("abc");         | coolMethod("def");                                               |
+| var newString = "abc";          | public void coolMethod() { | public void coolMethod() { <br/>var newString = "abc"; <br/>}    |
+| <any-html-brackets attr="attr"> | any cool text              | <any-html-brackets attr="attr">any cool text</any-html-brackets> |
+| <any-html-brackets>             | any cool text              | <any-html-brackets>any cool text</any-html-brackets>             |
+| Optional<                       | JavaType                   | Optional<JavaType>                                               |
 
 ![smartpaste](smartinsertion.gif)
 
@@ -227,6 +229,4 @@ Press **CTRL + L, CTRL + F** to open a CodeLense on the selected class.
 
 if your cursor is not on a variable and you press a shortcut which implements the variable finder, the plugin will
 search for all possible variable declarations and will provide you with a list of possible cases to chose from. It will
-then apply the shortcut to the selected variable:
-
-![mock](mockmethod.gif)
+then apply the shortcut to the selected variable.
