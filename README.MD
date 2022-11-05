@@ -215,10 +215,13 @@ Pressing **escape** closes the window.
 
 ![code lense file](code-lense-file.png)
 
-Press **CTRL + I, CTRL + V** to open a window, ready to add a field to a class.
-Press **CTRL + L, CTRL + F** to open a window on the selected class.
+Page Up & Page Down will scroll through specific entities, depending on the type of
+CodeLense.
 
-----------------------
+Press **CTRL + I, CTRL + V** to open a CodeLense, ready to add a field to a class.  
+Press **CTRL + L, CTRL + F** to open a CodeLense on the selected class.  
+
+---------------------- 
 
 ## VariableFinder
 
