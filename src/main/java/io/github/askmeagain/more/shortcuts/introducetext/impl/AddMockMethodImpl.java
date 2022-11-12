@@ -138,7 +138,7 @@ public class AddMockMethodImpl extends AnAction {
       }
     });
 
-    if (state.getIntroduceMockFieldPrivateField()) {
+    if (state.getStaticImports()) {
       CommonPsiUtils.addStaticImports(psiFile, project, "verify", "when");
     }
   }
@@ -176,10 +176,11 @@ public class AddMockMethodImpl extends AnAction {
       var methodCall = PsiTreeUtil.getChildOfType(result, PsiMethodCallExpression.class);
       var expressionList = PsiTreeUtil.getChildOfType(methodCall, PsiExpressionList.class);
 
-      var offset = expressionList.getTextOffset() + 1;
-      editor.getCaretModel().moveToOffset(offset);
-
-      editor.getSelectionModel().setSelection(offset, offset + 4);
+      if (introduceTextMode == IntroduceTextMode.MOCK_METHOD) {
+        var offset = expressionList.getTextOffset() + 1;
+        editor.getCaretModel().moveToOffset(offset);
+        editor.getSelectionModel().setSelection(offset, offset + 4);
+      }
     });
   }
 
