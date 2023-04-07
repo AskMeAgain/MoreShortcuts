@@ -13,10 +13,10 @@ import java.util.List;
 
 public class ShowFileAction extends BaseInsertionPopupAction {
 
-  private final List<Integer> textOffsets = new ArrayList<>();
-
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
+    var textOffsets = new ArrayList<Integer>();
+
     var editor = e.getRequiredData(CommonDataKeys.EDITOR);
     var psiFile = e.getRequiredData(CommonDataKeys.PSI_FILE);
 

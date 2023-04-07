@@ -12,18 +12,19 @@ import java.util.List;
 
 public class FieldInsertionAction extends BaseInsertionPopupAction {
 
-  private final List<Integer> textOffset = new ArrayList<>();
-
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
+    var textOffsets = new ArrayList<Integer>();
+
     e.getRequiredData(CommonDataKeys.PSI_FILE).accept(new JavaRecursiveElementVisitor() {
       @Override
       public void visitField(PsiField field) {
-        textOffset.add(field.getTextOffset());
+        textOffsets.add(field.getTextOffset());
+        super.visitField(field);
       }
     });
 
-    openDialog(e, textOffset, 1, e.getRequiredData(CommonDataKeys.EDITOR).getDocument());
+    openDialog(e, textOffsets, 0, e.getRequiredData(CommonDataKeys.EDITOR).getDocument());
   }
 
 }

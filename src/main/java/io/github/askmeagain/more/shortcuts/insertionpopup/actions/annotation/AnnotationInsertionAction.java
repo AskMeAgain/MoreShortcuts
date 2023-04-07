@@ -12,14 +12,15 @@ import java.util.List;
 
 public class AnnotationInsertionAction extends BaseInsertionPopupAction {
 
-  private final List<Integer> textOffsets = new ArrayList<>();
-
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
+    var textOffsets = new ArrayList<Integer>();
+
     e.getRequiredData(CommonDataKeys.PSI_FILE).accept(new JavaRecursiveElementVisitor() {
       @Override
       public void visitClass(PsiClass clazz) {
         textOffsets.add(clazz.getTextOffset());
+        super.visitClass(clazz);
       }
     });
 

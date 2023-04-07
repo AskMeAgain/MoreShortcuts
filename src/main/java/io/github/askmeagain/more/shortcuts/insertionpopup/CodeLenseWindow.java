@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.EditorTextField;
@@ -14,10 +13,8 @@ import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.css.Rect;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,28 +42,46 @@ public class CodeLenseWindow extends DialogWrapper {
 
     editorTextField = new EditorTextField(document, project, JavaFileType.INSTANCE);
 
-    var newLogicalPosition = calculateNewLogicalPosition(editor);
+    var cursorOffset = calculateNewOffset(editor);
 
-    editorTextField.setCaretPosition(editor.logicalPositionToOffset(newLogicalPosition));
+    System.out.println("Initial offset:" + cursorOffset);
+
+    editorTextField.setCaretPosition(cursorOffset);
 
     init();
-  }
-
-  private LogicalPosition calculateNewLogicalPosition(Editor editor) {
-    var logicalPosition = editor.offsetToLogicalPosition(this.cursorOffsets.get(currentCursorIndex.get() % this.cursorOffsets.size()));
-    var newLine = logicalPosition.line + cursorLineOffset;
-    return new LogicalPosition(newLine, 2);
   }
 
   public void setCursorToNextEntity(int lineOffset) {
     currentCursorIndex.addAndGet(lineOffset);
 
     var editor = editorTextField.getEditor();
-    var newLogicalPosition = calculateNewLogicalPosition(editor);
+    var cursorOffset = calculateNewOffset(editor);
 
-    var editorOffset = editor.logicalPositionToOffset(newLogicalPosition);
+    var newLogicalPosition = editor.offsetToLogicalPosition(cursorOffset);
+
     editor.getScrollingModel().scrollTo(newLogicalPosition, ScrollType.CENTER);
-    editorTextField.setCaretPosition(editorOffset);
+    editorTextField.setCaretPosition(cursorOffset);
+  }
+
+  private int calculateNewOffset(Editor editor) {
+    var indexOfList = calculateOffsetInList();
+
+    var logicalPosition = editor.offsetToLogicalPosition(indexOfList);
+    var newLine = logicalPosition.line + cursorLineOffset;
+
+    return editor.getDocument().getLineEndOffset(newLine);
+  }
+
+  private Integer calculateOffsetInList() {
+    var listSize = this.cursorOffsets.size();
+
+    while (this.currentCursorIndex.get() < 0) {
+      this.currentCursorIndex.addAndGet(listSize);
+    }
+
+    var finalIndex = this.currentCursorIndex.get() % listSize;
+
+    return this.cursorOffsets.get(finalIndex);
   }
 
   @Override
