@@ -1,4 +1,25 @@
-# Project exclude paths
-/out/
+# IDE metadata
+/.idea/
+*.iml
+
+# Gradle
+/.gradle/
 /build/
-.gradle
+/out/
+
+# IntelliJ Platform Gradle Plugin output
+/.intellijPlatform/
+
+# Java artifacts
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
