@@ -1,5 +1,6 @@
 package io.github.askmeagain.more.shortcuts.introducemock;
 
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import io.github.askmeagain.more.shortcuts.settings.PersistenceManagementService;
 import lombok.SneakyThrows;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
 
   private static final String ACTION = "io.github.askmeagain.more.shortcuts.introducemock.SmartIntroduceAction";
+  private boolean registeredAction;
 
   @Override
   public final String getTestDataPath() {
@@ -24,11 +26,22 @@ public class SmartIntroduceTest extends LightJavaCodeInsightFixtureTestCase {
   @BeforeEach
   void setup() {
     super.setUp();
+
+    var actionManager = ActionManager.getInstance();
+    if (actionManager.getAction(ACTION) == null) {
+      actionManager.registerAction(ACTION, new SmartIntroduceAction());
+      registeredAction = true;
+    }
   }
 
   @SneakyThrows
   @AfterEach
   void reset() {
+    if (registeredAction) {
+      ActionManager.getInstance().unregisterAction(ACTION);
+      registeredAction = false;
+    }
+
     super.tearDown();
   }
 

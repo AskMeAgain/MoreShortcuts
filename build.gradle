@@ -18,10 +18,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     testImplementation 'org.assertj:assertj-core:3.23.1'
 
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-params:5.8.2'
@@ -33,6 +35,8 @@ dependencies {
 
         bundledPlugin 'com.intellij.java'
         bundledPlugin 'org.jetbrains.plugins.yaml'
+        testFramework org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform.INSTANCE
+        testFramework org.jetbrains.intellij.platform.gradle.TestFrameworkType.Plugin.Java.INSTANCE
     }
 }
 
@@ -57,7 +61,9 @@ patchPluginXml {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeEngines 'junit-vintage'
+    }
 }
 
 java {

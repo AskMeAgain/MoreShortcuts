@@ -1,3 +1,3 @@
 if(true){
-        var variable="abc";
-        }
+var variable = "abc";
+}
